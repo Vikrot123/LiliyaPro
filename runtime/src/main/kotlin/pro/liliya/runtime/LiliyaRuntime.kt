@@ -11,10 +11,11 @@ import pro.liliya.core.memory.InMemoryMemoryProvider
 import pro.liliya.core.memory.InMemoryMemoryRepository
 import pro.liliya.core.memory.InMemoryMemorySearch
 import pro.liliya.core.memory.MemoryCoordinator
+import pro.liliya.core.memory.MemoryConsolidator
+import pro.liliya.core.orchestration.ExecutiveControllerImpl
 import pro.liliya.core.planning.PlanningEngineImpl
 import pro.liliya.core.reasoning.ReasoningEngineImpl
 import pro.liliya.core.reflection.ReflectionEngineImpl
-import pro.liliya.core.orchestration.ExecutiveControllerImpl
 import pro.liliya.core.runtime.RuntimeStateMachineImpl
 import pro.liliya.domain.api.CognitiveEngine
 import pro.liliya.domain.api.ExecutiveController
@@ -23,6 +24,7 @@ import pro.liliya.domain.api.RuntimeStateMachine
 import pro.liliya.domain.models.Episode
 import pro.liliya.domain.models.RuntimeState
 import pro.liliya.model.mock.MockModelEngine
+
 
 class LiliyaRuntime {
 
@@ -40,13 +42,16 @@ class LiliyaRuntime {
 
     private val memoryProvider = InMemoryMemoryProvider()
 
+
     private val memorySearch: MemorySearch =
         InMemoryMemorySearch(
             memoryProvider
         )
 
 
-    private val memoryRepository = InMemoryMemoryRepository()
+    private val memoryRepository =
+        InMemoryMemoryRepository()
+
 
     private val memoryCoordinator =
         MemoryCoordinator(
@@ -54,7 +59,15 @@ class LiliyaRuntime {
         )
 
 
-    private val episodeBuilder = EpisodeBuilder()
+    private val memoryConsolidator =
+        MemoryConsolidator(
+            eventStore = eventStore,
+            memoryProvider = memoryProvider
+        )
+
+
+    private val episodeBuilder =
+        EpisodeBuilder()
 
 
     private val reasoningEngine =
@@ -145,6 +158,12 @@ class LiliyaRuntime {
         )
 
         return episode
+    }
+
+
+    suspend fun consolidateMemory() {
+
+        memoryConsolidator.consolidate()
     }
 
 
