@@ -12,7 +12,6 @@ class MemoryCoordinator(
         content: String,
         importance: Float = 0.5f
     ) {
-
         val memory = MemoryItem(
             id = UUID.randomUUID().toString(),
             content = content,
@@ -24,10 +23,32 @@ class MemoryCoordinator(
     }
 
 
+    suspend fun rememberInteraction(
+        input: String,
+        response: String
+    ) {
+
+        val content = """
+            User:
+            $input
+            
+            Assistant:
+            $response
+        """.trimIndent()
+
+
+        remember(
+            content = content,
+            importance = 0.7f
+        )
+    }
+
+
     suspend fun recall(
         query: String
     ): List<MemoryItem> {
 
         return repository.search(query)
+
     }
 }
