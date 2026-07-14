@@ -1,18 +1,23 @@
 package pro.liliya.core.memory
 
 import pro.liliya.domain.models.Episode
+import pro.liliya.domain.models.SystemEvent
 import pro.liliya.domain.memory.MemoryItem
+import pro.liliya.domain.api.MemoryProvider
 
 class MemoryService(
     private val memoryCoordinator: MemoryCoordinator,
     private val memoryConsolidator: MemoryConsolidator,
-    private val episodeBuilder: EpisodeBuilder
+    private val episodeBuilder: EpisodeBuilder,
+    private val memoryProvider: MemoryProvider
 ) {
+
 
     suspend fun remember(
         content: String,
         importance: Float = 0.5f
     ) {
+
         memoryCoordinator.remember(
             content = content,
             importance = importance
@@ -24,6 +29,7 @@ class MemoryService(
         input: String,
         response: String
     ) {
+
         memoryCoordinator.rememberInteraction(
             input = input,
             response = response
@@ -42,12 +48,25 @@ class MemoryService(
 
 
     suspend fun createEpisode(
-        events: List<pro.liliya.domain.models.SystemEvent>
+        events: List<SystemEvent>
     ): Episode {
 
-        return episodeBuilder.createEpisode(
-            events
+        val episode =
+            episodeBuilder.createEpisode(
+                events
+            )
+
+        memoryProvider.saveEpisode(
+            episode
         )
+
+        return episode
+    }
+
+
+    suspend fun history(): List<Episode> {
+
+        return memoryProvider.loadEpisodes()
     }
 
 
