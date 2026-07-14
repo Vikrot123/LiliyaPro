@@ -1,31 +1,18 @@
 package pro.liliya.core.memory
 
-import pro.liliya.domain.api.MemoryProvider
 import pro.liliya.domain.models.Episode
 import pro.liliya.domain.models.SystemEvent
 import java.util.UUID
 
-class EpisodeBuilder(
-    private val memoryProvider: MemoryProvider
-) {
+class EpisodeBuilder {
 
-    suspend fun createEpisode(
+    fun createEpisode(
         events: List<SystemEvent>
     ): Episode {
 
-        val episode = Episode(
+        return Episode(
             id = UUID.randomUUID().toString(),
             events = events
         )
-
-        memoryProvider.saveEpisode(episode)
-
-        return episode
-    }
-
-
-    suspend fun history(): List<Episode> {
-        return memoryProvider.loadEpisodes()
     }
 }
-
