@@ -22,20 +22,29 @@ android {
         }
     }
 
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-        }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
 
+    kotlinOptions {
+        jvmTarget = "17"
+    }
+
+    buildTypes {
         debug {
             isDebuggable = true
+        }
+
+        release {
+            isMinifyEnabled = false
         }
     }
 }
 
 dependencies {
-
     implementation(project(":runtime"))
     implementation(project(":ui"))
 
+    implementation(libs.kotlinx.coroutines.core)
 }
