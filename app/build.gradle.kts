@@ -43,6 +43,10 @@ android {
 }
 
 dependencies {
+
+    implementation(project(":domain"))
+    implementation(project(":model"))
+    implementation(project(":core"))
     implementation(project(":runtime"))
     implementation(project(":ui"))
 

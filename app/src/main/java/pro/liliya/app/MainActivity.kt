@@ -14,10 +14,10 @@ import android.widget.TextView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.cancel
-import pro.liliya.app.chat.ChatController
+import pro.liliya.app.application.AppContainer
 
 
 class MainActivity : Activity() {
@@ -30,7 +30,12 @@ class MainActivity : Activity() {
     private lateinit var scrollView: ScrollView
 
 
-    private val controller = ChatController()
+    /**
+     * ChatController берётся из AppContainer.
+     * Activity больше не создаёт Runtime-сервисы сама.
+     */
+    private val controller =
+        AppContainer.chatController
 
 
     private val scope =
@@ -40,13 +45,11 @@ class MainActivity : Activity() {
         )
 
 
-
     override fun onCreate(
         savedInstanceState: Bundle?
     ) {
 
         super.onCreate(savedInstanceState)
-
 
 
         val root =
@@ -68,13 +71,14 @@ class MainActivity : Activity() {
             }
 
 
-
         val title =
             TextView(this).apply {
 
-                text = "LiliyaPro"
+                text =
+                    "LiliyaPro"
 
-                textSize = 30f
+                textSize =
+                    30f
 
                 setTypeface(
                     null,
@@ -90,14 +94,14 @@ class MainActivity : Activity() {
             }
 
 
-
         val subtitle =
             TextView(this).apply {
 
                 text =
                     "AI Companion Runtime"
 
-                textSize = 16f
+                textSize =
+                    16f
 
                 gravity =
                     Gravity.CENTER
@@ -108,11 +112,11 @@ class MainActivity : Activity() {
             }
 
 
-
         chatBox =
             TextView(this).apply {
 
-                textSize = 18f
+                textSize =
+                    18f
 
                 setTextColor(
                     Color.BLACK
@@ -130,7 +134,6 @@ class MainActivity : Activity() {
             }
 
 
-
         scrollView =
             ScrollView(this).apply {
 
@@ -144,7 +147,6 @@ class MainActivity : Activity() {
             }
 
 
-
         input =
             EditText(this).apply {
 
@@ -156,14 +158,12 @@ class MainActivity : Activity() {
             }
 
 
-
         val button =
             Button(this).apply {
 
                 text =
                     "Отправить"
             }
-
 
 
         button.setOnClickListener {
@@ -181,14 +181,12 @@ class MainActivity : Activity() {
             input.text.clear()
 
 
-
             scope.launch {
 
 
                 chatBox.append(
                     "\n\nТы:\n$message\n\nLiliya:\n"
                 )
-
 
 
                 controller
@@ -207,13 +205,11 @@ class MainActivity : Activity() {
         }
 
 
-
         val normalParams =
             LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
             )
-
 
 
         val chatParams =
@@ -224,7 +220,6 @@ class MainActivity : Activity() {
 
                 weight = 1f
             }
-
 
 
         root.addView(
@@ -257,7 +252,6 @@ class MainActivity : Activity() {
         )
 
 
-
         setContentView(root)
 
 
@@ -266,12 +260,12 @@ class MainActivity : Activity() {
 
             controller.start()
 
+
             chatBox.append(
                 "\n\nRuntime: READY"
             )
         }
     }
-
 
 
 
@@ -287,8 +281,8 @@ class MainActivity : Activity() {
 
 
 
-
     override fun onDestroy() {
+
 
         scope.launch {
 
