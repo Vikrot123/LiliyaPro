@@ -178,7 +178,7 @@ suspend fun stop() {
 
 suspend fun process(
     input: String
-): Flow<CognitiveEvent>
+): Flow<String>
 
  {
 
@@ -192,7 +192,13 @@ suspend fun process(
         )
     )
 
-    return cognitiveEngine.process(input)
+    return cognitiveEngine
+    .process(input)
+    .map { event ->
+
+        CognitiveEventMapper.map(event)
+
+    }
    
         .onCompletion {
 
