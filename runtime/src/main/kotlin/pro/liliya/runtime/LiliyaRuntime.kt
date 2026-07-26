@@ -176,10 +176,11 @@ suspend fun stop() {
 
 
 
-
 suspend fun process(
     input: String
-): Flow<String> {
+): Flow<CognitiveEvent>
+
+ {
 
     stateMachine.transitionTo(
         RuntimeState.THINKING
@@ -192,38 +193,7 @@ suspend fun process(
     )
 
     return cognitiveEngine.process(input)
-        .map { event ->
-
-            when (event) {
-
-                is CognitiveEvent.ThinkingStarted ->
-                    "Thinking started"
-
-                is CognitiveEvent.MemorySearching ->
-                    "Searching memory: ${event.query}"
-
-                is CognitiveEvent.MemoryFound ->
-                    "Memory found: ${event.count}"
-
-                is CognitiveEvent.ReasoningCompleted ->
-                    event.summary
-
-                is CognitiveEvent.PlanningCompleted ->
-                    "Plan: ${event.steps.joinToString()}"
-
-                CognitiveEvent.RespondingStarted ->
-                    "Generating response..."
-
-                is CognitiveEvent.ResponseChunk ->
-                    event.text
-
-                CognitiveEvent.Completed ->
-                    "Completed"
-
-                is CognitiveEvent.Error ->
-                    "Error: ${event.message}"
-            }
-        }
+   
         .onCompletion {
 
             stateMachine.transitionTo(
