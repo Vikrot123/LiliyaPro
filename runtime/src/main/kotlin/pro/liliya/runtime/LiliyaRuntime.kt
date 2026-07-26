@@ -1,6 +1,9 @@
 package pro.liliya.runtime
 
+
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import pro.liliya.domain.models.CognitiveEvent
 import kotlinx.coroutines.flow.onCompletion
 import pro.liliya.core.cognition.CognitiveEngineImpl
 import pro.liliya.core.event.EventBusImpl
@@ -173,6 +176,7 @@ suspend fun stop() {
 
 
 
+
 suspend fun process(
     input: String
 ): Flow<String> {
@@ -187,18 +191,55 @@ suspend fun process(
         )
     )
 
-return cognitiveEngine.process(
-    input
-).onCompletion {
+    return cognitiveEngine.process(input)
+        .map { event ->
 
-    RuntimeStatusService.update(
-        RuntimeStatusMapper.map(
-            RuntimeState.READY
-        )
-    )
+            when (event) {
 
+                is CognitiveEvent.ThinkingStarted ->
+                    "Thinking started"
+
+                is CognitiveEvent.MemorySearching ->
+                    "Searching memory: ${event.query}"
+
+                is CognitiveEvent.MemoryFound ->
+                    "Memory found: ${event.count}"
+
+                is CognitiveEvent.ReasoningCompleted ->
+                    event.summary
+
+                is CognitiveEvent.PlanningCompleted ->
+                    "Plan: ${event.steps.joinToString()}"
+
+                CognitiveEvent.RespondingStarted ->
+                    "Generating response..."
+
+                is CognitiveEvent.ResponseChunk ->
+                    event.text
+
+                CognitiveEvent.Completed ->
+                    "Completed"
+
+                is CognitiveEvent.Error ->
+                    "Error: ${event.message}"
+            }
+        }
+        .onCompletion {
+
+            stateMachine.transitionTo(
+                RuntimeState.READY
+            )
+
+            RuntimeStatusService.update(
+                RuntimeStatusMapper.map(
+                    RuntimeState.READY
+                )
+            )
+        }
 }
-}
+
+
+
     suspend fun createEpisode(): Episode {
 
         val events =
