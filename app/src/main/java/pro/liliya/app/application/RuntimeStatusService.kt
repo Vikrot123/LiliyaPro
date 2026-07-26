@@ -1,18 +1,16 @@
 package pro.liliya.app.application
 
-import pro.liliya.domain.models.RuntimeState
+import kotlinx.coroutines.flow.StateFlow
+import pro.liliya.runtime.RuntimeStatus
+import pro.liliya.runtime.RuntimeStatusService as RuntimeService
 
 class RuntimeStatusService {
 
-    private val runtime =
-        AppContainer.runtime
+    fun status(): StateFlow<RuntimeStatus> {
+        return RuntimeService.status
+    }
 
-
-    fun currentState(): RuntimeState {
-
-        return runtime
-            .stateMachine()
-            .state()
-
+    fun currentState(): RuntimeStatus {
+        return RuntimeService.status.value
     }
 }

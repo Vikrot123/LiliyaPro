@@ -3,10 +3,17 @@ plugins {
 }
 
 dependencies {
+
     implementation(project(":domain"))
-    implementation(libs.kotlinx.coroutines.core)
+
+    implementation(
+        libs.kotlinx.coroutines.core
+    )
+
 }
 
 kotlin {
+
     jvmToolchain(17)
+
 }

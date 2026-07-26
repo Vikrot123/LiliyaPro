@@ -1,19 +1,30 @@
 package pro.liliya.app.chat
 
+
 import kotlinx.coroutines.flow.Flow
 import pro.liliya.app.application.ConversationService
 
-class ChatController {
 
-    private val conversationService = ConversationService()
+class ChatController(
+    private val conversationService: ConversationService
+) {
+
 
     suspend fun start() {
+
         conversationService.start()
+
     }
 
+
+
     suspend fun stop() {
+
         conversationService.stop()
+
     }
+
+
 
     fun welcomeMessage(): String {
 
@@ -25,17 +36,20 @@ LiliyaPro
 Когнитивное ядро готово.
 
 Введите сообщение ниже.
-""".trimIndent()
+        """.trimIndent()
 
     }
+
+
 
     suspend fun sendMessage(
         message: String
     ): Flow<String> {
 
-        return conversationService.sendMessage(
-            message
-        )
+
+        return conversationService
+            .sendMessage(message)
+
     }
 
 }
