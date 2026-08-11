@@ -54,28 +54,51 @@ class ModuleRegistry {
 
     fun startAll() {
 
+        validateDependencies()
+
         modules.forEach { module ->
 
             if (module.state == ModuleState.FAILED) {
-
                 logger.info(
                     LogConfig.SYSTEM_STOP,
                     "Skipping failed module: ${module.name}"
                 )
-
                 return@forEach
             }
 
             try {
-
                 module.start()
-
             } catch (e: Exception) {
-
                 exceptionHandler.handle(
                     module,
                     "start",
                     e
+                )
+            }
+        }
+    }
+
+    private fun validateDependencies() {
+
+        val moduleNames = modules.map {
+            it.name
+        }.toSet()
+
+        modules.forEach { module ->
+
+            val missing = module.descriptor.dependencies
+                .filter { dependency ->
+                    dependency !in moduleNames
+                }
+
+            if (missing.isNotEmpty()) {
+
+                exceptionHandler.handle(
+                    module,
+                    "dependency_check",
+                    RuntimeException(
+                        "Missing dependencies: $missing"
+                    )
                 )
             }
         }
