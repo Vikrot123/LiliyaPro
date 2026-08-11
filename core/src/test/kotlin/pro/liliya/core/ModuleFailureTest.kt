@@ -5,6 +5,7 @@ import pro.liliya.core.module.ModuleManager
 import pro.liliya.core.module.ModuleRegistry
 import pro.liliya.core.module.ModuleState
 import pro.liliya.core.module.ModuleProvider
+import pro.liliya.core.module.ModuleDescriptor
 
 
 class ModuleFailureTest {
@@ -62,29 +63,23 @@ class ModuleFailureTest {
 
 class CoreTestModule : pro.liliya.core.module.LiliyaModule {
 
+    override val descriptor = ModuleDescriptor(
+        name = "CORE_TEST_MODULE",
+        version = "0.3",
+        critical = true
+    )
 
-    override val name: String =
-        "CORE_TEST_MODULE"
-
-
-    override var state =
-        ModuleState.CREATED
-
+    override var state = ModuleState.CREATED
 
     override fun init() {
-
         state = ModuleState.INITIALIZED
     }
 
-
     override fun start() {
-
         state = ModuleState.RUNNING
     }
 
-
     override fun stop() {
-
         state = ModuleState.STOPPED
     }
 }

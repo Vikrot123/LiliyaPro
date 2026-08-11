@@ -3,16 +3,16 @@ package pro.liliya.core.module
 import pro.liliya.core.logging.LogConfig
 import pro.liliya.core.logging.LoggerFactory
 
-
 class CoreModule : LiliyaModule {
 
-
-    override val name: String = "CORE_MODULE"
-
+    override val descriptor = ModuleDescriptor(
+        name = "CORE_MODULE",
+        version = "0.3",
+        critical = true
+    )
 
     override var state: ModuleState =
         ModuleState.CREATED
-
 
     private val logger = LoggerFactory.create(
         module = "CORE",
@@ -20,9 +20,7 @@ class CoreModule : LiliyaModule {
         method = "lifecycle"
     )
 
-
     override fun init() {
-
         logger.info(
             LogConfig.MODULE_INIT,
             "Core module init"
@@ -31,9 +29,7 @@ class CoreModule : LiliyaModule {
         state = ModuleState.INITIALIZED
     }
 
-
     override fun start() {
-
         logger.info(
             LogConfig.MODULE_READY,
             "Core module started"
@@ -42,9 +38,7 @@ class CoreModule : LiliyaModule {
         state = ModuleState.RUNNING
     }
 
-
     override fun stop() {
-
         logger.info(
             LogConfig.SYSTEM_STOP,
             "Core module stopped"
