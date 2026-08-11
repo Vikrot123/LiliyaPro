@@ -11,6 +11,9 @@ class ModuleRegistry {
 
     private val exceptionHandler = ModuleExceptionHandler()
 
+    private val dependencyResolver =
+        ModuleDependencyResolver()
+
 
     private val logger = LoggerFactory.create(
         module = "CORE",
@@ -54,10 +57,10 @@ class ModuleRegistry {
 
     fun startAll() {
 
-        validateDependencies()
+        val orderedModules =
+            dependencyResolver.resolve(modules)
 
-        modules.forEach { module ->
-
+        orderedModules.forEach { module ->
             if (module.state == ModuleState.FAILED) {
                 logger.info(
                     LogConfig.SYSTEM_STOP,
@@ -73,32 +76,6 @@ class ModuleRegistry {
                     module,
                     "start",
                     e
-                )
-            }
-        }
-    }
-
-    private fun validateDependencies() {
-
-        val moduleNames = modules.map {
-            it.name
-        }.toSet()
-
-        modules.forEach { module ->
-
-            val missing = module.descriptor.dependencies
-                .filter { dependency ->
-                    dependency !in moduleNames
-                }
-
-            if (missing.isNotEmpty()) {
-
-                exceptionHandler.handle(
-                    module,
-                    "dependency_check",
-                    RuntimeException(
-                        "Missing dependencies: $missing"
-                    )
                 )
             }
         }
