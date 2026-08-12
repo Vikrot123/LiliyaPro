@@ -107,21 +107,32 @@ class ModuleRegistry {
 
             if (failedDependency != null) {
 
-                logger.error(
-                    LogConfig.MODULE_DEPENDENCY_FAILED,
-                    "Cannot start module: ${module.name}, dependency failed: ${failedDependency.name}"
-                )
+                  val error =
+                      IllegalStateException(
+                          "Dependency failed: ${failedDependency.name}"
+                      )
 
-                exceptionHandler.handle(
-                    module,
-                    "dependency",
-                    IllegalStateException(
-                        "Dependency failed: ${failedDependency.name}"
-                    )
-                )
+                  ModuleEventBus.publish(
+                      ModuleEvent.Failed(
+                          module.name,
+                          "dependency",
+                          error.message ?: "unknown"
+                      )
+                  )
 
-                return@forEach
-            }
+                  logger.error(
+                      LogConfig.MODULE_DEPENDENCY_FAILED,
+                      "Cannot start module: ${module.name}, dependency failed: ${failedDependency.name}"
+                  )
+
+                  exceptionHandler.handle(
+                      module,
+                      "dependency",
+                      error
+                  )
+
+                  return@forEach
+              }
 
               try {
                   module.start()
