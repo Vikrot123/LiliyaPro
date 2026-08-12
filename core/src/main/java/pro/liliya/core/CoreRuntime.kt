@@ -36,6 +36,14 @@ object CoreRuntime {
 
         runtimeState = CoreRuntimeState.STARTING
 
+        RuntimeEventBus.publish(
+            RuntimeEvent.SystemStart
+        )
+
+        RuntimeEventBus.publish(
+            RuntimeEvent.RuntimeStarting
+        )
+
         logger.info(
             LogConfig.SYSTEM_START,
             "Core runtime starting"
@@ -54,6 +62,10 @@ object CoreRuntime {
 
             runtimeState = CoreRuntimeState.RUNNING
 
+            RuntimeEventBus.publish(
+                RuntimeEvent.RuntimeReady
+            )
+
             logger.info(
                 LogConfig.MODULE_READY,
                 "Core runtime ready"
@@ -71,6 +83,12 @@ object CoreRuntime {
 
             moduleManager = null
             runtimeState = CoreRuntimeState.FAILED
+
+            RuntimeEventBus.publish(
+                RuntimeEvent.RuntimeFailed(
+                    error.message ?: "unknown"
+                )
+            )
 
             throw error
         }
@@ -95,6 +113,10 @@ object CoreRuntime {
 
         moduleManager = null
         runtimeState = CoreRuntimeState.STOPPED
+
+        RuntimeEventBus.publish(
+            RuntimeEvent.SystemStop
+        )
 
         logger.info(
             LogConfig.SYSTEM_STOP,
