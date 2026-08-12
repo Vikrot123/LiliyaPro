@@ -130,6 +130,14 @@ class ModuleRegistry {
                     ModuleEvent.Started(module.name)
                 )
               } catch (e: Exception) {
+                  ModuleEventBus.publish(
+                      ModuleEvent.Failed(
+                          module.name,
+                          "start",
+                          e.message ?: "unknown"
+                      )
+                  )
+
                   exceptionHandler.handle(
                       module,
                       "start",
