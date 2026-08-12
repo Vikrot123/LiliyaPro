@@ -1,6 +1,7 @@
 package pro.liliya.core
 
 import pro.liliya.core.logging.LogConfig
+import pro.liliya.core.logging.Logger
 import pro.liliya.core.logging.LoggerFactory
 import pro.liliya.core.module.CoreModuleProvider
 import pro.liliya.core.module.ModuleManager
@@ -13,20 +14,27 @@ object CoreRuntime {
     private var moduleProvider: pro.liliya.core.module.ModuleProvider =
         CoreModuleProvider()
 
-    private var started = false
+    private var runtimeState = CoreRuntimeState.STOPPED
 
-    private val logger: pro.liliya.core.logging.Logger
+    private val logger: Logger
         get() = LoggerFactory.create(
             module = "CORE",
             component = "CoreRuntime",
             method = "lifecycle"
         )
 
-    fun start() {
+    fun state(): CoreRuntimeState {
+        return runtimeState
+    }
 
-        if (started) {
+    fun start() {
+        if (runtimeState == CoreRuntimeState.RUNNING ||
+            runtimeState == CoreRuntimeState.STARTING
+        ) {
             return
         }
+
+        runtimeState = CoreRuntimeState.STARTING
 
         logger.info(
             LogConfig.SYSTEM_START,
@@ -44,15 +52,13 @@ object CoreRuntime {
             manager.loadModules()
             manager.startModules()
 
-            started = true
+            runtimeState = CoreRuntimeState.RUNNING
 
             logger.info(
                 LogConfig.MODULE_READY,
                 "Core runtime ready"
             )
-
         } catch (error: Exception) {
-
             logger.info(
                 LogConfig.ERROR_CAUGHT,
                 "Core runtime startup failed: ${error.message}"
@@ -64,14 +70,15 @@ object CoreRuntime {
             }
 
             moduleManager = null
-            started = false
+            runtimeState = CoreRuntimeState.FAILED
 
             throw error
         }
     }
 
-
-    internal fun setModuleProvider(provider: pro.liliya.core.module.ModuleProvider) {
+    internal fun setModuleProvider(
+        provider: pro.liliya.core.module.ModuleProvider
+    ) {
         moduleProvider = provider
     }
 
@@ -80,15 +87,14 @@ object CoreRuntime {
     }
 
     fun stop() {
-
-        if (!started) {
+        if (runtimeState != CoreRuntimeState.RUNNING) {
             return
         }
 
         moduleManager?.stopModules()
 
         moduleManager = null
-        started = false
+        runtimeState = CoreRuntimeState.STOPPED
 
         logger.info(
             LogConfig.SYSTEM_STOP,
