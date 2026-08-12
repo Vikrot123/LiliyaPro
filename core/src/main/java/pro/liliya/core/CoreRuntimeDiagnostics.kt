@@ -1,11 +1,11 @@
 package pro.liliya.core
 
-class CoreRuntimeDiagnostics {
+class CoreRuntimeDiagnostics(
+    private val source: CoreDiagnosticSource = CoreDiagnosticProvider()
+) {
 
     private val diagnostics =
-        CoreDiagnostics(
-            CoreDiagnosticProvider()
-        )
+        CoreDiagnostics(source)
 
     fun snapshot(): CoreDiagnosticSnapshot {
         return diagnostics.snapshot()

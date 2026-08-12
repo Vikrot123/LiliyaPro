@@ -1,8 +1,12 @@
 package pro.liliya.core
 
-class CoreDiagnosticProvider : CoreDiagnosticSource {
+class CoreDiagnosticProvider(
+    private val stateProvider: () -> CoreDiagnosticSnapshot = {
+        CoreRuntime.snapshot()
+    }
+) : CoreDiagnosticSource {
 
     override fun snapshot(): CoreDiagnosticSnapshot {
-        return CoreRuntime.snapshot()
+        return stateProvider()
     }
 }

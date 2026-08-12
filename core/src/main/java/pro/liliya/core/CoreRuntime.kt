@@ -23,6 +23,20 @@ object CoreRuntime {
 
     private val diagnosticEventBus = context.diagnosticEventBus
 
+    private val diagnosticService =
+        CoreRuntimeDiagnosticService(
+            CoreRuntimeDiagnostics(
+                CoreDiagnosticProvider {
+                    CoreDiagnosticSnapshot(
+                        runtimeState = runtimeState,
+                        moduleStates = moduleManager?.getModuleStates()
+                            ?: emptyMap(),
+                        failureReason = lastFailureReason
+                    )
+                }
+            )
+        )
+
     private val logger: Logger
         get() = LoggerFactory.create(
             module = "CORE",
@@ -35,11 +49,7 @@ object CoreRuntime {
     }
 
     fun snapshot(): CoreDiagnosticSnapshot {
-        return CoreDiagnosticSnapshot(
-            runtimeState = runtimeState,
-            moduleStates = moduleManager?.getModuleStates() ?: emptyMap(),
-            failureReason = lastFailureReason
-        )
+        return diagnosticService.snapshot()
     }
 
 
