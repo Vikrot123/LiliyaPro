@@ -25,6 +25,12 @@ class ModuleRegistry {
     fun register(
         module: LiliyaModule
     ) {
+        if (modules.any { it.name == module.name }) {
+            throw IllegalStateException(
+                "Module already registered: ${module.name}"
+            )
+        }
+
         modules.add(module)
 
         ModuleEventBus.publish(
