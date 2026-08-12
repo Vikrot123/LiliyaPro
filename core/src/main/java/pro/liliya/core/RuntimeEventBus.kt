@@ -15,7 +15,10 @@ object RuntimeEventBus {
         event: RuntimeEvent
     ) {
         listeners.forEach { listener ->
-            listener(event)
+            try {
+                listener(event)
+            } catch (_: Exception) {
+            }
         }
     }
 
