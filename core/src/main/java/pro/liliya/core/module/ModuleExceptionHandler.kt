@@ -24,7 +24,7 @@ class ModuleExceptionHandler {
 
 
         logger.info(
-            LogConfig.SYSTEM_STOP,
+            LogConfig.ERROR_CAUGHT,
             "Module failed: ${module.name}, action=$action, error=${error.message}"
         )
     }

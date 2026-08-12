@@ -9,10 +9,7 @@ import pro.liliya.core.module.ModuleRegistry
 
 object CoreRuntime {
 
-    private val moduleManager = ModuleManager(
-        registry = ModuleRegistry(),
-        provider = CoreModuleProvider()
-    )
+    private var moduleManager: ModuleManager? = null
 
 
     private val logger = LoggerFactory.create(
@@ -23,18 +20,20 @@ object CoreRuntime {
 
 
     fun start() {
-
         logger.info(
             LogConfig.SYSTEM_START,
             "Core runtime starting"
         )
 
+        val manager = ModuleManager(
+            registry = ModuleRegistry(),
+            provider = CoreModuleProvider()
+        )
 
-        moduleManager.loadModules()
+        moduleManager = manager
 
-
-        moduleManager.startModules()
-
+        manager.loadModules()
+        manager.startModules()
 
         logger.info(
             LogConfig.MODULE_READY,
@@ -42,11 +41,9 @@ object CoreRuntime {
         )
     }
 
-
     fun stop() {
-
-        moduleManager.stopModules()
-
+        moduleManager?.stopModules()
+        moduleManager = null
 
         logger.info(
             LogConfig.SYSTEM_STOP,

@@ -39,6 +39,7 @@ class ModuleDependencyResolver {
                     LogConfig.MODULE_DEPENDENCY_CYCLE,
                     "Dependency cycle detected: ${module.name}"
                 )
+
                 throw IllegalStateException(
                     "Dependency cycle: ${module.name}"
                 )
@@ -48,18 +49,30 @@ class ModuleDependencyResolver {
 
             module.descriptor.dependencies.forEach { dependency ->
 
-                val dependencyModule =
-                    moduleMap[dependency]
-                        ?: throw IllegalStateException(
-                            "Missing dependency: $dependency"
-                        )
+                logger.info(
+                    LogConfig.MODULE_DEPENDENCY_CHECK,
+                    "Checking dependency: ${module.name} -> $dependency"
+                )
+
+                val dependencyModule = moduleMap[dependency]
+
+                if (dependencyModule == null) {
+
+                    logger.error(
+                        LogConfig.MODULE_DEPENDENCY_FAILED,
+                        "Missing dependency: ${module.name} -> $dependency"
+                    )
+
+                    throw IllegalStateException(
+                        "Missing dependency: $dependency"
+                    )
+                }
 
                 visit(dependencyModule)
             }
 
             visiting.remove(module.name)
             visited.add(module.name)
-
             result.add(module)
 
             logger.info(

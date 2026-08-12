@@ -3,17 +3,15 @@ package pro.liliya.core.module
 import pro.liliya.core.logging.LogConfig
 import pro.liliya.core.logging.LoggerFactory
 
-
 class ModuleRegistry {
-
 
     private val modules = mutableListOf<LiliyaModule>()
 
-    private val exceptionHandler = ModuleExceptionHandler()
+    private val exceptionHandler =
+        ModuleExceptionHandler()
 
     private val dependencyResolver =
         ModuleDependencyResolver()
-
 
     private val logger = LoggerFactory.create(
         module = "CORE",
@@ -21,11 +19,9 @@ class ModuleRegistry {
         method = "lifecycle"
     )
 
-
     fun register(
         module: LiliyaModule
     ) {
-
         modules.add(module)
 
         logger.info(
@@ -34,17 +30,21 @@ class ModuleRegistry {
         )
     }
 
-
     fun initAll() {
 
-        modules.forEach { module ->
+        val orderedModules =
+            dependencyResolver.resolve(modules)
+
+        logger.info(
+            LogConfig.MODULE_INIT,
+            "Module init order resolved: ${orderedModules.map { it.name }}"
+        )
+
+        orderedModules.forEach { module ->
 
             try {
-
                 module.init()
-
             } catch (e: Exception) {
-
                 exceptionHandler.handle(
                     module,
                     "init",
@@ -54,43 +54,100 @@ class ModuleRegistry {
         }
     }
 
-
     fun startAll() {
 
         val orderedModules =
             dependencyResolver.resolve(modules)
 
+        logger.info(
+            LogConfig.MODULE_INIT,
+            "Module start order resolved: ${orderedModules.map { it.name }}"
+        )
+
         orderedModules.forEach { module ->
+
             if (module.state == ModuleState.FAILED) {
+
                 logger.info(
                     LogConfig.SYSTEM_STOP,
                     "Skipping failed module: ${module.name}"
                 )
+
                 return@forEach
             }
 
-            try {
-                module.start()
-            } catch (e: Exception) {
+            val failedDependency =
+                module.descriptor.dependencies
+                    .mapNotNull { dependencyName ->
+                        modules.find { it.name == dependencyName }
+                    }
+                    .firstOrNull { dependency ->
+                        dependency.state == ModuleState.FAILED
+                    }
+
+            if (failedDependency != null) {
+
+                logger.error(
+                    LogConfig.MODULE_DEPENDENCY_FAILED,
+                    "Cannot start module: ${module.name}, dependency failed: ${failedDependency.name}"
+                )
+
                 exceptionHandler.handle(
                     module,
-                    "start",
-                    e
+                    "dependency",
+                    IllegalStateException(
+                        "Dependency failed: ${failedDependency.name}"
+                    )
                 )
+
+                return@forEach
             }
-        }
-    }
+
+              try {
+                  module.start()
+              } catch (e: Exception) {
+                  exceptionHandler.handle(
+                      module,
+                      "start",
+                      e
+                  )
+
+                  if (module.descriptor.critical) {
+                      logger.error(
+                          LogConfig.MODULE_DEPENDENCY_FAILED,
+                          "Critical module failed: ${module.name}. Aborting startup."
+                      )
+
+                      throw IllegalStateException(
+                          "Critical module failed: ${module.name}",
+                          e
+                      )
+                  }
+              }
+          }
+      }
 
     fun stopAll() {
 
-        modules.forEach { module ->
+        val orderedModules =
+            dependencyResolver.resolve(modules)
+                .asReversed()
+
+        logger.info(
+            LogConfig.SYSTEM_STOP,
+            "Module stop order resolved: ${orderedModules.map { it.name }}"
+        )
+
+        orderedModules.forEach { module ->
+            val wasFailed = module.state == ModuleState.FAILED
 
             try {
-
                 module.stop()
 
+                if (wasFailed) {
+                    module.state = ModuleState.FAILED
+                }
             } catch (e: Exception) {
-
                 exceptionHandler.handle(
                     module,
                     "stop",
@@ -100,11 +157,8 @@ class ModuleRegistry {
         }
     }
 
-
     fun getStates(): Map<String, ModuleState> {
-
         return modules.associate { module ->
-
             module.name to module.state
         }
     }
