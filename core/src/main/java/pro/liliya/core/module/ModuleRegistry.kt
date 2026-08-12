@@ -109,6 +109,14 @@ class ModuleRegistry {
 
     fun startAll() {
 
+        if (lifecycleState != RegistryState.INITIALIZED &&
+            lifecycleState != RegistryState.STOPPED
+        ) {
+            throw IllegalStateException(
+                "ModuleRegistry must be initialized before start"
+            )
+        }
+
         val orderedModules =
             dependencyResolver.resolve(modules)
 
