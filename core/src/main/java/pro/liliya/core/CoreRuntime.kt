@@ -6,6 +6,8 @@ import pro.liliya.core.logging.LoggerFactory
 import pro.liliya.core.module.CoreModuleProvider
 import pro.liliya.core.module.ModuleManager
 import pro.liliya.core.module.ModuleRegistry
+import pro.liliya.core.runtime.RuntimeService
+import pro.liliya.core.runtime.RuntimeServiceRegistry
 
 object CoreRuntime {
 
@@ -25,6 +27,7 @@ object CoreRuntime {
         emptyMap()
 
     private var moduleEventBridgeInstalled = false
+private var runtimeServiceRegistry = RuntimeServiceRegistry()
 
     private val diagnosticEventBus = context.diagnosticEventBus
 
@@ -55,6 +58,10 @@ object CoreRuntime {
 
     fun snapshot(): CoreDiagnosticSnapshot {
         return diagnosticService.snapshot()
+    }
+
+    fun registerRuntimeService(service: RuntimeService) {
+        runtimeServiceRegistry.register(service)
     }
 
 
@@ -126,6 +133,7 @@ object CoreRuntime {
 
             manager.loadModules()
             manager.startModules()
+            runtimeServiceRegistry.startAll()
 
             runtimeState = CoreRuntimeState.RUNNING
 
@@ -192,6 +200,9 @@ object CoreRuntime {
         if (runtimeState == CoreRuntimeState.STOPPED) {
             return
         }
+
+        runtimeServiceRegistry.stopAll()
+        runtimeServiceRegistry = RuntimeServiceRegistry()
 
         moduleManager?.stopModules()
 
