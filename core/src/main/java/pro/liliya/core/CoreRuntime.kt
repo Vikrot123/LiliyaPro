@@ -27,6 +27,14 @@ object CoreRuntime {
         return runtimeState
     }
 
+    fun snapshot(): CoreDiagnosticSnapshot {
+        return CoreDiagnosticSnapshot(
+            runtimeState = runtimeState,
+            moduleStates = moduleManager?.getModuleStates() ?: emptyMap()
+        )
+    }
+
+
     fun start() {
         if (runtimeState == CoreRuntimeState.RUNNING ||
             runtimeState == CoreRuntimeState.STARTING

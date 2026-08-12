@@ -74,6 +74,11 @@ class ModuleManager(
     }
 
 
+    fun getModuleStates(): Map<String, ModuleState> {
+        return registry.getStates()
+    }
+
+
     private fun logModuleStates() {
 
         logger.info(
