@@ -15,6 +15,7 @@ object CoreRuntime {
         CoreModuleProvider()
 
     private var runtimeState = CoreRuntimeState.STOPPED
+    private var lastFailureReason: String? = null
 
     private val logger: Logger
         get() = LoggerFactory.create(
@@ -30,7 +31,8 @@ object CoreRuntime {
     fun snapshot(): CoreDiagnosticSnapshot {
         return CoreDiagnosticSnapshot(
             runtimeState = runtimeState,
-            moduleStates = moduleManager?.getModuleStates() ?: emptyMap()
+            moduleStates = moduleManager?.getModuleStates() ?: emptyMap(),
+            failureReason = lastFailureReason
         )
     }
 
@@ -90,6 +92,7 @@ object CoreRuntime {
             }
 
             moduleManager = null
+            lastFailureReason = error.message ?: "unknown"
             runtimeState = CoreRuntimeState.FAILED
 
             RuntimeEventBus.publish(
