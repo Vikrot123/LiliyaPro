@@ -24,6 +24,8 @@ object CoreRuntime {
     private var lastModuleStates: Map<String, pro.liliya.core.module.ModuleState> =
         emptyMap()
 
+    private var moduleEventBridgeInstalled = false
+
     private val diagnosticEventBus = context.diagnosticEventBus
 
     private val diagnosticService =
@@ -68,6 +70,28 @@ object CoreRuntime {
         diagnosticEventBus.unregister(listener)
     }
 
+    private fun installModuleEventBridge() {
+
+        if (moduleEventBridgeInstalled) {
+            return
+        }
+
+        ModuleEventBus.subscribe { event ->
+
+            if (event is ModuleEvent.Failed) {
+
+                RuntimeEventBus.publish(
+                    RuntimeEvent.ModuleFailed(
+                        moduleName = event.moduleName,
+                        reason = "${event.moduleName}: ${event.phase}: ${event.reason}"
+                    )
+                )
+            }
+        }
+
+        moduleEventBridgeInstalled = true
+    }
+
     fun start() {
         if (runtimeState == CoreRuntimeState.RUNNING ||
             runtimeState == CoreRuntimeState.STARTING
@@ -94,6 +118,8 @@ object CoreRuntime {
             registry = ModuleRegistry(),
             provider = moduleProvider
         )
+
+        installModuleEventBridge()
 
         try {
             moduleManager = manager
