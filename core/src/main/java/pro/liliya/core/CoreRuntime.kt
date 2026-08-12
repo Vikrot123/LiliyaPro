@@ -170,8 +170,9 @@ object CoreRuntime {
         moduleManager?.stopModules()
 
         moduleManager = null
-        runtimeState = CoreRuntimeState.STOPPED
-        lastFailureReason = null
+          runtimeState = CoreRuntimeState.STOPPED
+          lastFailureReason = null
+          lastModuleStates = emptyMap()
 
         diagnosticEventBus.publish(
             CoreDiagnosticEvent(
