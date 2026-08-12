@@ -10,6 +10,8 @@ class ModuleRegistry {
 
     private val modules = mutableListOf<LiliyaModule>()
 
+    private var initialized = false
+
     private val exceptionHandler =
         ModuleExceptionHandler()
 
@@ -25,6 +27,12 @@ class ModuleRegistry {
     fun register(
         module: LiliyaModule
     ) {
+        if (initialized) {
+            throw IllegalStateException(
+                "Cannot register module after initialization: ${module.name}"
+            )
+        }
+
         if (modules.any { it.name == module.name }) {
             throw IllegalStateException(
                 "Module already registered: ${module.name}"
@@ -78,6 +86,8 @@ class ModuleRegistry {
                 )
             }
         }
+
+        initialized = true
     }
 
     fun startAll() {
