@@ -1,5 +1,8 @@
 package pro.liliya.core.module
 
+import pro.liliya.core.ModuleEvent
+import pro.liliya.core.ModuleEventBus
+
 import pro.liliya.core.logging.LogConfig
 import pro.liliya.core.logging.LoggerFactory
 
@@ -24,6 +27,10 @@ class ModuleRegistry {
     ) {
         modules.add(module)
 
+        ModuleEventBus.publish(
+            ModuleEvent.Loaded(module.name)
+        )
+
         logger.info(
             LogConfig.MODULE_INIT,
             "Registered module: ${module.name}"
@@ -44,6 +51,10 @@ class ModuleRegistry {
 
             try {
                 module.init()
+
+                ModuleEventBus.publish(
+                    ModuleEvent.Initialized(module.name)
+                )
             } catch (e: Exception) {
                 exceptionHandler.handle(
                     module,
@@ -105,6 +116,10 @@ class ModuleRegistry {
 
               try {
                   module.start()
+
+                ModuleEventBus.publish(
+                    ModuleEvent.Started(module.name)
+                )
               } catch (e: Exception) {
                   exceptionHandler.handle(
                       module,
@@ -143,6 +158,12 @@ class ModuleRegistry {
 
             try {
                 module.stop()
+
+                if (!wasFailed) {
+                    ModuleEventBus.publish(
+                        ModuleEvent.Stopped(module.name)
+                    )
+                }
 
                 if (wasFailed) {
                     module.state = ModuleState.FAILED
