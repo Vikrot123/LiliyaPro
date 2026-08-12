@@ -1,0 +1,57 @@
+package pro.liliya.core
+
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
+import pro.liliya.core.runtime.*
+
+class RuntimeServiceBootstrapContractTest {
+
+    @Test
+    fun bootstrapStartsServicesFromProvider() {
+
+        val service = TestRuntimeService()
+
+        val provider = object : RuntimeServiceProvider {
+            override fun provideServices(): List<RuntimeService> {
+                return listOf(service)
+            }
+        }
+
+        val registry = RuntimeServiceRegistry()
+
+        val bootstrap = RuntimeServiceBootstrap(
+            provider,
+            registry
+        )
+
+        bootstrap.start()
+
+        assertEquals(
+            RuntimeServiceState.RUNNING,
+            service.state
+        )
+
+        bootstrap.stop()
+
+        assertEquals(
+            RuntimeServiceState.STOPPED,
+            service.state
+        )
+    }
+
+
+    private class TestRuntimeService : RuntimeService {
+
+        override val name = "BOOTSTRAP_TEST_SERVICE"
+
+        override var state = RuntimeServiceState.CREATED
+
+        override fun start() {
+            state = RuntimeServiceState.RUNNING
+        }
+
+        override fun stop() {
+            state = RuntimeServiceState.STOPPED
+        }
+    }
+}

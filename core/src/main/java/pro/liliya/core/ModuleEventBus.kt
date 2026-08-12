@@ -14,8 +14,11 @@ object ModuleEventBus {
     fun publish(
         event: ModuleEvent
     ) {
-        listeners.forEach { listener ->
-            listener(event)
+        listeners.toList().forEach { listener ->
+            try {
+                listener(event)
+            } catch (_: Exception) {
+            }
         }
     }
 

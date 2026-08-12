@@ -8,6 +8,9 @@ import pro.liliya.core.module.ModuleManager
 import pro.liliya.core.module.ModuleRegistry
 import pro.liliya.core.runtime.RuntimeService
 import pro.liliya.core.runtime.RuntimeServiceRegistry
+import pro.liliya.core.runtime.RuntimeServiceProvider
+import pro.liliya.core.runtime.CoreRuntimeServiceProvider
+import pro.liliya.core.runtime.RuntimeServiceBootstrap
 
 object CoreRuntime {
 
@@ -27,7 +30,16 @@ object CoreRuntime {
         emptyMap()
 
     private var moduleEventBridgeInstalled = false
-private var runtimeServiceRegistry = RuntimeServiceRegistry()
+
+private var runtimeServiceBootstrap =
+    RuntimeServiceBootstrap(
+        CoreRuntimeServiceProvider(),
+        RuntimeServiceRegistry()
+    )
+
+
+    private var runtimeServiceProvider: RuntimeServiceProvider =
+        CoreRuntimeServiceProvider()
 
     private val diagnosticEventBus = context.diagnosticEventBus
 
@@ -61,8 +73,28 @@ private var runtimeServiceRegistry = RuntimeServiceRegistry()
     }
 
     fun registerRuntimeService(service: RuntimeService) {
-        runtimeServiceRegistry.register(service)
+        runtimeServiceBootstrap.register(service)
     }
+
+    internal fun setRuntimeServiceProvider(
+        provider: RuntimeServiceProvider
+    ) {
+        runtimeServiceProvider = provider
+        runtimeServiceBootstrap = RuntimeServiceBootstrap(
+            runtimeServiceProvider,
+            RuntimeServiceRegistry()
+        )
+    }
+
+    internal fun resetRuntimeServiceProvider() {
+        runtimeServiceProvider = CoreRuntimeServiceProvider()
+
+        runtimeServiceBootstrap = RuntimeServiceBootstrap(
+            runtimeServiceProvider,
+            RuntimeServiceRegistry()
+        )
+    }
+
 
 
     fun registerDiagnosticListener(
@@ -133,7 +165,8 @@ private var runtimeServiceRegistry = RuntimeServiceRegistry()
 
             manager.loadModules()
             manager.startModules()
-            runtimeServiceRegistry.startAll()
+
+            runtimeServiceBootstrap.start()
 
             runtimeState = CoreRuntimeState.RUNNING
 
@@ -201,8 +234,7 @@ private var runtimeServiceRegistry = RuntimeServiceRegistry()
             return
         }
 
-        runtimeServiceRegistry.stopAll()
-        runtimeServiceRegistry = RuntimeServiceRegistry()
+        runtimeServiceBootstrap.stop()
 
         moduleManager?.stopModules()
 
