@@ -10,7 +10,14 @@ class ModuleRegistry {
 
     private val modules = mutableListOf<LiliyaModule>()
 
-    private var initialized = false
+    private var lifecycleState = RegistryState.CREATED
+
+    private enum class RegistryState {
+        CREATED,
+        INITIALIZED,
+        RUNNING,
+        STOPPED
+    }
 
     private val exceptionHandler =
         ModuleExceptionHandler()
@@ -27,9 +34,11 @@ class ModuleRegistry {
     fun register(
         module: LiliyaModule
     ) {
-        if (initialized) {
+        if (lifecycleState == RegistryState.INITIALIZED ||
+            lifecycleState == RegistryState.RUNNING
+        ) {
             throw IllegalStateException(
-                "Cannot register module after initialization: ${module.name}"
+                "Cannot register module during active lifecycle: ${module.name}"
             )
         }
 
@@ -52,6 +61,14 @@ class ModuleRegistry {
     }
 
     fun initAll() {
+        if (lifecycleState == RegistryState.INITIALIZED ||
+            lifecycleState == RegistryState.RUNNING
+        ) {
+            throw IllegalStateException(
+                "ModuleRegistry is already initialized"
+            )
+        }
+
 
         val orderedModules =
             dependencyResolver.resolve(modules)
@@ -87,7 +104,7 @@ class ModuleRegistry {
             }
         }
 
-        initialized = true
+        lifecycleState = RegistryState.INITIALIZED
     }
 
     fun startAll() {
@@ -184,7 +201,8 @@ class ModuleRegistry {
                   }
               }
           }
-      }
+        lifecycleState = RegistryState.RUNNING
+    }
 
     fun stopAll() {
 
@@ -220,6 +238,8 @@ class ModuleRegistry {
                 )
             }
         }
+
+        lifecycleState = RegistryState.STOPPED
     }
 
     fun getStates(): Map<String, ModuleState> {
