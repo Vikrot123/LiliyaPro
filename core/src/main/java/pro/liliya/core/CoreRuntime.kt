@@ -15,7 +15,10 @@ object CoreRuntime {
         CoreModuleProvider()
 
     private var runtimeState = CoreRuntimeState.STOPPED
+
     private var lastFailureReason: String? = null
+
+    private val diagnosticEventBus = CoreDiagnosticEventBus()
 
     private val logger: Logger
         get() = LoggerFactory.create(
@@ -36,6 +39,18 @@ object CoreRuntime {
         )
     }
 
+
+    fun registerDiagnosticListener(
+        listener: CoreDiagnosticEventListener
+    ) {
+        diagnosticEventBus.register(listener)
+    }
+
+    fun unregisterDiagnosticListener(
+        listener: CoreDiagnosticEventListener
+    ) {
+        diagnosticEventBus.unregister(listener)
+    }
 
     fun start() {
         if (runtimeState == CoreRuntimeState.RUNNING ||
@@ -72,6 +87,13 @@ object CoreRuntime {
 
             runtimeState = CoreRuntimeState.RUNNING
 
+            diagnosticEventBus.publish(
+                CoreDiagnosticEvent(
+                    type = CoreDiagnosticEventType.RUNTIME_STARTED,
+                    snapshot = snapshot()
+                )
+            )
+
             RuntimeEventBus.publish(
                 RuntimeEvent.RuntimeReady
             )
@@ -95,6 +117,13 @@ object CoreRuntime {
             lastFailureReason = error.message ?: "unknown"
             runtimeState = CoreRuntimeState.FAILED
 
+            diagnosticEventBus.publish(
+                CoreDiagnosticEvent(
+                    type = CoreDiagnosticEventType.RUNTIME_FAILED,
+                    snapshot = snapshot()
+                )
+            )
+
             RuntimeEventBus.publish(
                 RuntimeEvent.RuntimeFailed(
                     error.message ?: "unknown"
@@ -116,7 +145,7 @@ object CoreRuntime {
     }
 
     fun stop() {
-        if (runtimeState != CoreRuntimeState.RUNNING) {
+        if (runtimeState == CoreRuntimeState.STOPPED) {
             return
         }
 
@@ -124,6 +153,14 @@ object CoreRuntime {
 
         moduleManager = null
         runtimeState = CoreRuntimeState.STOPPED
+        lastFailureReason = null
+
+        diagnosticEventBus.publish(
+            CoreDiagnosticEvent(
+                type = CoreDiagnosticEventType.RUNTIME_STOPPED,
+                snapshot = snapshot()
+            )
+        )
 
         RuntimeEventBus.publish(
             RuntimeEvent.SystemStop
