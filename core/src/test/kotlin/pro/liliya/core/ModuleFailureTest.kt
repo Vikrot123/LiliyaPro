@@ -23,7 +23,7 @@ class ModuleFailureTest {
             override fun provideModules() =
                 listOf(
                     CoreTestModule(),
-                    FailingModule()
+                    RollbackFailingModule()
                 )
         }
 
