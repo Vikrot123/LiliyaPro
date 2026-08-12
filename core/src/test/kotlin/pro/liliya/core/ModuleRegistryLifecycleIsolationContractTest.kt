@@ -1,6 +1,7 @@
 package pro.liliya.core
 
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 import pro.liliya.core.module.ModuleRegistry
 import pro.liliya.core.module.ModuleState
@@ -22,9 +23,13 @@ class ModuleRegistryLifecycleIsolationContractTest {
         registry.startAll()
         registry.stopAll()
 
-        registry.initAll()
-        registry.startAll()
-        registry.stopAll()
+        assertThrows(IllegalStateException::class.java) {
+            registry.initAll()
+        }
+
+        assertThrows(IllegalStateException::class.java) {
+            registry.startAll()
+        }
 
         val states = registry.getStates()
 
