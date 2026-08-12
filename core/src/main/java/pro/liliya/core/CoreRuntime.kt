@@ -21,6 +21,9 @@ object CoreRuntime {
 
     private var lastFailureReason: String? = null
 
+    private var lastModuleStates: Map<String, pro.liliya.core.module.ModuleState> =
+        emptyMap()
+
     private val diagnosticEventBus = context.diagnosticEventBus
 
     private val diagnosticService =
@@ -30,7 +33,7 @@ object CoreRuntime {
                     CoreDiagnosticSnapshot(
                         runtimeState = runtimeState,
                         moduleStates = moduleManager?.getModuleStates()
-                            ?: emptyMap(),
+                              ?: lastModuleStates,
                         failureReason = lastFailureReason
                     )
                 }
@@ -120,6 +123,8 @@ object CoreRuntime {
                 LogConfig.ERROR_CAUGHT,
                 "Core runtime startup failed: ${error.message}"
             )
+
+            lastModuleStates = manager.getModuleStates()
 
             try {
                 manager.stopModules()
