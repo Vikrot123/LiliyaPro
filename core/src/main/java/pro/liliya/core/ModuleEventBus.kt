@@ -1,0 +1,25 @@
+package pro.liliya.core
+
+object ModuleEventBus {
+
+    private val listeners =
+        mutableListOf<(ModuleEvent) -> Unit>()
+
+    fun subscribe(
+        listener: (ModuleEvent) -> Unit
+    ) {
+        listeners.add(listener)
+    }
+
+    fun publish(
+        event: ModuleEvent
+    ) {
+        listeners.forEach { listener ->
+            listener(event)
+        }
+    }
+
+    fun clear() {
+        listeners.clear()
+    }
+}
