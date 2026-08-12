@@ -16,7 +16,8 @@ class ModuleRegistry {
         CREATED,
         INITIALIZED,
         RUNNING,
-        STOPPED
+        STOPPED,
+        TERMINATED
     }
 
     private val exceptionHandler =
@@ -35,10 +36,12 @@ class ModuleRegistry {
         module: LiliyaModule
     ) {
         if (lifecycleState == RegistryState.INITIALIZED ||
-            lifecycleState == RegistryState.RUNNING
+            lifecycleState == RegistryState.RUNNING ||
+            lifecycleState == RegistryState.STOPPED ||
+            lifecycleState == RegistryState.TERMINATED
         ) {
             throw IllegalStateException(
-                "Cannot register module during active lifecycle: ${module.name}"
+                "Cannot register module during active or terminated lifecycle: ${module.name}"
             )
         }
 
@@ -62,7 +65,8 @@ class ModuleRegistry {
 
     fun initAll() {
         if (lifecycleState == RegistryState.INITIALIZED ||
-            lifecycleState == RegistryState.RUNNING
+            lifecycleState == RegistryState.RUNNING ||
+            lifecycleState == RegistryState.TERMINATED
         ) {
             throw IllegalStateException(
                 "ModuleRegistry is already initialized"
@@ -109,9 +113,7 @@ class ModuleRegistry {
 
     fun startAll() {
 
-        if (lifecycleState != RegistryState.INITIALIZED &&
-            lifecycleState != RegistryState.STOPPED
-        ) {
+        if (lifecycleState != RegistryState.INITIALIZED) {
             throw IllegalStateException(
                 "ModuleRegistry must be initialized before start"
             )
@@ -247,7 +249,7 @@ class ModuleRegistry {
             }
         }
 
-        lifecycleState = RegistryState.STOPPED
+        lifecycleState = RegistryState.TERMINATED
     }
 
     fun getStates(): Map<String, ModuleState> {
