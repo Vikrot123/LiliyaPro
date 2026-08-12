@@ -9,6 +9,9 @@ import pro.liliya.core.module.ModuleRegistry
 
 object CoreRuntime {
 
+    private val context = CoreRuntimeContext()
+
+
     private var moduleManager: ModuleManager? = null
 
     private var moduleProvider: pro.liliya.core.module.ModuleProvider =
@@ -18,7 +21,7 @@ object CoreRuntime {
 
     private var lastFailureReason: String? = null
 
-    private val diagnosticEventBus = CoreDiagnosticEventBus()
+    private val diagnosticEventBus = context.diagnosticEventBus
 
     private val logger: Logger
         get() = LoggerFactory.create(
