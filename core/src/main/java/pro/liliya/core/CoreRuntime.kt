@@ -16,10 +16,50 @@ import pro.liliya.core.runtime.monitor.RuntimeMonitor
 import pro.liliya.core.runtime.lifecycle.DefaultRuntimeLifecycleRecorder
 import pro.liliya.core.runtime.lifecycle.RuntimeLifecycleRecorder
 import pro.liliya.core.runtime.lifecycle.RuntimeLifecycleEvent
+import pro.liliya.core.runtime.observer.DefaultRuntimeObserverRegistry
+import pro.liliya.core.runtime.observer.RuntimeObserver
+import pro.liliya.core.runtime.observer.RuntimeObserverBridge
+import pro.liliya.core.runtime.telemetry.RuntimeTelemetryObserver
+import pro.liliya.core.runtime.health.RuntimeHealthProvider
+import pro.liliya.core.runtime.health.RuntimeHealthSnapshot
+import pro.liliya.core.runtime.health.RuntimeFailureTracker
+import pro.liliya.core.runtime.health.RuntimeRecoveryTracker
+import pro.liliya.core.runtime.health.RuntimeRecoverySnapshot
+import pro.liliya.core.runtime.health.RuntimeHealthReport
+import pro.liliya.core.runtime.health.RuntimeHealthReportProvider
+import pro.liliya.core.runtime.status.RuntimeStatusProvider
+import pro.liliya.core.runtime.status.RuntimeStatusSnapshot
+import pro.liliya.core.runtime.health.RuntimeFailureHealthSnapshot
+import pro.liliya.core.runtime.telemetry.RuntimeTelemetrySnapshot
 
 object CoreRuntime {
 
     private val context = CoreRuntimeContext()
+
+    private val runtimeObserverRegistry =
+        DefaultRuntimeObserverRegistry()
+
+    private val runtimeObserverBridge =
+        RuntimeObserverBridge(runtimeObserverRegistry)
+
+    private val runtimeTelemetryObserver =
+        RuntimeTelemetryObserver()
+
+    private val runtimeHealthProvider =
+        RuntimeHealthProvider()
+
+    private val runtimeFailureTracker =
+        RuntimeFailureTracker()
+
+    private val runtimeRecoveryTracker =
+        RuntimeRecoveryTracker()
+    private val runtimeHealthReportProvider =
+        RuntimeHealthReportProvider()
+    private val runtimeStatusProvider =
+        RuntimeStatusProvider()
+
+    private var runtimeObserverBridgeInstalled = false
+
 
 
     private var moduleManager: ModuleManager? = null
@@ -93,6 +133,7 @@ private var runtimeServiceBootstrap =
             runtimeServiceFailures = runtimeServiceBootstrap.getFailures(),
             runtimeServiceHealth = runtimeServiceBootstrap.getHealth(),
             runtimeRecoverySnapshot = runtimeServiceBootstrap.getRecoverySnapshot(),
+            runtimeStatusSnapshot = getRuntimeStatusSnapshot(),
             failureReason = lastFailureReason
         )
     }
@@ -142,6 +183,70 @@ private var runtimeServiceBootstrap =
         diagnosticEventBus.unregister(listener)
     }
 
+    fun registerRuntimeObserver(observer: RuntimeObserver) {
+        runtimeObserverRegistry.subscribe(observer)
+    }
+
+    fun unregisterRuntimeObserver(observer: RuntimeObserver) {
+        runtimeObserverRegistry.unsubscribe(observer)
+    }
+
+    fun getRuntimeTelemetrySnapshot():
+        RuntimeTelemetrySnapshot {
+        return runtimeTelemetryObserver.snapshot()
+    }
+
+    fun getRuntimeHealthSnapshot():
+            RuntimeHealthSnapshot {
+        return runtimeHealthProvider.createSnapshot(
+            state = runtimeState,
+            telemetry = runtimeTelemetryObserver.snapshot(),
+            failureReason = lastFailureReason
+        )
+    }
+
+    fun getRuntimeFailureHealthSnapshot():
+        RuntimeFailureHealthSnapshot {
+        return runtimeFailureTracker.snapshot()
+    }
+    
+    fun getRuntimeRecoverySnapshot():
+        RuntimeRecoverySnapshot {
+        return runtimeRecoveryTracker.snapshot()
+    }
+    
+    fun getRuntimeHealthReport(): RuntimeHealthReport {
+        return runtimeHealthReportProvider.createReport(
+            state = runtimeState,
+            telemetry = runtimeTelemetryObserver.snapshot(),
+            failure = runtimeFailureTracker.snapshot(),
+            recovery = runtimeRecoveryTracker.snapshot()
+        )
+    }
+    
+    fun getRuntimeStatusSnapshot(): RuntimeStatusSnapshot {
+        return runtimeStatusProvider.createStatus(
+            report = getRuntimeHealthReport()
+        )
+    }
+
+
+
+
+
+    private fun installRuntimeObserverBridge() {
+        if (runtimeObserverBridgeInstalled) {
+            return
+        }
+
+        runtimeObserverBridge.install()
+
+        runtimeObserverRegistry.subscribe(
+            runtimeTelemetryObserver
+        )
+        runtimeObserverBridgeInstalled = true
+    }
+
     private fun installModuleEventBridge() {
 
         if (ModuleEventBus.hasListeners()) {
@@ -150,6 +255,10 @@ private var runtimeServiceBootstrap =
 
         ModuleEventBus.subscribe { event ->
             if (event is ModuleEvent.Failed) {
+                runtimeFailureTracker.recordFailure(
+                    reason = "${event.phase}: ${event.reason}",
+                    module = event.moduleName
+                )
 
                 RuntimeEventBus.publish(
                     RuntimeEvent.ModuleFailed(
@@ -172,6 +281,11 @@ private var runtimeServiceBootstrap =
 
         runtimeState = CoreRuntimeState.STARTING
 
+        runtimeTelemetryObserver.reset()
+
+        installRuntimeObserverBridge()
+        installModuleEventBridge()
+
         RuntimeEventBus.publish(
             RuntimeEvent.SystemStart
         )
@@ -189,8 +303,6 @@ private var runtimeServiceBootstrap =
             registry = ModuleRegistry(),
             provider = moduleProvider
         )
-
-        installModuleEventBridge()
 
         try {
             moduleManager = manager
@@ -212,6 +324,8 @@ private var runtimeServiceBootstrap =
                     snapshot = snapshot()
                 )
             )
+
+            runtimeRecoveryTracker.markRecovered()
 
             RuntimeEventBus.publish(
                 RuntimeEvent.RuntimeReady
