@@ -11,6 +11,8 @@ import pro.liliya.core.runtime.RuntimeServiceRegistry
 import pro.liliya.core.runtime.RuntimeServiceProvider
 import pro.liliya.core.runtime.CoreRuntimeServiceProvider
 import pro.liliya.core.runtime.RuntimeServiceBootstrap
+import pro.liliya.core.runtime.monitor.DefaultRuntimeMonitor
+import pro.liliya.core.runtime.monitor.RuntimeMonitor
 
 object CoreRuntime {
 
@@ -59,6 +61,11 @@ private var runtimeServiceBootstrap =
             }
         )
 
+    private val runtimeMonitor: RuntimeMonitor =
+        DefaultRuntimeMonitor(
+            runtimeDiagnosticsService
+        )
+
     private val logger: Logger
         get() = LoggerFactory.create(
             module = "CORE",
@@ -85,6 +92,10 @@ private var runtimeServiceBootstrap =
 
     fun diagnostics(): CoreRuntimeDiagnosticsSnapshot {
         return runtimeDiagnosticsService.snapshot()
+    }
+
+    fun monitor(): pro.liliya.core.runtime.monitor.RuntimeMonitorSnapshot {
+        return runtimeMonitor.snapshot()
     }
 
     fun registerRuntimeService(service: RuntimeService) {
