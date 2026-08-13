@@ -35,6 +35,8 @@ import pro.liliya.core.runtime.action.RuntimeActionExecutor
 import pro.liliya.core.runtime.action.RuntimeActionResult
 import pro.liliya.core.runtime.audit.RuntimeActionAuditProvider
 import pro.liliya.core.runtime.audit.RuntimeActionAuditRecord
+import pro.liliya.core.runtime.policy.DefaultRuntimeActionPolicyEvaluator
+import pro.liliya.core.runtime.policy.RuntimeActionPolicyEvaluator
 import pro.liliya.core.runtime.action.RuntimeActionRequest
 import pro.liliya.core.runtime.dispatcher.HealthRuntimeActionHandler
 import pro.liliya.core.runtime.dispatcher.RuntimeActionHandlerRegistry
@@ -82,13 +84,17 @@ object CoreRuntime {
     private val runtimeActionAuditProvider =
         RuntimeActionAuditProvider()
 
+    private val runtimeActionPolicyEvaluator =
+        DefaultRuntimeActionPolicyEvaluator()
+
     private val runtimeActionHandlerRegistry =
         RuntimeActionHandlerRegistry()
 
     private val runtimeActionDispatcher =
         RuntimeActionDispatcher(
             runtimeActionHandlerRegistry,
-            runtimeActionAuditProvider
+            runtimeActionAuditProvider,
+            runtimeActionPolicyEvaluator
         )
 
     private var runtimeObserverBridgeInstalled = false
