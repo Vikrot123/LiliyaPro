@@ -4,6 +4,7 @@ import pro.liliya.core.module.ModuleState
 import pro.liliya.core.runtime.RuntimeServiceState
 import pro.liliya.core.runtime.RuntimeServiceFailure
 import pro.liliya.core.runtime.RuntimeServiceHealth
+import pro.liliya.core.runtime.RuntimeRecoverySnapshot
 
 data class CoreDiagnosticSnapshot(
     val runtimeState: CoreRuntimeState,
@@ -11,6 +12,7 @@ data class CoreDiagnosticSnapshot(
     val runtimeServiceStates: Map<String, RuntimeServiceState> = emptyMap(),
     val runtimeServiceFailures: List<RuntimeServiceFailure> = emptyList(),
     val runtimeServiceHealth: Map<String, RuntimeServiceHealth> = emptyMap(),
+    val runtimeRecoverySnapshot: RuntimeRecoverySnapshot? = null,
     val failureReason: String? = null
 ) {
 

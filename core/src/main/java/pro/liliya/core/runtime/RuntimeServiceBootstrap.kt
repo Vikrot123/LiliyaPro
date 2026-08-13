@@ -78,4 +78,8 @@ class RuntimeServiceBootstrap(
         return supervisor.getRestartCount(serviceName)
     }
 
+    fun getRecoverySnapshot(): RuntimeRecoverySnapshot {
+        return recoveryManager.snapshot()
+    }
+
 }

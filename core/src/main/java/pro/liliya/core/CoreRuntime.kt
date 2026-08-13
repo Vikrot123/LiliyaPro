@@ -54,7 +54,8 @@ private var runtimeServiceBootstrap =
                         runtimeServiceStates = runtimeServiceBootstrap.getStates(),
                         runtimeServiceFailures = runtimeServiceBootstrap.getFailures(),
                         runtimeServiceHealth = runtimeServiceBootstrap.getHealth(),
-                                            failureReason = lastFailureReason
+                        runtimeRecoverySnapshot = runtimeServiceBootstrap.getRecoverySnapshot(),
+                        failureReason = lastFailureReason
                     )
                 }
             )
