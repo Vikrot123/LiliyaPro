@@ -95,3 +95,78 @@ Create persistent project memory inside repository.
 
 Allow future development sessions to restore project context quickly.
 
+
+---
+
+# Foundation Phase: Logging Foundation
+
+## Starting point
+
+Разработка LiliyaPro Core Foundation началась с создания собственной системы логирования.
+
+Причина:
+
+Будущий автономный runtime должен иметь возможность наблюдать за собственным состоянием, событиями и ошибками.
+
+Без собственной системы наблюдения невозможно строить сложную модульную архитектуру.
+
+## Created foundation
+
+Первый инфраструктурный слой:
+
+- Logger abstraction
+- LiliyaLogger
+- LoggerFactory
+- LoggerProvider
+- LoggerContext
+- LogEvent
+- LogLevel
+- LogFormatter
+- FileLogWriter
+- LogInitializer
+- NoOpLogger
+
+## Architectural decision
+
+Логирование не является временным инструментом отладки.
+
+Оно является базовой инфраструктурой ядра.
+
+Все следующие подсистемы должны иметь возможность сообщать о своём состоянии через единый механизм.
+
+## Evolution path
+
+Архитектура развивалась следующим образом:
+
+Logging Foundation
+
+↓
+
+Diagnostics System
+
+↓
+
+Module System
+
+↓
+
+Runtime Lifecycle
+
+↓
+
+Runtime Services
+
+↓
+
+Capability Infrastructure
+
+↓
+
+Runtime Composition
+
+## Result
+
+Logging стал первым фундаментальным слоем Core Foundation.
+
+Он обеспечил основу для диагностики, наблюдения и дальнейшего развития runtime архитектуры.
+
