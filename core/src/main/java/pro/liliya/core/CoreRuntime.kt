@@ -12,6 +12,7 @@ import pro.liliya.core.runtime.RuntimeServiceProvider
 import pro.liliya.core.runtime.CoreRuntimeServiceProvider
 import pro.liliya.core.runtime.RuntimeServiceBootstrap
 import pro.liliya.core.runtime.monitor.DefaultRuntimeMonitor
+import pro.liliya.core.runtime.composition.DefaultRuntimeComposition
 import pro.liliya.core.runtime.monitor.RuntimeMonitor
 import pro.liliya.core.runtime.lifecycle.DefaultRuntimeLifecycleRecorder
 import pro.liliya.core.runtime.lifecycle.RuntimeLifecycleRecorder
@@ -52,11 +53,14 @@ object CoreRuntime {
 
     private val context = CoreRuntimeContext()
 
+    private val runtimeComposition =
+        DefaultRuntimeComposition()
+
     private val runtimeObserverRegistry =
-        DefaultRuntimeObserverRegistry()
+        runtimeComposition.observerRegistry()
 
     private val runtimeObserverBridge =
-        RuntimeObserverBridge(runtimeObserverRegistry)
+        runtimeComposition.observerBridge()
 
     private val runtimeTelemetryObserver =
         RuntimeTelemetryObserver()
@@ -85,7 +89,7 @@ object CoreRuntime {
         RuntimeActionAuditProvider()
 
     private val runtimeActionPolicyEvaluator =
-        DefaultRuntimeActionPolicyEvaluator()
+        runtimeComposition.actionPolicyEvaluator()
 
     private val runtimeActionHandlerRegistry =
         RuntimeActionHandlerRegistry()
@@ -144,7 +148,7 @@ private var runtimeServiceBootstrap =
         )
 
     private val runtimeLifecycleRecorder: RuntimeLifecycleRecorder =
-        DefaultRuntimeLifecycleRecorder()
+        runtimeComposition.lifecycleRecorder()
 
     private val runtimeMonitor: RuntimeMonitor =
         DefaultRuntimeMonitor(
