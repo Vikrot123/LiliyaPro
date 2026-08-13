@@ -30,6 +30,8 @@ import pro.liliya.core.runtime.health.RuntimeHealthReportProvider
 import pro.liliya.core.runtime.status.RuntimeStatusProvider
 import pro.liliya.core.runtime.status.RuntimeStatusSnapshot
 import pro.liliya.core.runtime.control.RuntimeControlResult
+import pro.liliya.core.runtime.history.RuntimeCommandRecord
+import pro.liliya.core.runtime.history.RuntimeCommandHistoryProvider
 import pro.liliya.core.runtime.control.RuntimeCommand
 import pro.liliya.core.runtime.control.DefaultRuntimeControl
 import pro.liliya.core.runtime.control.RuntimeControlRegistry
@@ -59,12 +61,14 @@ object CoreRuntime {
         RuntimeRecoveryTracker()
     private val runtimeHealthReportProvider =
         RuntimeHealthReportProvider()
-    private val runtimeStatusProvider =
+        private val runtimeStatusProvider =
         RuntimeStatusProvider()
 
-      
-      private val runtimeControlRegistry =
-          RuntimeControlRegistry()
+    private val runtimeControlRegistry =
+        RuntimeControlRegistry()
+
+    private val runtimeCommandHistory =
+        RuntimeCommandHistoryProvider()
 
     private var runtimeObserverBridgeInstalled = false
 
@@ -239,6 +243,11 @@ private var runtimeServiceBootstrap =
     }
 
 
+
+    fun getRuntimeCommandHistory(): List<RuntimeCommandRecord> {
+        return runtimeCommandHistory.snapshot()
+    }
+
     fun executeRuntimeCommand(
         command: RuntimeCommand
     ): RuntimeControlResult {
@@ -246,7 +255,7 @@ private var runtimeServiceBootstrap =
             DefaultRuntimeControl::class.java
         )
 
-        return control?.execute(command)
+        val result = control?.execute(command)
             ?: RuntimeControlResult(
                 command = command,
                 success = false,
@@ -255,6 +264,18 @@ private var runtimeServiceBootstrap =
                 status = getRuntimeStatusSnapshot(),
                 message = "Runtime control is not available"
             )
+
+        runtimeCommandHistory.record(
+            RuntimeCommandRecord(
+                command = result.command,
+                success = result.success,
+                previousState = result.previousState,
+                currentState = result.currentState,
+                message = result.message
+            )
+        )
+
+        return result
     }
 
 
