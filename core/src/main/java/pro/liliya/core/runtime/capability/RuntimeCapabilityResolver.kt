@@ -3,53 +3,49 @@ package pro.liliya.core.runtime.capability
 import pro.liliya.core.runtime.authority.RuntimeAuthorityLevel
 import pro.liliya.core.runtime.control.RuntimeCommand
 
-class RuntimeCapabilityResolver {
+class RuntimeCapabilityResolver(
+    private val registry: RuntimeCapabilityRegistry =
+        DefaultRuntimeCapabilityRegistry()
+) {
 
     fun resolve(
         level: RuntimeAuthorityLevel,
         command: RuntimeCommand
     ): RuntimeCapability {
 
-        return when (level) {
+        val definition = registry.find(command)
 
+        if (definition == null) {
+            return RuntimeCapability(
+                command = command,
+                allowed = false,
+                description = "No capability registered"
+            )
+        }
+
+        val allowed = when (level) {
             RuntimeAuthorityLevel.INTERNAL ->
-                RuntimeCapability(
-                    command = command,
-                    allowed = true,
-                    description = "Internal runtime authority"
-                )
+                true
 
             RuntimeAuthorityLevel.SYSTEM ->
-                RuntimeCapability(
-                    command = command,
-                    allowed = true,
-                    description = "System runtime authority"
-                )
+                definition.minimumAuthority != RuntimeAuthorityLevel.INTERNAL
 
             RuntimeAuthorityLevel.USER ->
-                when (command) {
-
-                    RuntimeCommand.HEALTH_CHECK ->
-                        RuntimeCapability(
-                            command = command,
-                            allowed = true,
-                            description = "User health capability"
-                        )
-
-                    else ->
-                        RuntimeCapability(
-                            command = command,
-                            allowed = false,
-                            description = "User capability denied"
-                        )
-                }
+                definition.minimumAuthority == RuntimeAuthorityLevel.USER
 
             RuntimeAuthorityLevel.UNKNOWN ->
-                RuntimeCapability(
-                    command = command,
-                    allowed = false,
-                    description = "Unknown authority has no capabilities"
-                )
+                false
         }
+
+        return RuntimeCapability(
+            command = command,
+            allowed = allowed,
+            description =
+                if (allowed) {
+                    definition.description
+                } else {
+                    "Authority level insufficient for capability"
+                }
+        )
     }
 }
