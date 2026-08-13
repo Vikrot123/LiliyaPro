@@ -5,8 +5,16 @@ import pro.liliya.core.ModuleEventBus
 
 import pro.liliya.core.logging.LogConfig
 import pro.liliya.core.logging.LoggerFactory
+import pro.liliya.core.runtime.capability.DefaultRuntimeModuleCapabilityBinder
+import pro.liliya.core.runtime.module.DefaultRuntimeModuleCapabilityLifecycle
+import pro.liliya.core.runtime.module.RuntimeModuleCapabilityLifecycle
 
-class ModuleRegistry {
+class ModuleRegistry(
+    private val capabilityLifecycle: RuntimeModuleCapabilityLifecycle =
+        DefaultRuntimeModuleCapabilityLifecycle(
+            DefaultRuntimeModuleCapabilityBinder()
+        )
+) {
 
     private val modules = mutableListOf<LiliyaModule>()
 
@@ -86,6 +94,7 @@ class ModuleRegistry {
 
             try {
                 module.init()
+                capabilityLifecycle.onModuleInit(module)
 
                 ModuleEventBus.publish(
                     ModuleEvent.Initialized(module.name)
@@ -229,6 +238,7 @@ class ModuleRegistry {
             val wasFailed = module.state == ModuleState.FAILED
 
             try {
+                capabilityLifecycle.onModuleShutdown(module)
                 module.stop()
 
                 if (!wasFailed) {
