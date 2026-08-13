@@ -5,19 +5,18 @@ import pro.liliya.core.ModuleEventBus
 
 import pro.liliya.core.logging.LogConfig
 import pro.liliya.core.logging.LoggerFactory
-import pro.liliya.core.runtime.capability.DefaultRuntimeModuleCapabilityBinder
-import pro.liliya.core.runtime.capability.DefaultRuntimeCapabilityDiscoveryRegistry
-import pro.liliya.core.runtime.capability.DefaultRuntimeCapabilityDiscovery
+import pro.liliya.core.runtime.capability.DefaultRuntimeCapabilityInfrastructure
 import pro.liliya.core.runtime.module.DefaultRuntimeModuleCapabilityLifecycle
 import pro.liliya.core.runtime.module.RuntimeModuleCapabilityLifecycle
 
 class ModuleRegistry(
+    private val capabilityInfrastructure: DefaultRuntimeCapabilityInfrastructure =
+        DefaultRuntimeCapabilityInfrastructure(),
+
     private val capabilityLifecycle: RuntimeModuleCapabilityLifecycle =
         DefaultRuntimeModuleCapabilityLifecycle(
-            DefaultRuntimeModuleCapabilityBinder(),
-            DefaultRuntimeCapabilityDiscoveryRegistry().apply {
-                register(DefaultRuntimeCapabilityDiscovery())
-            }
+            capabilityInfrastructure.lifecycle(),
+            capabilityInfrastructure.discoveryRegistry()
         )
 ) {
 
