@@ -44,4 +44,8 @@ class RuntimeSupervisor(
     ): Int {
         return restartCounters[serviceName] ?: 0
     }
+
+    fun getRestartCounts(): Map<String, Int> {
+        return restartCounters.toMap()
+    }
 }

@@ -9,6 +9,9 @@ class RuntimeRecoveryManager(
 
     private var installed = false
 
+    private var lastRecoveredService: String? = null
+    private var lastRecoverySuccessful: Boolean? = null
+
     fun install() {
         if (installed) {
             return
@@ -18,12 +21,26 @@ class RuntimeRecoveryManager(
 
             if (event is RuntimeEvent.RuntimeServiceFailed) {
 
-                supervisor.recover(
+                val recovered =
+                    supervisor.recover(event.serviceName)
+
+                lastRecoveredService =
                     event.serviceName
-                )
+
+                lastRecoverySuccessful =
+                    recovered
             }
         }
 
         installed = true
+    }
+
+    fun snapshot(): RuntimeRecoverySnapshot {
+
+        return RuntimeRecoverySnapshot(
+            restartCounts = supervisor.getRestartCounts(),
+            lastRecoveredService = lastRecoveredService,
+            lastRecoverySuccessful = lastRecoverySuccessful
+        )
     }
 }
