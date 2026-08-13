@@ -51,4 +51,12 @@ class RuntimeServiceBootstrap(
         return registry.getStates()
     }
 
+    fun getFailures(): List<RuntimeServiceFailure> {
+        return registry.getFailures()
+    }
+
+    fun getHealth(): Map<String, RuntimeServiceHealth> {
+        return registry.getHealth()
+    }
+
 }

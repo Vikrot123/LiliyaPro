@@ -52,6 +52,8 @@ private var runtimeServiceBootstrap =
                         moduleStates = moduleManager?.getModuleStates()
                               ?: lastModuleStates,
                         runtimeServiceStates = runtimeServiceBootstrap.getStates(),
+                        runtimeServiceFailures = runtimeServiceBootstrap.getFailures(),
+                        runtimeServiceHealth = runtimeServiceBootstrap.getHealth(),
                                             failureReason = lastFailureReason
                     )
                 }

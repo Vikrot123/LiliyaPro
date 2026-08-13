@@ -17,5 +17,11 @@ sealed class RuntimeEvent {
         val reason: String
     ) : RuntimeEvent()
 
+    data class RuntimeServiceFailed(
+        val serviceName: String,
+        val reason: String,
+        val timestamp: Long = System.currentTimeMillis()
+    ) : RuntimeEvent()
+
     data object SystemStop : RuntimeEvent()
 }
