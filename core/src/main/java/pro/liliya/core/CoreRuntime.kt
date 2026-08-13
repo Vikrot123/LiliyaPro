@@ -29,6 +29,10 @@ import pro.liliya.core.runtime.health.RuntimeHealthReport
 import pro.liliya.core.runtime.health.RuntimeHealthReportProvider
 import pro.liliya.core.runtime.status.RuntimeStatusProvider
 import pro.liliya.core.runtime.status.RuntimeStatusSnapshot
+import pro.liliya.core.runtime.control.RuntimeControlResult
+import pro.liliya.core.runtime.control.RuntimeCommand
+import pro.liliya.core.runtime.control.DefaultRuntimeControl
+import pro.liliya.core.runtime.control.RuntimeControlRegistry
 import pro.liliya.core.runtime.health.RuntimeFailureHealthSnapshot
 import pro.liliya.core.runtime.telemetry.RuntimeTelemetrySnapshot
 
@@ -57,6 +61,10 @@ object CoreRuntime {
         RuntimeHealthReportProvider()
     private val runtimeStatusProvider =
         RuntimeStatusProvider()
+
+      
+      private val runtimeControlRegistry =
+          RuntimeControlRegistry()
 
     private var runtimeObserverBridgeInstalled = false
 
@@ -231,6 +239,25 @@ private var runtimeServiceBootstrap =
     }
 
 
+    fun executeRuntimeCommand(
+        command: RuntimeCommand
+    ): RuntimeControlResult {
+        val control = runtimeControlRegistry.get(
+            DefaultRuntimeControl::class.java
+        )
+
+        return control?.execute(command)
+            ?: RuntimeControlResult(
+                command = command,
+                success = false,
+                previousState = runtimeState,
+                currentState = runtimeState,
+                status = getRuntimeStatusSnapshot(),
+                message = "Runtime control is not available"
+            )
+    }
+
+
 
 
 
@@ -311,6 +338,10 @@ private var runtimeServiceBootstrap =
             manager.startModules()
 
             runtimeServiceBootstrap.start()
+
+            runtimeControlRegistry.register(
+                DefaultRuntimeControl()
+            )
 
             runtimeState = CoreRuntimeState.RUNNING
 
