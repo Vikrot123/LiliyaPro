@@ -15,6 +15,7 @@ import pro.liliya.core.runtime.monitor.DefaultRuntimeMonitor
 import pro.liliya.core.runtime.monitor.RuntimeMonitor
 import pro.liliya.core.runtime.lifecycle.DefaultRuntimeLifecycleRecorder
 import pro.liliya.core.runtime.lifecycle.RuntimeLifecycleRecorder
+import pro.liliya.core.runtime.lifecycle.RuntimeLifecycleEvent
 
 object CoreRuntime {
 
@@ -201,6 +202,10 @@ private var runtimeServiceBootstrap =
 
             runtimeState = CoreRuntimeState.RUNNING
 
+            runtimeLifecycleRecorder.record(
+                RuntimeLifecycleEvent.STARTED
+            )
+
             diagnosticEventBus.publish(
                 CoreDiagnosticEvent(
                     type = CoreDiagnosticEventType.RUNTIME_STARTED,
@@ -232,6 +237,11 @@ private var runtimeServiceBootstrap =
             moduleManager = null
             lastFailureReason = error.message ?: "unknown"
             runtimeState = CoreRuntimeState.FAILED
+
+            runtimeLifecycleRecorder.record(
+                RuntimeLifecycleEvent.FAILED,
+                lastFailureReason
+            )
 
             diagnosticEventBus.publish(
                 CoreDiagnosticEvent(
@@ -271,6 +281,10 @@ private var runtimeServiceBootstrap =
 
         moduleManager = null
           runtimeState = CoreRuntimeState.STOPPED
+
+        runtimeLifecycleRecorder.record(
+            RuntimeLifecycleEvent.STOPPED
+        )
           lastFailureReason = null
           lastModuleStates = emptyMap()
 
