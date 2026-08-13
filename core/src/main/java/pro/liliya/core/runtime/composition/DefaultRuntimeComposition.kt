@@ -1,5 +1,6 @@
 package pro.liliya.core.runtime.composition
 
+import pro.liliya.core.CoreRuntimeDiagnosticsService
 import pro.liliya.core.runtime.lifecycle.DefaultRuntimeLifecycleRecorder
 import pro.liliya.core.runtime.lifecycle.RuntimeLifecycleRecorder
 import pro.liliya.core.runtime.observer.DefaultRuntimeObserverRegistry
@@ -11,6 +12,8 @@ import pro.liliya.core.runtime.health.RuntimeFailureTracker
 import pro.liliya.core.runtime.health.RuntimeRecoveryTracker
 import pro.liliya.core.runtime.health.RuntimeHealthReportProvider
 import pro.liliya.core.runtime.status.RuntimeStatusProvider
+import pro.liliya.core.runtime.monitor.DefaultRuntimeMonitor
+import pro.liliya.core.runtime.monitor.RuntimeMonitor
 
 class DefaultRuntimeComposition : RuntimeComposition {
 
@@ -75,5 +78,16 @@ class DefaultRuntimeComposition : RuntimeComposition {
 
     override fun statusProvider(): RuntimeStatusProvider {
         return statusProvider
+    }
+
+    
+    override fun runtimeMonitor(
+        diagnosticsService: CoreRuntimeDiagnosticsService,
+        lifecycleRecorder: RuntimeLifecycleRecorder
+    ): RuntimeMonitor {
+        return DefaultRuntimeMonitor(
+            diagnosticsService,
+            lifecycleRecorder
+        )
     }
 }
