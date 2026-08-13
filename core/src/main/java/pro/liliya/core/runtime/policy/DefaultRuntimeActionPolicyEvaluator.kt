@@ -27,7 +27,9 @@ class DefaultRuntimeActionPolicyEvaluator(
                 reason = capability.description,
                 policyId = "capability-based-policy",
                 authoritySource = authority.source,
-                authorityLevel = authority.level
+                authorityLevel = authority.level,
+                    capabilityAllowed = capability.allowed,
+                    capabilityDescription = capability.description
             )
 
         } else {
@@ -37,7 +39,9 @@ class DefaultRuntimeActionPolicyEvaluator(
                 reason = capability.description,
                 policyId = "capability-denied",
                 authoritySource = authority.source,
-                authorityLevel = authority.level
+                authorityLevel = authority.level,
+                    capabilityAllowed = capability.allowed,
+                    capabilityDescription = capability.description
             )
         }
     }

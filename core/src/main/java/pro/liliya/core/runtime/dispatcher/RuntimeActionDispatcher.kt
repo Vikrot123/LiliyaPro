@@ -44,7 +44,9 @@ class RuntimeActionDispatcher(
                     policyId = policyResult.policyId,
                     policyDecision = policyResult.decision,
                             authoritySource = policyResult.authoritySource,
-                            authorityLevel = policyResult.authorityLevel
+                            authorityLevel = policyResult.authorityLevel,
+                    capabilityAllowed = policyResult.capabilityAllowed,
+                    capabilityDescription = policyResult.capabilityDescription
                 )
             )
 
@@ -67,7 +69,9 @@ class RuntimeActionDispatcher(
                     policyId = policyResult.policyId,
                     policyDecision = policyResult.decision,
                             authoritySource = policyResult.authoritySource,
-                            authorityLevel = policyResult.authorityLevel
+                            authorityLevel = policyResult.authorityLevel,
+                    capabilityAllowed = policyResult.capabilityAllowed,
+                    capabilityDescription = policyResult.capabilityDescription
                 )
             )
 
@@ -95,7 +99,9 @@ class RuntimeActionDispatcher(
 policyId = policyResult.policyId,
 policyDecision = policyResult.decision,
 authoritySource = policyResult.authoritySource,
-authorityLevel = policyResult.authorityLevel
+authorityLevel = policyResult.authorityLevel,
+                    capabilityAllowed = policyResult.capabilityAllowed,
+                    capabilityDescription = policyResult.capabilityDescription
             )
         )
 

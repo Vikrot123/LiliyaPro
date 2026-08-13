@@ -7,5 +7,7 @@ data class RuntimeActionPolicyResult(
     val reason: String,
     val policyId: String,
     val authoritySource: String? = null,
-    val authorityLevel: RuntimeAuthorityLevel? = null
+    val authorityLevel: RuntimeAuthorityLevel? = null,
+    val capabilityAllowed: Boolean? = null,
+    val capabilityDescription: String? = null
 )
