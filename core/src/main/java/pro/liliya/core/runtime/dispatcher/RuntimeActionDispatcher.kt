@@ -19,9 +19,9 @@ class RuntimeActionDispatcher(
         request: RuntimeActionRequest
     ): RuntimeActionResult {
 
-        val policyDecision = policyEvaluator.evaluate(request)
+        val policyResult = policyEvaluator.evaluate(request)
 
-        if (policyDecision == RuntimeActionPolicyDecision.DENY) {
+        if (policyResult.decision == RuntimeActionPolicyDecision.DENY) {
 
             val deniedResult = RuntimeActionResult(
                 request = request,
@@ -32,7 +32,7 @@ class RuntimeActionDispatcher(
                     previousState = CoreRuntime.getRuntimeState(),
                     currentState = CoreRuntime.getRuntimeState(),
                     status = CoreRuntime.getRuntimeStatusSnapshot(),
-                    message = "Action denied by runtime policy"
+                    message = policyResult.reason
                 )
             )
 
@@ -40,7 +40,9 @@ class RuntimeActionDispatcher(
                 RuntimeActionAuditRecord(
                     request = request,
                     success = false,
-                    message = deniedResult.controlResult.message
+                    message = deniedResult.controlResult.message,
+                    policyId = policyResult.policyId,
+                    policyDecision = policyResult.decision
                 )
             )
 
@@ -59,7 +61,9 @@ class RuntimeActionDispatcher(
                 RuntimeActionAuditRecord(
                     request = request,
                     success = result.success,
-                    message = result.controlResult.message
+                    message = result.controlResult.message,
+                    policyId = policyResult.policyId,
+                    policyDecision = policyResult.decision
                 )
             )
 

@@ -6,5 +6,5 @@ interface RuntimeActionPolicyEvaluator {
 
     fun evaluate(
         request: RuntimeActionRequest
-    ): RuntimeActionPolicyDecision
+    ): RuntimeActionPolicyResult
 }
