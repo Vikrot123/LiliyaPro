@@ -5,7 +5,11 @@ import pro.liliya.core.runtime.control.RuntimeCommand
 
 class RuntimeCapabilityResolver(
     private val registry: RuntimeCapabilityRegistry =
-        DefaultRuntimeCapabilityRegistry()
+        DefaultRuntimeCapabilityRegistry(),
+
+    private val authorityEvaluator:
+        RuntimeCapabilityAuthorityEvaluator =
+        DefaultRuntimeCapabilityAuthorityEvaluator()
 ) {
 
     fun resolve(
@@ -25,19 +29,10 @@ class RuntimeCapabilityResolver(
             )
         }
 
-        val allowed = when (level) {
-            RuntimeAuthorityLevel.INTERNAL ->
-                true
-
-            RuntimeAuthorityLevel.SYSTEM ->
-                definition.minimumAuthority != RuntimeAuthorityLevel.INTERNAL
-
-            RuntimeAuthorityLevel.USER ->
-                definition.minimumAuthority == RuntimeAuthorityLevel.USER
-
-            RuntimeAuthorityLevel.UNKNOWN ->
-                false
-        }
+        val allowed = authorityEvaluator.isAllowed(
+            actualAuthority = level,
+            requiredAuthority = definition.minimumAuthority
+        )
 
         return RuntimeCapability(
             command = command,
