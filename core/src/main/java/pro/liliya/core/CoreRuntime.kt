@@ -114,12 +114,11 @@ private var runtimeServiceBootstrap =
 
     private fun installModuleEventBridge() {
 
-        if (moduleEventBridgeInstalled) {
+        if (ModuleEventBus.hasListeners()) {
             return
         }
 
         ModuleEventBus.subscribe { event ->
-
             if (event is ModuleEvent.Failed) {
 
                 RuntimeEventBus.publish(

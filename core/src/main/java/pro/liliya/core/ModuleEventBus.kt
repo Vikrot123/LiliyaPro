@@ -25,4 +25,8 @@ object ModuleEventBus {
     fun clear() {
         listeners.clear()
     }
+
+    fun hasListeners(): Boolean {
+        return listeners.isNotEmpty()
+    }
 }

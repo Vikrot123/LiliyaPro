@@ -7,6 +7,11 @@ class RuntimeServiceBootstrap(
 
     private val registeredServices = mutableMapOf<String, RuntimeService>()
 
+    private val supervisor =
+        RuntimeSupervisor(
+        registryProvider = { registry }
+    )
+
     private var started = false
 
     fun register(service: RuntimeService) {
@@ -29,7 +34,7 @@ class RuntimeServiceBootstrap(
             registry.register(service)
         }
 
-        registry.startAll()
+        supervisor.start()
 
         started = true
     }
@@ -40,7 +45,7 @@ class RuntimeServiceBootstrap(
             return
         }
 
-        registry.stopAll()
+        supervisor.stop()
 
         registry = RuntimeServiceRegistry()
 
@@ -57,6 +62,15 @@ class RuntimeServiceBootstrap(
 
     fun getHealth(): Map<String, RuntimeServiceHealth> {
         return registry.getHealth()
+    }
+
+
+    fun recover(serviceName: String): Boolean {
+        return supervisor.recover(serviceName)
+    }
+
+    fun getRestartCount(serviceName: String): Int {
+        return supervisor.getRestartCount(serviceName)
     }
 
 }
