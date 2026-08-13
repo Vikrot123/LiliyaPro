@@ -9,5 +9,7 @@ data class RuntimeActionPolicyResult(
     val authoritySource: String? = null,
     val authorityLevel: RuntimeAuthorityLevel? = null,
     val capabilityAllowed: Boolean? = null,
-    val capabilityDescription: String? = null
+    val capabilityDescription: String? = null,
+    val requiredAuthority: RuntimeAuthorityLevel? = null,
+    val actualAuthority: RuntimeAuthorityLevel? = null
 )

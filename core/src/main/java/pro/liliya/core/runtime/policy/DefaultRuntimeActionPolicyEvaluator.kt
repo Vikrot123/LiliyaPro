@@ -29,7 +29,9 @@ class DefaultRuntimeActionPolicyEvaluator(
                 authoritySource = authority.source,
                 authorityLevel = authority.level,
                     capabilityAllowed = capability.allowed,
-                    capabilityDescription = capability.description
+                    capabilityDescription = capability.description,
+                    requiredAuthority = capability.requiredAuthority,
+                    actualAuthority = capability.actualAuthority
             )
 
         } else {
@@ -41,7 +43,9 @@ class DefaultRuntimeActionPolicyEvaluator(
                 authoritySource = authority.source,
                 authorityLevel = authority.level,
                     capabilityAllowed = capability.allowed,
-                    capabilityDescription = capability.description
+                    capabilityDescription = capability.description,
+                    requiredAuthority = capability.requiredAuthority,
+                    actualAuthority = capability.actualAuthority
             )
         }
     }

@@ -19,7 +19,9 @@ class RuntimeCapabilityResolver(
             return RuntimeCapability(
                 command = command,
                 allowed = false,
-                description = "No capability registered"
+                description = "No capability registered",
+                requiredAuthority = null,
+                actualAuthority = level
             )
         }
 
@@ -45,7 +47,9 @@ class RuntimeCapabilityResolver(
                     definition.description
                 } else {
                     "Authority level insufficient for capability"
-                }
+                },
+            requiredAuthority = definition.minimumAuthority,
+            actualAuthority = level
         )
     }
 }

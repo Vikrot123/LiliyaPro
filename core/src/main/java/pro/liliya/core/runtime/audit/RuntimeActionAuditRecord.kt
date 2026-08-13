@@ -14,5 +14,7 @@ data class RuntimeActionAuditRecord(
     val authorityLevel: RuntimeAuthorityLevel? = null,
     val capabilityAllowed: Boolean? = null,
     val capabilityDescription: String? = null,
+    val requiredAuthority: RuntimeAuthorityLevel? = null,
+    val actualAuthority: RuntimeAuthorityLevel? = null,
     val timestamp: Long = System.currentTimeMillis()
 )
