@@ -11,15 +11,22 @@ object RuntimeEventBus {
         listeners.add(listener)
     }
 
+    fun unsubscribe(
+        listener: (RuntimeEvent) -> Unit
+    ) {
+        listeners.remove(listener)
+    }
+
     fun publish(
         event: RuntimeEvent
     ) {
-        listeners.forEach { listener ->
-            try {
-                listener(event)
-            } catch (_: Exception) {
+        listeners.toList()
+            .forEach { listener ->
+                try {
+                    listener(event)
+                } catch (_: Exception) {
+                }
             }
-        }
     }
 
     fun clear() {

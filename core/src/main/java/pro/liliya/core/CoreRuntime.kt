@@ -514,6 +514,14 @@ private var runtimeServiceBootstrap =
             RuntimeEvent.SystemStop
         )
 
+        runtimeObserverBridge.uninstall()
+
+        runtimeObserverRegistry.unsubscribe(
+            runtimeTelemetryObserver
+        )
+
+        runtimeObserverBridgeInstalled = false
+
         logger.info(
             LogConfig.SYSTEM_STOP,
             "Core runtime stopped"
