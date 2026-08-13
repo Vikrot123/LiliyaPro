@@ -2,10 +2,12 @@ package pro.liliya.core.runtime.policy
 
 import pro.liliya.core.runtime.action.RuntimeActionRequest
 import pro.liliya.core.runtime.authority.RuntimeAuthorityLevel
-import pro.liliya.core.runtime.control.RuntimeCommand
+import pro.liliya.core.runtime.capability.RuntimeCapabilityResolver
 
-class DefaultRuntimeActionPolicyEvaluator :
-    RuntimeActionPolicyEvaluator {
+class DefaultRuntimeActionPolicyEvaluator(
+    private val capabilityResolver: RuntimeCapabilityResolver =
+        RuntimeCapabilityResolver()
+) : RuntimeActionPolicyEvaluator {
 
     override fun evaluate(
         request: RuntimeActionRequest
@@ -13,41 +15,30 @@ class DefaultRuntimeActionPolicyEvaluator :
 
         val authority = request.resolvedAuthority()
 
-        return when (request.command) {
+        val capability = capabilityResolver.resolve(
+            authority.level,
+            request.command
+        )
 
-            RuntimeCommand.HEALTH_CHECK -> {
-                when (authority.level) {
+        return if (capability.allowed) {
 
-                    RuntimeAuthorityLevel.INTERNAL,
-                    RuntimeAuthorityLevel.SYSTEM,
-                    RuntimeAuthorityLevel.USER ->
-                        RuntimeActionPolicyResult(
-                            decision = RuntimeActionPolicyDecision.ALLOW,
-                            reason = "Authority level permits health check",
-                            policyId = "health-check-authority",
-                            authoritySource = authority.source,
-                            authorityLevel = authority.level
-                        )
+            RuntimeActionPolicyResult(
+                decision = RuntimeActionPolicyDecision.ALLOW,
+                reason = capability.description,
+                policyId = "capability-based-policy",
+                authoritySource = authority.source,
+                authorityLevel = authority.level
+            )
 
-                    RuntimeAuthorityLevel.UNKNOWN ->
-                        RuntimeActionPolicyResult(
-                            decision = RuntimeActionPolicyDecision.DENY,
-                            reason = "Unknown authority cannot execute runtime action",
-                            policyId = "authority-required",
-                            authoritySource = authority.source,
-                            authorityLevel = authority.level
-                        )
-                }
-            }
+        } else {
 
-            else ->
-                RuntimeActionPolicyResult(
-                    decision = RuntimeActionPolicyDecision.DENY,
-                    reason = "Action requires explicit runtime authority",
-                    policyId = "default-deny",
-                    authoritySource = authority.source,
-                    authorityLevel = authority.level
-                )
+            RuntimeActionPolicyResult(
+                decision = RuntimeActionPolicyDecision.DENY,
+                reason = capability.description,
+                policyId = "capability-denied",
+                authoritySource = authority.source,
+                authorityLevel = authority.level
+            )
         }
     }
 }

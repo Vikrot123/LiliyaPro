@@ -9,10 +9,10 @@ import pro.liliya.core.runtime.authority.RuntimeAuthorityLevel
 import pro.liliya.core.runtime.control.RuntimeCommand
 import pro.liliya.core.runtime.policy.RuntimeActionPolicyDecision
 
-class CoreRuntimeActionPolicyAuditContractTest {
+class CoreRuntimeCapabilityPolicyContractTest {
 
     @Test
-    fun `runtime action audit contains policy decision metadata`() {
+    fun `runtime policy uses capability based evaluation`() {
 
         CoreRuntime.start()
 
@@ -20,10 +20,10 @@ class CoreRuntimeActionPolicyAuditContractTest {
             val result = CoreRuntime.dispatchRuntimeAction(
                 RuntimeActionRequest(
                     command = RuntimeCommand.HEALTH_CHECK,
-                    source = "policy-audit-test",
-                    reason = "verify policy metadata",
+                    source = "capability-policy-test",
+                    reason = "verify capability policy",
                     authority = RuntimeActionAuthorityContext(
-                        source = "policy-audit-test",
+                        source = "capability-policy-test",
                         level = RuntimeAuthorityLevel.USER
                     )
                 )
@@ -32,7 +32,6 @@ class CoreRuntimeActionPolicyAuditContractTest {
             assertTrue(result.success)
 
             val audit = CoreRuntime.getRuntimeActionAudit()
-
             assertTrue(audit.isNotEmpty())
 
             val record = audit.last()
