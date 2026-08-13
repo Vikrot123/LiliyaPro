@@ -31,6 +31,12 @@ import pro.liliya.core.runtime.status.RuntimeStatusProvider
 import pro.liliya.core.runtime.status.RuntimeStatusSnapshot
 import pro.liliya.core.runtime.control.RuntimeControlResult
 import pro.liliya.core.runtime.history.RuntimeCommandRecord
+import pro.liliya.core.runtime.action.RuntimeActionExecutor
+import pro.liliya.core.runtime.action.RuntimeActionResult
+import pro.liliya.core.runtime.action.RuntimeActionRequest
+import pro.liliya.core.runtime.dispatcher.HealthRuntimeActionHandler
+import pro.liliya.core.runtime.dispatcher.RuntimeActionHandlerRegistry
+import pro.liliya.core.runtime.dispatcher.RuntimeActionDispatcher
 import pro.liliya.core.runtime.history.RuntimeCommandHistoryProvider
 import pro.liliya.core.runtime.control.RuntimeCommand
 import pro.liliya.core.runtime.control.DefaultRuntimeControl
@@ -61,7 +67,8 @@ object CoreRuntime {
         RuntimeRecoveryTracker()
     private val runtimeHealthReportProvider =
         RuntimeHealthReportProvider()
-        private val runtimeStatusProvider =
+
+    private val runtimeStatusProvider =
         RuntimeStatusProvider()
 
     private val runtimeControlRegistry =
@@ -69,6 +76,14 @@ object CoreRuntime {
 
     private val runtimeCommandHistory =
         RuntimeCommandHistoryProvider()
+
+    private val runtimeActionHandlerRegistry =
+        RuntimeActionHandlerRegistry()
+
+    private val runtimeActionDispatcher =
+        RuntimeActionDispatcher(
+            runtimeActionHandlerRegistry
+        )
 
     private var runtimeObserverBridgeInstalled = false
 
@@ -248,6 +263,13 @@ private var runtimeServiceBootstrap =
         return runtimeCommandHistory.snapshot()
     }
 
+
+    fun dispatchRuntimeAction(
+        request: RuntimeActionRequest
+    ): RuntimeActionResult {
+        return runtimeActionDispatcher.dispatch(request)
+    }
+
     fun executeRuntimeCommand(
         command: RuntimeCommand
     ): RuntimeControlResult {
@@ -362,6 +384,12 @@ private var runtimeServiceBootstrap =
 
             runtimeControlRegistry.register(
                 DefaultRuntimeControl()
+            )
+
+            runtimeActionHandlerRegistry.register(
+                HealthRuntimeActionHandler(
+                    RuntimeActionExecutor()
+                )
             )
 
             runtimeState = CoreRuntimeState.RUNNING
