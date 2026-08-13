@@ -122,4 +122,37 @@ class RuntimeServiceRegistry {
 
     }
 
+
+    fun restart(serviceName: String) {
+
+        val service = services[serviceName]
+            ?: throw IllegalArgumentException(
+                "Runtime service not found: $serviceName"
+            )
+
+        service.stop()
+
+        try {
+            service.start()
+        } catch (error: Exception) {
+
+            val failure = RuntimeServiceFailure(
+                serviceName = service.name,
+                reason = error.message ?: "unknown"
+            )
+
+            failures.add(failure)
+            serviceFailures[service.name] = failure
+
+            RuntimeEventBus.publish(
+                RuntimeEvent.RuntimeServiceFailed(
+                    serviceName = service.name,
+                    reason = error.message ?: "unknown"
+                )
+            )
+
+            throw error
+        }
+    }
+
 }
