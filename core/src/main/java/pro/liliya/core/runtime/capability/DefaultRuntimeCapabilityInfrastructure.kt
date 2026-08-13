@@ -1,8 +1,7 @@
 package pro.liliya.core.runtime.capability
 
 class DefaultRuntimeCapabilityInfrastructure(
-    private val lifecycleManager: RuntimeCapabilityLifecycleManager =
-        DefaultRuntimeCapabilityLifecycleManager()
+    private val lifecycleManager: RuntimeCapabilityLifecycleManager
 ) : RuntimeCapabilityInfrastructure {
 
     private val binder =

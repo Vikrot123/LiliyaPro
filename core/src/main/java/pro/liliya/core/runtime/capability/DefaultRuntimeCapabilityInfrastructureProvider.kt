@@ -4,6 +4,12 @@ class DefaultRuntimeCapabilityInfrastructureProvider :
     RuntimeCapabilityInfrastructureProvider {
 
     override fun provide(): RuntimeCapabilityInfrastructure {
-        return DefaultRuntimeCapabilityInfrastructure()
+
+        val lifecycleManager =
+            DefaultRuntimeCapabilityLifecycleManager()
+
+        return DefaultRuntimeCapabilityInfrastructure(
+            lifecycleManager
+        )
     }
 }
