@@ -62,7 +62,7 @@ object CoreRuntime {
         runtimeComposition.observerBridge()
 
     private val runtimeTelemetryObserver =
-        RuntimeTelemetryObserver()
+        runtimeComposition.telemetryObserver()
 
     private val runtimeHealthProvider =
         runtimeComposition.healthProvider()
@@ -79,13 +79,13 @@ object CoreRuntime {
         runtimeComposition.statusProvider()
 
     private val runtimeControlRegistry =
-        RuntimeControlRegistry()
+        runtimeComposition.controlRegistry()
 
     private val runtimeCommandHistory =
-        RuntimeCommandHistoryProvider()
+        runtimeComposition.commandHistory()
 
     private val runtimeActionAuditProvider =
-        RuntimeActionAuditProvider()
+        runtimeComposition.actionAuditProvider()
 
     private val runtimeActionPolicyEvaluator =
         runtimeComposition.actionPolicyEvaluator()

@@ -14,6 +14,15 @@ import pro.liliya.core.runtime.health.RuntimeHealthReportProvider
 import pro.liliya.core.runtime.status.RuntimeStatusProvider
 import pro.liliya.core.runtime.monitor.DefaultRuntimeMonitor
 import pro.liliya.core.runtime.monitor.RuntimeMonitor
+import pro.liliya.core.runtime.telemetry.RuntimeTelemetryObserver
+import pro.liliya.core.runtime.control.RuntimeControlRegistry
+import pro.liliya.core.runtime.history.RuntimeCommandHistoryProvider
+import pro.liliya.core.runtime.audit.RuntimeActionAuditProvider
+import pro.liliya.core.runtime.dispatcher.RuntimeActionHandlerRegistry
+import pro.liliya.core.runtime.dispatcher.RuntimeActionDispatcher
+import pro.liliya.core.runtime.RuntimeServiceBootstrap
+import pro.liliya.core.runtime.CoreRuntimeServiceProvider
+import pro.liliya.core.runtime.RuntimeServiceRegistry
 
 class DefaultRuntimeComposition : RuntimeComposition {
 
@@ -43,6 +52,34 @@ class DefaultRuntimeComposition : RuntimeComposition {
 
     private val statusProvider =
         RuntimeStatusProvider()
+
+    private val telemetryObserver =
+        RuntimeTelemetryObserver()
+
+    private val controlRegistry =
+        RuntimeControlRegistry()
+
+    private val commandHistory =
+        RuntimeCommandHistoryProvider()
+
+    private val actionAuditProvider =
+        RuntimeActionAuditProvider()
+
+    private val actionHandlerRegistry =
+        RuntimeActionHandlerRegistry()
+
+    private val actionDispatcher =
+        RuntimeActionDispatcher(
+            actionHandlerRegistry,
+            actionAuditProvider,
+            actionPolicyEvaluator
+        )
+
+    private val serviceBootstrap =
+        RuntimeServiceBootstrap(
+            CoreRuntimeServiceProvider(),
+            RuntimeServiceRegistry()
+        )
 
     override fun observerRegistry(): DefaultRuntimeObserverRegistry {
         return observerRegistry
@@ -78,6 +115,34 @@ class DefaultRuntimeComposition : RuntimeComposition {
 
     override fun statusProvider(): RuntimeStatusProvider {
         return statusProvider
+    }
+
+    override fun telemetryObserver(): RuntimeTelemetryObserver {
+        return telemetryObserver
+    }
+
+    override fun controlRegistry(): RuntimeControlRegistry {
+        return controlRegistry
+    }
+
+    override fun commandHistory(): RuntimeCommandHistoryProvider {
+        return commandHistory
+    }
+
+    override fun actionAuditProvider(): RuntimeActionAuditProvider {
+        return actionAuditProvider
+    }
+
+    override fun actionHandlerRegistry(): RuntimeActionHandlerRegistry {
+        return actionHandlerRegistry
+    }
+
+    override fun actionDispatcher(): RuntimeActionDispatcher {
+        return actionDispatcher
+    }
+
+    override fun serviceBootstrap(): RuntimeServiceBootstrap {
+        return serviceBootstrap
     }
 
     
