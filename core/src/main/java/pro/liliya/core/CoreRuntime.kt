@@ -13,6 +13,8 @@ import pro.liliya.core.runtime.CoreRuntimeServiceProvider
 import pro.liliya.core.runtime.RuntimeServiceBootstrap
 import pro.liliya.core.runtime.monitor.DefaultRuntimeMonitor
 import pro.liliya.core.runtime.monitor.RuntimeMonitor
+import pro.liliya.core.runtime.lifecycle.DefaultRuntimeLifecycleRecorder
+import pro.liliya.core.runtime.lifecycle.RuntimeLifecycleRecorder
 
 object CoreRuntime {
 
@@ -61,9 +63,13 @@ private var runtimeServiceBootstrap =
             }
         )
 
+    private val runtimeLifecycleRecorder: RuntimeLifecycleRecorder =
+        DefaultRuntimeLifecycleRecorder()
+
     private val runtimeMonitor: RuntimeMonitor =
         DefaultRuntimeMonitor(
-            runtimeDiagnosticsService
+            runtimeDiagnosticsService,
+            runtimeLifecycleRecorder
         )
 
     private val logger: Logger

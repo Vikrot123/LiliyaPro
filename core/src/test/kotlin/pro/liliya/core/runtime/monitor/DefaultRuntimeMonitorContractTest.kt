@@ -9,6 +9,7 @@ import pro.liliya.core.CoreRuntimeDiagnosticsSnapshot
 import pro.liliya.core.CoreRuntimeState
 import pro.liliya.core.runtime.RuntimeServiceHealth
 import pro.liliya.core.runtime.RuntimeServiceState
+import pro.liliya.core.runtime.lifecycle.DefaultRuntimeLifecycleRecorder
 
 class DefaultRuntimeMonitorContractTest {
 
@@ -35,7 +36,10 @@ class DefaultRuntimeMonitorContractTest {
             }
         }
 
-        val monitor = DefaultRuntimeMonitor(diagnosticsService)
+        val monitor = DefaultRuntimeMonitor(
+            diagnosticsService,
+            DefaultRuntimeLifecycleRecorder()
+        )
 
         val result = monitor.snapshot()
 
@@ -70,7 +74,10 @@ class DefaultRuntimeMonitorContractTest {
             }
         }
 
-        val monitor = DefaultRuntimeMonitor(diagnosticsService)
+        val monitor = DefaultRuntimeMonitor(
+            diagnosticsService,
+            DefaultRuntimeLifecycleRecorder()
+        )
 
         val result = monitor.snapshot()
 
