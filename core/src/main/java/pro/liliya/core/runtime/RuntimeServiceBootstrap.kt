@@ -46,4 +46,9 @@ class RuntimeServiceBootstrap(
 
         started = false
     }
+    
+    fun getStates(): Map<String, RuntimeServiceState> {
+        return registry.getStates()
+    }
+
 }
