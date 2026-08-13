@@ -6,79 +6,90 @@ Project:
 LiliyaPro
 
 Current focus:
-Core Foundation only.
+Core Foundation architecture.
 
-This repository is currently developing the core runtime architecture.
-Do not switch focus to Android UI, APK, model integration, or other layers unless explicitly requested.
+The current phase is building a stable runtime foundation.
+
+Do not switch to:
+- UI development;
+- APK features;
+- model integration;
+- higher-level AI behavior;
+
+unless explicitly requested.
 
 ---
 
-## Session Recovery Rules
+## Session Start
 
-At the beginning of a new development session:
+Before making changes:
 
-1. Read:
-
-- PROJECT_STATE.md
-- CHANGELOG_CORE.md
-- DEVELOPMENT_LOG.md
-- AI_WORKFLOW.md
-
-2. Check repository state:
-
-Commands:
+1. Check repository state:
 
 git status
 
+2. Review recent development:
+
 git log --oneline -10
 
-3. Continue from the current architecture state.
+3. Inspect relevant commits if needed:
 
-Do not repeat already completed milestones.
+git show <commit>
 
----
+Continue from the current Git state.
 
-## Documentation Rules
-
-After completing an architectural milestone:
-
-Update:
-
-### PROJECT_STATE.md
-
-Contains:
-
-- current milestone
-- current architecture state
-- next planned direction
+Do not repeat completed work.
 
 ---
 
-### CHANGELOG_CORE.md
+## Architecture Rules
 
-Contains:
+CoreRuntime is a coordinator.
 
-- Core Foundation versions
-- commits
-- architecture changes
-- verification results
+CoreRuntime should not create infrastructure components directly.
+
+Preferred direction:
+
+CoreRuntime
+    |
+    v
+RuntimeComposition
+    |
+    v
+Infrastructure components
+
+New infrastructure should be owned by composition layers.
 
 ---
 
-### DEVELOPMENT_LOG.md
+## Development Rules
 
-Contains:
+Before adding a subsystem:
 
-- problem/context
-- architectural decision
-- implementation result
-- verification
+1. Define responsibility.
+2. Define ownership.
+3. Define lifecycle.
+4. Add observability.
+5. Explain architectural reason.
+
+Prefer:
+
+- small changes;
+- clear commits;
+- preserving Git history;
+- gradual architecture evolution.
+
+Avoid:
+
+- large undocumented refactoring;
+- adding features without purpose;
+- changing architecture direction without reason.
 
 ---
 
 ## Commit Rules
 
-Architecture commits use format:
+Architecture commits:
 
 Core Foundation vX.XX: description
 
@@ -86,42 +97,13 @@ Examples:
 
 Core Foundation v0.39: introduce runtime composition root
 
-Core Foundation v0.40: connect health and status through composition root
+Core Foundation v0.41: move runtime monitor creation into composition root
 
 ---
 
-## Architecture Principles
+## Verification
 
-Current direction:
-
-CoreRuntime is a runtime coordinator.
-
-Infrastructure creation should move into composition layer.
-
-Preferred architecture:
-
-CoreRuntime
-
-    |
-
-RuntimeComposition
-
-    |
-
-DefaultRuntimeComposition
-
-    |
-
-Runtime infrastructure components
-
-
-Avoid adding new direct infrastructure construction inside CoreRuntime.
-
----
-
-## Verification Rules
-
-Before committing:
+Before committing architectural changes:
 
 Run:
 
@@ -131,18 +113,15 @@ Commit only after successful verification.
 
 ---
 
-## Development Philosophy
+## Main Goal
 
-Prefer:
+Build a modular, observable and stable runtime foundation that can later support:
 
-- small architectural steps
-- clear commits
-- documented decisions
-- preserving history
+- memory systems;
+- AI capabilities;
+- personality layers;
+- adaptive runtime services.
 
-Avoid:
+Current priority:
 
-- large undocumented refactoring
-- repeating completed work
-- changing architecture direction without recording the decision
-
+Improve Core Foundation architecture before adding higher-level features.
