@@ -4,6 +4,8 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import pro.liliya.core.runtime.action.RuntimeActionRequest
+import pro.liliya.core.runtime.authority.RuntimeActionAuthorityContext
+import pro.liliya.core.runtime.authority.RuntimeAuthorityLevel
 import pro.liliya.core.runtime.control.RuntimeCommand
 import pro.liliya.core.runtime.policy.RuntimeActionPolicyDecision
 
@@ -19,7 +21,11 @@ class CoreRuntimeActionPolicyAuditContractTest {
                 RuntimeActionRequest(
                     command = RuntimeCommand.HEALTH_CHECK,
                     source = "policy-audit-test",
-                    reason = "verify policy metadata"
+                    reason = "verify policy metadata",
+                    authority = RuntimeActionAuthorityContext(
+                        source = "policy-audit-test",
+                        level = RuntimeAuthorityLevel.USER
+                    )
                 )
             )
 
@@ -32,7 +38,7 @@ class CoreRuntimeActionPolicyAuditContractTest {
             val record = audit.last()
 
             assertEquals(
-                "health-check-safe",
+                "health-check-authority",
                 record.policyId
             )
 

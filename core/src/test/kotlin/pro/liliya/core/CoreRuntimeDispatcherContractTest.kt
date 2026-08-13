@@ -3,6 +3,8 @@ package pro.liliya.core
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import pro.liliya.core.runtime.action.RuntimeActionRequest
+import pro.liliya.core.runtime.authority.RuntimeActionAuthorityContext
+import pro.liliya.core.runtime.authority.RuntimeAuthorityLevel
 import pro.liliya.core.runtime.control.RuntimeCommand
 
 class CoreRuntimeDispatcherContractTest {
@@ -17,7 +19,11 @@ class CoreRuntimeDispatcherContractTest {
                 RuntimeActionRequest(
                     command = RuntimeCommand.HEALTH_CHECK,
                     source = "dispatcher-test",
-                    reason = "verify dispatcher pipeline"
+                    reason = "verify dispatcher pipeline",
+authority = RuntimeActionAuthorityContext(
+    source = "dispatcher-test",
+    level = RuntimeAuthorityLevel.USER
+)
                 )
             )
 

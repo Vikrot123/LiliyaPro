@@ -4,6 +4,8 @@ import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import pro.liliya.core.runtime.action.RuntimeActionRequest
+import pro.liliya.core.runtime.authority.RuntimeActionAuthorityContext
+import pro.liliya.core.runtime.authority.RuntimeAuthorityLevel
 import pro.liliya.core.runtime.control.RuntimeCommand
 
 class CoreRuntimeActionPolicyContractTest {
@@ -18,7 +20,11 @@ class CoreRuntimeActionPolicyContractTest {
                 RuntimeActionRequest(
                     command = RuntimeCommand.HEALTH_CHECK,
                     source = "policy-test",
-                    reason = "verify allowed action"
+                    reason = "verify allowed action",
+authority = RuntimeActionAuthorityContext(
+    source = "policy-test",
+    level = RuntimeAuthorityLevel.USER
+)
                 )
             )
 

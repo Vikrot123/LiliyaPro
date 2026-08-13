@@ -3,6 +3,8 @@ package pro.liliya.core
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import pro.liliya.core.runtime.action.RuntimeActionRequest
+import pro.liliya.core.runtime.authority.RuntimeActionAuthorityContext
+import pro.liliya.core.runtime.authority.RuntimeAuthorityLevel
 import pro.liliya.core.runtime.control.RuntimeCommand
 
 class CoreRuntimeActionAuditContractTest {
@@ -17,7 +19,11 @@ class CoreRuntimeActionAuditContractTest {
                 RuntimeActionRequest(
                     command = RuntimeCommand.HEALTH_CHECK,
                     source = "audit-test",
-                    reason = "verify audit trail"
+                    reason = "verify audit trail",
+authority = RuntimeActionAuthorityContext(
+    source = "audit-test",
+    level = RuntimeAuthorityLevel.USER
+)
                 )
             )
 
