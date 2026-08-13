@@ -373,6 +373,7 @@ private var runtimeServiceBootstrap =
         runtimeState = CoreRuntimeState.STARTING
 
         runtimeTelemetryObserver.reset()
+        runtimeFailureTracker.clear()
 
         installRuntimeObserverBridge()
         installModuleEventBridge()
