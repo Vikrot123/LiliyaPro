@@ -43,22 +43,20 @@ private var runtimeServiceBootstrap =
 
     private val diagnosticEventBus = context.diagnosticEventBus
 
-    private val diagnosticService =
-        CoreRuntimeDiagnosticService(
-            CoreRuntimeDiagnostics(
-                CoreDiagnosticProvider {
-                    CoreDiagnosticSnapshot(
-                        runtimeState = runtimeState,
-                        moduleStates = moduleManager?.getModuleStates()
-                              ?: lastModuleStates,
-                        runtimeServiceStates = runtimeServiceBootstrap.getStates(),
-                        runtimeServiceFailures = runtimeServiceBootstrap.getFailures(),
-                        runtimeServiceHealth = runtimeServiceBootstrap.getHealth(),
-                        runtimeRecoverySnapshot = runtimeServiceBootstrap.getRecoverySnapshot(),
-                        failureReason = lastFailureReason
-                    )
-                }
-            )
+    private val runtimeDiagnosticsService =
+        DefaultCoreRuntimeDiagnosticsService(
+            CoreDiagnosticProvider {
+                CoreDiagnosticSnapshot(
+                    runtimeState = runtimeState,
+                    moduleStates = moduleManager?.getModuleStates()
+                        ?: lastModuleStates,
+                    runtimeServiceStates = runtimeServiceBootstrap.getStates(),
+                    runtimeServiceFailures = runtimeServiceBootstrap.getFailures(),
+                    runtimeServiceHealth = runtimeServiceBootstrap.getHealth(),
+                    runtimeRecoverySnapshot = runtimeServiceBootstrap.getRecoverySnapshot(),
+                    failureReason = lastFailureReason
+                )
+            }
         )
 
     private val logger: Logger
@@ -73,7 +71,20 @@ private var runtimeServiceBootstrap =
     }
 
     fun snapshot(): CoreDiagnosticSnapshot {
-        return diagnosticService.snapshot()
+        return CoreDiagnosticSnapshot(
+            runtimeState = runtimeState,
+            moduleStates = moduleManager?.getModuleStates()
+                ?: lastModuleStates,
+            runtimeServiceStates = runtimeServiceBootstrap.getStates(),
+            runtimeServiceFailures = runtimeServiceBootstrap.getFailures(),
+            runtimeServiceHealth = runtimeServiceBootstrap.getHealth(),
+            runtimeRecoverySnapshot = runtimeServiceBootstrap.getRecoverySnapshot(),
+            failureReason = lastFailureReason
+        )
+    }
+
+    fun diagnostics(): CoreRuntimeDiagnosticsSnapshot {
+        return runtimeDiagnosticsService.snapshot()
     }
 
     fun registerRuntimeService(service: RuntimeService) {
