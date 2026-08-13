@@ -263,6 +263,10 @@ private var runtimeServiceBootstrap =
         return runtimeCommandHistory.snapshot()
     }
 
+    fun getRuntimeState(): CoreRuntimeState {
+        return runtimeState
+    }
+
 
     fun dispatchRuntimeAction(
         request: RuntimeActionRequest
