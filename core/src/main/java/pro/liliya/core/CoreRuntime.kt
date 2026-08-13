@@ -66,18 +66,18 @@ object CoreRuntime {
         RuntimeTelemetryObserver()
 
     private val runtimeHealthProvider =
-        RuntimeHealthProvider()
+        runtimeComposition.healthProvider()
 
     private val runtimeFailureTracker =
-        RuntimeFailureTracker()
+        runtimeComposition.failureTracker()
 
     private val runtimeRecoveryTracker =
-        RuntimeRecoveryTracker()
+        runtimeComposition.recoveryTracker()
     private val runtimeHealthReportProvider =
-        RuntimeHealthReportProvider()
+        runtimeComposition.healthReportProvider()
 
     private val runtimeStatusProvider =
-        RuntimeStatusProvider()
+        runtimeComposition.statusProvider()
 
     private val runtimeControlRegistry =
         RuntimeControlRegistry()
