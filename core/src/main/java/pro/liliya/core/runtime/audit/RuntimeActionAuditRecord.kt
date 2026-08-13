@@ -1,6 +1,7 @@
 package pro.liliya.core.runtime.audit
 
 import pro.liliya.core.runtime.action.RuntimeActionRequest
+import pro.liliya.core.runtime.authority.RuntimeAuthorityLevel
 import pro.liliya.core.runtime.policy.RuntimeActionPolicyDecision
 
 data class RuntimeActionAuditRecord(
@@ -9,5 +10,7 @@ data class RuntimeActionAuditRecord(
     val message: String,
     val policyId: String? = null,
     val policyDecision: RuntimeActionPolicyDecision? = null,
+    val authoritySource: String? = null,
+    val authorityLevel: RuntimeAuthorityLevel? = null,
     val timestamp: Long = System.currentTimeMillis()
 )

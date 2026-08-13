@@ -42,7 +42,9 @@ class RuntimeActionDispatcher(
                     success = false,
                     message = deniedResult.controlResult.message,
                     policyId = policyResult.policyId,
-                    policyDecision = policyResult.decision
+                    policyDecision = policyResult.decision,
+                            authoritySource = policyResult.authoritySource,
+                            authorityLevel = policyResult.authorityLevel
                 )
             )
 
@@ -63,7 +65,9 @@ class RuntimeActionDispatcher(
                     success = result.success,
                     message = result.controlResult.message,
                     policyId = policyResult.policyId,
-                    policyDecision = policyResult.decision
+                    policyDecision = policyResult.decision,
+                            authoritySource = policyResult.authoritySource,
+                            authorityLevel = policyResult.authorityLevel
                 )
             )
 
@@ -87,7 +91,11 @@ class RuntimeActionDispatcher(
             RuntimeActionAuditRecord(
                 request = request,
                 success = false,
-                message = failureResult.controlResult.message
+                message = failureResult.controlResult.message,
+policyId = policyResult.policyId,
+policyDecision = policyResult.decision,
+authoritySource = policyResult.authoritySource,
+authorityLevel = policyResult.authorityLevel
             )
         )
 

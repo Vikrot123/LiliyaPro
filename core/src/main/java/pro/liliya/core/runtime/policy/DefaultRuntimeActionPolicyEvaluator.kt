@@ -24,14 +24,18 @@ class DefaultRuntimeActionPolicyEvaluator :
                         RuntimeActionPolicyResult(
                             decision = RuntimeActionPolicyDecision.ALLOW,
                             reason = "Authority level permits health check",
-                            policyId = "health-check-authority"
+                            policyId = "health-check-authority",
+                            authoritySource = authority.source,
+                            authorityLevel = authority.level
                         )
 
                     RuntimeAuthorityLevel.UNKNOWN ->
                         RuntimeActionPolicyResult(
                             decision = RuntimeActionPolicyDecision.DENY,
                             reason = "Unknown authority cannot execute runtime action",
-                            policyId = "authority-required"
+                            policyId = "authority-required",
+                            authoritySource = authority.source,
+                            authorityLevel = authority.level
                         )
                 }
             }
@@ -40,7 +44,9 @@ class DefaultRuntimeActionPolicyEvaluator :
                 RuntimeActionPolicyResult(
                     decision = RuntimeActionPolicyDecision.DENY,
                     reason = "Action requires explicit runtime authority",
-                    policyId = "default-deny"
+                    policyId = "default-deny",
+                    authoritySource = authority.source,
+                    authorityLevel = authority.level
                 )
         }
     }
