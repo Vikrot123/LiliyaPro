@@ -15,6 +15,10 @@ class DefaultRuntimeCapabilityInfrastructure(
             register(DefaultRuntimeCapabilityDiscovery())
         }
 
+    override fun lifecycleManager(): RuntimeCapabilityLifecycleManager {
+        return lifecycleManager
+    }
+
     override fun lifecycle(): RuntimeModuleCapabilityBinder {
         return binder
     }

@@ -3,8 +3,7 @@ package pro.liliya.core.runtime.capability
 import pro.liliya.core.runtime.control.RuntimeCommand
 
 class DefaultRuntimeModuleCapabilityBinder(
-    private val lifecycleManager: RuntimeCapabilityLifecycleManager =
-        DefaultRuntimeCapabilityLifecycleManager()
+    private val lifecycleManager: RuntimeCapabilityLifecycleManager
 ) : RuntimeModuleCapabilityBinder {
 
     override fun bind(
