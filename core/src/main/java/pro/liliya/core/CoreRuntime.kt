@@ -33,6 +33,8 @@ import pro.liliya.core.runtime.control.RuntimeControlResult
 import pro.liliya.core.runtime.history.RuntimeCommandRecord
 import pro.liliya.core.runtime.action.RuntimeActionExecutor
 import pro.liliya.core.runtime.action.RuntimeActionResult
+import pro.liliya.core.runtime.audit.RuntimeActionAuditProvider
+import pro.liliya.core.runtime.audit.RuntimeActionAuditRecord
 import pro.liliya.core.runtime.action.RuntimeActionRequest
 import pro.liliya.core.runtime.dispatcher.HealthRuntimeActionHandler
 import pro.liliya.core.runtime.dispatcher.RuntimeActionHandlerRegistry
@@ -77,12 +79,16 @@ object CoreRuntime {
     private val runtimeCommandHistory =
         RuntimeCommandHistoryProvider()
 
+    private val runtimeActionAuditProvider =
+        RuntimeActionAuditProvider()
+
     private val runtimeActionHandlerRegistry =
         RuntimeActionHandlerRegistry()
 
     private val runtimeActionDispatcher =
         RuntimeActionDispatcher(
-            runtimeActionHandlerRegistry
+            runtimeActionHandlerRegistry,
+            runtimeActionAuditProvider
         )
 
     private var runtimeObserverBridgeInstalled = false
@@ -262,6 +268,11 @@ private var runtimeServiceBootstrap =
     fun getRuntimeCommandHistory(): List<RuntimeCommandRecord> {
         return runtimeCommandHistory.snapshot()
     }
+
+    fun getRuntimeActionAudit(): List<RuntimeActionAuditRecord> {
+        return runtimeActionAuditProvider.snapshot()
+    }
+
 
     fun getRuntimeState(): CoreRuntimeState {
         return runtimeState
