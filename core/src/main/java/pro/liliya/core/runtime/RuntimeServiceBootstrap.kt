@@ -12,6 +12,9 @@ class RuntimeServiceBootstrap(
         registryProvider = { registry }
     )
 
+    private val recoveryManager =
+        RuntimeRecoveryManager(supervisor)
+
     private var started = false
 
     fun register(service: RuntimeService) {
@@ -33,6 +36,8 @@ class RuntimeServiceBootstrap(
         registeredServices.values.forEach { service ->
             registry.register(service)
         }
+
+        recoveryManager.install()
 
         supervisor.start()
 
