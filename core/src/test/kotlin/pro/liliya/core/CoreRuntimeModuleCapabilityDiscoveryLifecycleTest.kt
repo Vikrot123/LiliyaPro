@@ -45,9 +45,11 @@ class CoreRuntimeModuleCapabilityDiscoveryLifecycleTest {
 
     private val lifecycle =
         DefaultRuntimeModuleCapabilityLifecycle(
-            binder,
-            discovery
-        )
+        binder,
+        DefaultRuntimeCapabilityDiscoveryRegistry().apply {
+            register(discovery)
+        }
+    )
 
     private val module =
         object : LiliyaModule {

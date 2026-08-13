@@ -7,6 +7,8 @@ import pro.liliya.core.module.LiliyaModule
 import pro.liliya.core.module.ModuleDescriptor
 import pro.liliya.core.module.ModuleState
 import pro.liliya.core.runtime.authority.RuntimeAuthorityLevel
+import pro.liliya.core.runtime.capability.DefaultRuntimeCapabilityDiscovery
+import pro.liliya.core.runtime.capability.DefaultRuntimeCapabilityDiscoveryRegistry
 import pro.liliya.core.runtime.capability.DefaultRuntimeCapabilityLifecycleManager
 import pro.liliya.core.runtime.capability.DefaultRuntimeModuleCapabilityBinder
 import pro.liliya.core.runtime.capability.RuntimeCapabilityDefinition
@@ -25,7 +27,10 @@ class CoreRuntimeModuleCapabilityLifecycleTest {
         DefaultRuntimeModuleCapabilityLifecycle(
             DefaultRuntimeModuleCapabilityBinder(
                 lifecycleManager
-            )
+            ),
+            DefaultRuntimeCapabilityDiscoveryRegistry().apply {
+                register(DefaultRuntimeCapabilityDiscovery())
+            }
         )
 
     private val module =
