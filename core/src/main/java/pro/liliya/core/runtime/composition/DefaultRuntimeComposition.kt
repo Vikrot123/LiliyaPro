@@ -246,6 +246,14 @@ class DefaultRuntimeComposition : RuntimeComposition {
         runtimeStateHolder.setState(state)
     }
 
+    override fun failureReason(): String? {
+        return runtimeStateHolder.failureReason()
+    }
+
+    override fun setFailureReason(reason: String?) {
+        runtimeStateHolder.setFailureReason(reason)
+    }
+
     override fun moduleStates(): Map<String, ModuleState> {
         return runtimeStateHolder.moduleStates()
     }

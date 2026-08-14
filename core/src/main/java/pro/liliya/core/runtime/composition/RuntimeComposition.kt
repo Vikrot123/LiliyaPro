@@ -47,6 +47,8 @@ interface RuntimeComposition {
 
     fun runtimeState(): CoreRuntimeState
     fun setRuntimeState(state: CoreRuntimeState)
+    fun failureReason(): String?
+    fun setFailureReason(reason: String?)
 
     fun moduleStates(): Map<String, ModuleState>
     fun setModuleStates(states: Map<String, ModuleState>)

@@ -62,7 +62,7 @@ object CoreRuntime {
             runtimeServiceHealth = runtimeComposition.runtimeServiceHealth(),
             runtimeRecoverySnapshot = runtimeComposition.runtimeServiceRecoverySnapshot(),
             runtimeStatusSnapshot = getRuntimeStatusSnapshot(),
-            failureReason = runtimeComposition.runtimeStateHolder().failureReason()
+            failureReason = runtimeComposition.failureReason()
         )
     }
 
@@ -132,7 +132,7 @@ object CoreRuntime {
         return runtimeComposition.healthProvider().createSnapshot(
             state = runtimeComposition.runtimeState(),
             telemetry = runtimeComposition.telemetryObserver().snapshot(),
-            failureReason = runtimeComposition.runtimeStateHolder().failureReason()
+            failureReason = runtimeComposition.failureReason()
         )
     }
 
@@ -329,12 +329,12 @@ object CoreRuntime {
             }
 
             runtimeComposition.clearModuleRuntime()
-            runtimeComposition.runtimeStateHolder().setFailureReason(error.message ?: "unknown")
+            runtimeComposition.setFailureReason(error.message ?: "unknown")
             runtimeComposition.setRuntimeState(CoreRuntimeState.FAILED)
 
             runtimeComposition.lifecycleRecorder().record(
                 RuntimeLifecycleEvent.FAILED,
-                runtimeComposition.runtimeStateHolder().failureReason()
+                runtimeComposition.failureReason()
             )
 
             runtimeComposition.context().diagnosticEventBus.publish(
@@ -381,7 +381,7 @@ object CoreRuntime {
         runtimeComposition.lifecycleRecorder().record(
             RuntimeLifecycleEvent.STOPPED
         )
-          runtimeComposition.runtimeStateHolder().setFailureReason(null)
+          runtimeComposition.setFailureReason(null)
           runtimeComposition.setModuleStates(emptyMap())
 
         runtimeComposition.context().diagnosticEventBus.publish(
