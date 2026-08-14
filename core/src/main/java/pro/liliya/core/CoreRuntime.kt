@@ -129,7 +129,7 @@ object CoreRuntime {
 
     fun getRuntimeHealthSnapshot():
             RuntimeHealthSnapshot {
-        return runtimeComposition.healthProvider().createSnapshot(
+        return runtimeComposition.createHealthSnapshot(
             state = runtimeComposition.runtimeState(),
             telemetry = runtimeComposition.telemetryObserver().snapshot(),
             failureReason = runtimeComposition.failureReason()

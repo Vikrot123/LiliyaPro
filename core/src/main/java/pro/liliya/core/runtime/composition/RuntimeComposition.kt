@@ -36,6 +36,8 @@ import pro.liliya.core.runtime.RuntimeServiceState
 import pro.liliya.core.runtime.RuntimeServiceFailure
 import pro.liliya.core.runtime.RuntimeServiceHealth
 import pro.liliya.core.runtime.RuntimeRecoverySnapshot
+import pro.liliya.core.runtime.health.RuntimeHealthSnapshot
+import pro.liliya.core.runtime.telemetry.RuntimeTelemetrySnapshot
 
 interface RuntimeComposition {
 
@@ -98,6 +100,12 @@ interface RuntimeComposition {
     fun lifecycleRecorderHolder(): RuntimeLifecycleRecorderHolder
 
     fun healthProvider(): RuntimeHealthProvider
+    fun createHealthSnapshot(
+        state: CoreRuntimeState,
+        telemetry: RuntimeTelemetrySnapshot,
+        failureReason: String?
+    ): RuntimeHealthSnapshot
+
 
     fun failureTracker(): RuntimeFailureTracker
 

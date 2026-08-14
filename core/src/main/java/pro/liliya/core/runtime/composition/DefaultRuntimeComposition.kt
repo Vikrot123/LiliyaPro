@@ -50,6 +50,8 @@ import pro.liliya.core.runtime.RuntimeServiceState
 import pro.liliya.core.runtime.RuntimeServiceFailure
 import pro.liliya.core.runtime.RuntimeServiceHealth
 import pro.liliya.core.runtime.RuntimeRecoverySnapshot
+import pro.liliya.core.runtime.health.RuntimeHealthSnapshot
+import pro.liliya.core.runtime.telemetry.RuntimeTelemetrySnapshot
 import pro.liliya.core.runtime.RuntimeServiceProviderHolder
 import pro.liliya.core.runtime.CoreRuntimeServiceProvider
 import pro.liliya.core.runtime.RuntimeServiceRegistry
@@ -321,6 +323,18 @@ class DefaultRuntimeComposition : RuntimeComposition {
 
     override fun healthProvider(): RuntimeHealthProvider {
         return healthProvider
+    }
+
+    override fun createHealthSnapshot(
+        state: CoreRuntimeState,
+        telemetry: RuntimeTelemetrySnapshot,
+        failureReason: String?
+    ): RuntimeHealthSnapshot {
+        return healthProvider.createSnapshot(
+            state = state,
+            telemetry = telemetry,
+            failureReason = failureReason
+        )
     }
 
     override fun failureTracker(): RuntimeFailureTracker {
