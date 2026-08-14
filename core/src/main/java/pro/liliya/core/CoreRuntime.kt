@@ -54,9 +54,6 @@ object CoreRuntime {
 
     private val runtimeRecoveryTracker =
         runtimeComposition.recoveryTracker()
-    private val runtimeStatusProvider =
-        runtimeComposition.statusProvider()
-
     private val runtimeCommandHistory =
         runtimeComposition.commandHistory()
 
@@ -207,7 +204,7 @@ private val runtimeServiceProviderHolder =
     }
     
     fun getRuntimeStatusSnapshot(): RuntimeStatusSnapshot {
-        return runtimeStatusProvider.createStatus(
+        return runtimeComposition.statusProvider().createStatus(
             report = getRuntimeHealthReport()
         )
     }
