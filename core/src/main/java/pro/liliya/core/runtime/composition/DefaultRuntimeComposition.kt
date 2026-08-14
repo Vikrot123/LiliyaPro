@@ -16,6 +16,14 @@ import pro.liliya.core.runtime.monitor.DefaultRuntimeMonitor
 import pro.liliya.core.runtime.monitor.RuntimeMonitor
 import pro.liliya.core.runtime.telemetry.RuntimeTelemetryObserver
 import pro.liliya.core.runtime.control.RuntimeControlRegistry
+import pro.liliya.core.runtime.action.RuntimeActionExecutor
+
+import pro.liliya.core.runtime.dispatcher.HealthRuntimeActionHandler
+
+import pro.liliya.core.runtime.control.DefaultRuntimeControl
+
+import pro.liliya.core.runtime.control.RuntimeControl
+
 import pro.liliya.core.runtime.history.RuntimeCommandHistoryProvider
 import pro.liliya.core.runtime.audit.RuntimeActionAuditProvider
 import pro.liliya.core.runtime.dispatcher.RuntimeActionHandlerRegistry
@@ -76,9 +84,20 @@ class DefaultRuntimeComposition : RuntimeComposition {
             actionPolicyEvaluator
         )
 
+    private val defaultRuntimeControl =
+        DefaultRuntimeControl()
+
+    private val healthRuntimeActionHandler =
+        HealthRuntimeActionHandler(
+            RuntimeActionExecutor()
+        )
+
+    private val serviceProvider =
+        CoreRuntimeServiceProvider()
+
     private val serviceBootstrap =
         createServiceBootstrap(
-            CoreRuntimeServiceProvider()
+            serviceProvider
         )
 
     override fun observerRegistry(): DefaultRuntimeObserverRegistry {
@@ -121,8 +140,8 @@ class DefaultRuntimeComposition : RuntimeComposition {
         return telemetryObserver
     }
 
-    override fun controlRegistry(): RuntimeControlRegistry {
-        return controlRegistry
+    override fun registerRuntimeControls() {
+        controlRegistry.register(defaultRuntimeControl)
     }
 
     override fun commandHistory(): RuntimeCommandHistoryProvider {
@@ -133,12 +152,24 @@ class DefaultRuntimeComposition : RuntimeComposition {
         return actionAuditProvider
     }
 
-    override fun actionHandlerRegistry(): RuntimeActionHandlerRegistry {
-        return actionHandlerRegistry
+    override fun registerRuntimeActionHandlers() {
+        actionHandlerRegistry.register(healthRuntimeActionHandler)
     }
+
+
 
     override fun actionDispatcher(): RuntimeActionDispatcher {
         return actionDispatcher
+    }
+
+    override fun defaultRuntimeControl(): RuntimeControl {
+        return defaultRuntimeControl
+    }
+
+
+
+    override fun serviceProvider(): RuntimeServiceProvider {
+        return serviceProvider
     }
 
     override fun serviceBootstrap(): RuntimeServiceBootstrap {

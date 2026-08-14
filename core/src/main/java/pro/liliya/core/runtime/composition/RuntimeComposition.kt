@@ -12,10 +12,9 @@ import pro.liliya.core.runtime.health.RuntimeHealthReportProvider
 import pro.liliya.core.runtime.status.RuntimeStatusProvider
 import pro.liliya.core.runtime.monitor.RuntimeMonitor
 import pro.liliya.core.runtime.telemetry.RuntimeTelemetryObserver
-import pro.liliya.core.runtime.control.RuntimeControlRegistry
+import pro.liliya.core.runtime.control.RuntimeControl
 import pro.liliya.core.runtime.history.RuntimeCommandHistoryProvider
 import pro.liliya.core.runtime.audit.RuntimeActionAuditProvider
-import pro.liliya.core.runtime.dispatcher.RuntimeActionHandlerRegistry
 import pro.liliya.core.runtime.dispatcher.RuntimeActionDispatcher
 import pro.liliya.core.runtime.RuntimeServiceBootstrap
 import pro.liliya.core.runtime.RuntimeServiceProvider
@@ -47,16 +46,18 @@ interface RuntimeComposition {
 
     fun telemetryObserver(): RuntimeTelemetryObserver
 
-    fun controlRegistry(): RuntimeControlRegistry
+    fun registerRuntimeControls()
 
     fun commandHistory(): RuntimeCommandHistoryProvider
 
     fun actionAuditProvider(): RuntimeActionAuditProvider
 
-    fun actionHandlerRegistry(): RuntimeActionHandlerRegistry
+    fun registerRuntimeActionHandlers()
 
     fun actionDispatcher(): RuntimeActionDispatcher
 
+    fun defaultRuntimeControl(): RuntimeControl
+    fun serviceProvider(): RuntimeServiceProvider
     fun serviceBootstrap(): RuntimeServiceBootstrap
 
     fun createServiceBootstrap(

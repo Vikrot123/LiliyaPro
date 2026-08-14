@@ -9,7 +9,6 @@ import pro.liliya.core.module.ModuleRegistry
 import pro.liliya.core.runtime.RuntimeService
 import pro.liliya.core.runtime.RuntimeServiceRegistry
 import pro.liliya.core.runtime.RuntimeServiceProvider
-import pro.liliya.core.runtime.CoreRuntimeServiceProvider
 import pro.liliya.core.runtime.RuntimeServiceBootstrap
 import pro.liliya.core.runtime.composition.DefaultRuntimeComposition
 import pro.liliya.core.runtime.monitor.RuntimeMonitor
@@ -31,20 +30,15 @@ import pro.liliya.core.runtime.status.RuntimeStatusProvider
 import pro.liliya.core.runtime.status.RuntimeStatusSnapshot
 import pro.liliya.core.runtime.control.RuntimeControlResult
 import pro.liliya.core.runtime.history.RuntimeCommandRecord
-import pro.liliya.core.runtime.action.RuntimeActionExecutor
 import pro.liliya.core.runtime.action.RuntimeActionResult
 import pro.liliya.core.runtime.audit.RuntimeActionAuditProvider
 import pro.liliya.core.runtime.audit.RuntimeActionAuditRecord
 import pro.liliya.core.runtime.policy.DefaultRuntimeActionPolicyEvaluator
 import pro.liliya.core.runtime.policy.RuntimeActionPolicyEvaluator
 import pro.liliya.core.runtime.action.RuntimeActionRequest
-import pro.liliya.core.runtime.dispatcher.HealthRuntimeActionHandler
-import pro.liliya.core.runtime.dispatcher.RuntimeActionHandlerRegistry
 import pro.liliya.core.runtime.dispatcher.RuntimeActionDispatcher
 import pro.liliya.core.runtime.history.RuntimeCommandHistoryProvider
 import pro.liliya.core.runtime.control.RuntimeCommand
-import pro.liliya.core.runtime.control.DefaultRuntimeControl
-import pro.liliya.core.runtime.control.RuntimeControlRegistry
 import pro.liliya.core.runtime.health.RuntimeFailureHealthSnapshot
 import pro.liliya.core.runtime.telemetry.RuntimeTelemetrySnapshot
 
@@ -78,9 +72,6 @@ object CoreRuntime {
     private val runtimeStatusProvider =
         runtimeComposition.statusProvider()
 
-    private val runtimeControlRegistry =
-        runtimeComposition.controlRegistry()
-
     private val runtimeCommandHistory =
         runtimeComposition.commandHistory()
 
@@ -89,9 +80,6 @@ object CoreRuntime {
 
     private val runtimeActionPolicyEvaluator =
         runtimeComposition.actionPolicyEvaluator()
-
-    private val runtimeActionHandlerRegistry =
-        runtimeComposition.actionHandlerRegistry()
 
     private val runtimeActionDispatcher =
         runtimeComposition.actionDispatcher()
@@ -118,7 +106,7 @@ private var runtimeServiceBootstrap =
         runtimeComposition.serviceBootstrap()
 
 private var runtimeServiceProvider: RuntimeServiceProvider =
-        CoreRuntimeServiceProvider()
+        runtimeComposition.serviceProvider()
 
     private val diagnosticEventBus = context.diagnosticEventBus
 
@@ -195,7 +183,7 @@ private var runtimeServiceProvider: RuntimeServiceProvider =
     }
 
     internal fun resetRuntimeServiceProvider() {
-        runtimeServiceProvider = CoreRuntimeServiceProvider()
+        runtimeServiceProvider = runtimeComposition.serviceProvider()
 
         runtimeServiceBootstrap =
             runtimeComposition.createServiceBootstrap(
@@ -289,9 +277,7 @@ private var runtimeServiceProvider: RuntimeServiceProvider =
     fun executeRuntimeCommand(
         command: RuntimeCommand
     ): RuntimeControlResult {
-        val control = runtimeControlRegistry.get(
-            DefaultRuntimeControl::class.java
-        )
+        val control = runtimeComposition.defaultRuntimeControl()
 
         val result = control?.execute(command)
             ?: RuntimeControlResult(
@@ -399,16 +385,8 @@ private var runtimeServiceProvider: RuntimeServiceProvider =
 
             runtimeServiceBootstrap.start()
 
-            runtimeControlRegistry.register(
-                DefaultRuntimeControl()
-            )
-
-            runtimeActionHandlerRegistry.register(
-                HealthRuntimeActionHandler(
-                    RuntimeActionExecutor()
-                )
-            )
-
+            runtimeComposition.registerRuntimeControls()
+            runtimeComposition.registerRuntimeActionHandlers()
             runtimeState = CoreRuntimeState.RUNNING
 
             runtimeLifecycleRecorder.record(
