@@ -10,7 +10,6 @@ import pro.liliya.core.runtime.RuntimeServiceProvider
 import pro.liliya.core.runtime.RuntimeServiceBootstrap
 import pro.liliya.core.runtime.composition.RuntimeCompositionFactory
 import pro.liliya.core.runtime.monitor.RuntimeMonitor
-import pro.liliya.core.runtime.lifecycle.DefaultRuntimeLifecycleRecorder
 import pro.liliya.core.runtime.lifecycle.RuntimeLifecycleRecorder
 import pro.liliya.core.runtime.lifecycle.RuntimeLifecycleEvent
 import pro.liliya.core.runtime.observer.DefaultRuntimeObserverRegistry
