@@ -43,9 +43,6 @@ object CoreRuntime {
 
     private val context = runtimeComposition.context()
 
-    private val runtimeObserverRegistry =
-        runtimeComposition.observerRegistry()
-
     private val runtimeObserverBridge =
         runtimeComposition.observerBridge()
 
@@ -175,11 +172,11 @@ private val runtimeServiceProviderHolder =
     }
 
     fun registerRuntimeObserver(observer: RuntimeObserver) {
-        runtimeObserverRegistry.subscribe(observer)
+        runtimeComposition.observerRegistry().subscribe(observer)
     }
 
     fun unregisterRuntimeObserver(observer: RuntimeObserver) {
-        runtimeObserverRegistry.unsubscribe(observer)
+        runtimeComposition.observerRegistry().unsubscribe(observer)
     }
 
     fun getRuntimeTelemetrySnapshot():
@@ -282,7 +279,7 @@ private val runtimeServiceProviderHolder =
 
         runtimeObserverBridge.install()
 
-        runtimeObserverRegistry.subscribe(
+        runtimeComposition.observerRegistry().subscribe(
             runtimeTelemetryObserver
         )
         runtimeComposition.runtimeBridgeStateHolder().markRuntimeObserverBridgeInstalled()
@@ -456,7 +453,7 @@ private val runtimeServiceProviderHolder =
 
         runtimeObserverBridge.uninstall()
 
-        runtimeObserverRegistry.unsubscribe(
+        runtimeComposition.observerRegistry().unsubscribe(
             runtimeTelemetryObserver
         )
 
