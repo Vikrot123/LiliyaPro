@@ -42,6 +42,8 @@ interface RuntimeComposition {
         registry: ModuleRegistry,
         provider: pro.liliya.core.module.ModuleProvider
     ): ModuleManager
+
+    fun createModuleRuntime(): ModuleManager
     fun moduleProvider(): pro.liliya.core.module.ModuleProvider
     fun moduleProviderHolder(): ModuleProviderHolder
     fun diagnosticsService(): CoreRuntimeDiagnosticsService

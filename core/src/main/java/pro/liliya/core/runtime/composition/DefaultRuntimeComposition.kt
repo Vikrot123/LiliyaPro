@@ -179,6 +179,13 @@ class DefaultRuntimeComposition : RuntimeComposition {
         )
     }
 
+    override fun createModuleRuntime(): ModuleManager {
+        return ModuleManager(
+            registry = createModuleRegistry(),
+            provider = moduleProviderHolder.get()
+        )
+    }
+
     override fun moduleProviderHolder(): ModuleProviderHolder {
         return moduleProviderHolder
     }

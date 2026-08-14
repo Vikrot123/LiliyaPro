@@ -355,10 +355,7 @@ private val runtimeServiceProviderHolder =
             "Core runtime starting"
         )
 
-        val manager = runtimeComposition.createModuleManager(
-                registry = runtimeComposition.createModuleRegistry(),
-                provider = moduleProviderHolder.get()
-            )
+        val manager = runtimeComposition.createModuleRuntime()
 
             try {
             moduleManagerHolder.set(manager)
