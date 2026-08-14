@@ -49,12 +49,12 @@ object CoreRuntime {
         )
 
     fun state(): CoreRuntimeState {
-        return runtimeComposition.runtimeStateHolder().state()
+        return runtimeComposition.runtimeState()
     }
 
     fun snapshot(): CoreDiagnosticSnapshot {
         return CoreDiagnosticSnapshot(
-            runtimeState = runtimeComposition.runtimeStateHolder().state(),
+            runtimeState = runtimeComposition.runtimeState(),
             moduleStates = runtimeComposition.moduleManagerHolder().get()?.getModuleStates()
                 ?: runtimeComposition.runtimeStateHolder().moduleStates(),
             runtimeServiceStates = runtimeComposition.runtimeServiceStates(),
@@ -130,7 +130,7 @@ object CoreRuntime {
     fun getRuntimeHealthSnapshot():
             RuntimeHealthSnapshot {
         return runtimeComposition.healthProvider().createSnapshot(
-            state = runtimeComposition.runtimeStateHolder().state(),
+            state = runtimeComposition.runtimeState(),
             telemetry = runtimeComposition.telemetryObserver().snapshot(),
             failureReason = runtimeComposition.runtimeStateHolder().failureReason()
         )
@@ -148,7 +148,7 @@ object CoreRuntime {
     
     fun getRuntimeHealthReport(): RuntimeHealthReport {
         return runtimeComposition.healthReportProvider().createReport(
-            state = runtimeComposition.runtimeStateHolder().state(),
+            state = runtimeComposition.runtimeState(),
             telemetry = runtimeComposition.telemetryObserver().snapshot(),
             failure = runtimeComposition.failureTracker().snapshot(),
             recovery = runtimeComposition.recoveryTracker().snapshot()
@@ -173,7 +173,7 @@ object CoreRuntime {
 
 
     fun getRuntimeState(): CoreRuntimeState {
-        return runtimeComposition.runtimeStateHolder().state()
+        return runtimeComposition.runtimeState()
     }
 
 
@@ -192,8 +192,8 @@ object CoreRuntime {
             ?: RuntimeControlResult(
                 command = command,
                 success = false,
-                previousState = runtimeComposition.runtimeStateHolder().state(),
-                currentState = runtimeComposition.runtimeStateHolder().state(),
+                previousState = runtimeComposition.runtimeState(),
+                currentState = runtimeComposition.runtimeState(),
                 status = getRuntimeStatusSnapshot(),
                 message = "Runtime control is not available"
             )
@@ -254,13 +254,13 @@ object CoreRuntime {
     }
 
     fun start() {
-        if (runtimeComposition.runtimeStateHolder().state() == CoreRuntimeState.RUNNING ||
-            runtimeComposition.runtimeStateHolder().state() == CoreRuntimeState.STARTING
+        if (runtimeComposition.runtimeState() == CoreRuntimeState.RUNNING ||
+            runtimeComposition.runtimeState() == CoreRuntimeState.STARTING
         ) {
             return
         }
 
-        runtimeComposition.runtimeStateHolder().setState(CoreRuntimeState.STARTING)
+        runtimeComposition.setRuntimeState(CoreRuntimeState.STARTING)
 
         runtimeComposition.telemetryObserver().reset()
         runtimeComposition.failureTracker().clear()
@@ -292,7 +292,7 @@ object CoreRuntime {
 
             runtimeComposition.registerRuntimeControls()
             runtimeComposition.registerRuntimeActionHandlers()
-            runtimeComposition.runtimeStateHolder().setState(CoreRuntimeState.RUNNING)
+            runtimeComposition.setRuntimeState(CoreRuntimeState.RUNNING)
 
             runtimeComposition.lifecycleRecorder().record(
                 RuntimeLifecycleEvent.STARTED
@@ -330,7 +330,7 @@ object CoreRuntime {
 
             runtimeComposition.clearModuleRuntime()
             runtimeComposition.runtimeStateHolder().setFailureReason(error.message ?: "unknown")
-            runtimeComposition.runtimeStateHolder().setState(CoreRuntimeState.FAILED)
+            runtimeComposition.setRuntimeState(CoreRuntimeState.FAILED)
 
             runtimeComposition.lifecycleRecorder().record(
                 RuntimeLifecycleEvent.FAILED,
@@ -365,7 +365,7 @@ object CoreRuntime {
     }
 
     fun stop() {
-        if (runtimeComposition.runtimeStateHolder().state() == CoreRuntimeState.STOPPED) {
+        if (runtimeComposition.runtimeState() == CoreRuntimeState.STOPPED) {
             return
         }
 
@@ -376,7 +376,7 @@ object CoreRuntime {
         }
 
         runtimeComposition.clearModuleRuntime()
-          runtimeComposition.runtimeStateHolder().setState(CoreRuntimeState.STOPPED)
+          runtimeComposition.setRuntimeState(CoreRuntimeState.STOPPED)
 
         runtimeComposition.lifecycleRecorder().record(
             RuntimeLifecycleEvent.STOPPED

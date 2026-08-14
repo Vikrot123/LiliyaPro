@@ -1,6 +1,7 @@
 package pro.liliya.core.runtime.composition
 
 import pro.liliya.core.CoreRuntimeStateHolder
+import pro.liliya.core.CoreRuntimeState
 import pro.liliya.core.CoreRuntimeDiagnosticsService
 import pro.liliya.core.DefaultCoreRuntimeDiagnosticsService
 import pro.liliya.core.CoreDiagnosticProvider
@@ -234,6 +235,14 @@ class DefaultRuntimeComposition : RuntimeComposition {
 
     override fun runtimeStateHolder(): CoreRuntimeStateHolder {
         return runtimeStateHolder
+    }
+
+    override fun runtimeState(): CoreRuntimeState {
+        return runtimeStateHolder.state()
+    }
+
+    override fun setRuntimeState(state: CoreRuntimeState) {
+        runtimeStateHolder.setState(state)
     }
 
     override fun runtimeBridgeStateHolder(): RuntimeBridgeStateHolder {

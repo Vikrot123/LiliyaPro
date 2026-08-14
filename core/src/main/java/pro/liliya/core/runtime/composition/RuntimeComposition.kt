@@ -1,6 +1,7 @@
 package pro.liliya.core.runtime.composition
 
 import pro.liliya.core.CoreRuntimeStateHolder
+import pro.liliya.core.CoreRuntimeState
 import pro.liliya.core.CoreRuntimeDiagnosticsService
 import pro.liliya.core.CoreRuntimeContext
 import pro.liliya.core.module.ModuleRegistry
@@ -42,6 +43,10 @@ interface RuntimeComposition {
     fun createModuleRegistry(): ModuleRegistry
     fun moduleManagerHolder(): ModuleManagerHolder
     fun runtimeStateHolder(): CoreRuntimeStateHolder
+
+    fun runtimeState(): CoreRuntimeState
+    fun setRuntimeState(state: CoreRuntimeState)
+
     fun runtimeBridgeStateHolder(): RuntimeBridgeStateHolder
 
     fun createModuleManager(
