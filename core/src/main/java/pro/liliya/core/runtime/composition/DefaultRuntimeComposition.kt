@@ -43,6 +43,11 @@ import pro.liliya.core.runtime.RuntimeServiceBootstrap
 import pro.liliya.core.runtime.RuntimeServiceBootstrapHolder
 import pro.liliya.core.runtime.RuntimeBridgeStateHolder
 import pro.liliya.core.runtime.RuntimeServiceProvider
+import pro.liliya.core.runtime.RuntimeService
+import pro.liliya.core.runtime.RuntimeServiceState
+import pro.liliya.core.runtime.RuntimeServiceFailure
+import pro.liliya.core.runtime.RuntimeServiceHealth
+import pro.liliya.core.runtime.RuntimeRecoverySnapshot
 import pro.liliya.core.runtime.RuntimeServiceProviderHolder
 import pro.liliya.core.runtime.CoreRuntimeServiceProvider
 import pro.liliya.core.runtime.RuntimeServiceRegistry
@@ -325,6 +330,28 @@ class DefaultRuntimeComposition : RuntimeComposition {
 
     override fun runtimeServiceBootstrapHolder(): RuntimeServiceBootstrapHolder {
         return runtimeServiceBootstrapHolder
+    }
+
+    override fun registerRuntimeService(
+        service: RuntimeService
+    ) {
+        runtimeServiceBootstrapHolder.get().register(service)
+    }
+
+    override fun runtimeServiceStates(): Map<String, RuntimeServiceState> {
+        return runtimeServiceBootstrapHolder.get().getStates()
+    }
+
+    override fun runtimeServiceFailures(): List<RuntimeServiceFailure> {
+        return runtimeServiceBootstrapHolder.get().getFailures()
+    }
+
+    override fun runtimeServiceHealth(): Map<String, RuntimeServiceHealth> {
+        return runtimeServiceBootstrapHolder.get().getHealth()
+    }
+
+    override fun runtimeServiceRecoverySnapshot(): RuntimeRecoverySnapshot? {
+        return runtimeServiceBootstrapHolder.get().getRecoverySnapshot()
     }
 
     override fun startRuntimeServices() {

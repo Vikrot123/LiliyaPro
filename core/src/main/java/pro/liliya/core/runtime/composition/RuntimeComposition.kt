@@ -29,6 +29,11 @@ import pro.liliya.core.runtime.RuntimeServiceBootstrap
 import pro.liliya.core.runtime.RuntimeServiceBootstrapHolder
 import pro.liliya.core.runtime.RuntimeServiceProvider
 import pro.liliya.core.runtime.RuntimeServiceProviderHolder
+import pro.liliya.core.runtime.RuntimeService
+import pro.liliya.core.runtime.RuntimeServiceState
+import pro.liliya.core.runtime.RuntimeServiceFailure
+import pro.liliya.core.runtime.RuntimeServiceHealth
+import pro.liliya.core.runtime.RuntimeRecoverySnapshot
 
 interface RuntimeComposition {
 
@@ -101,6 +106,16 @@ interface RuntimeComposition {
     fun runtimeServiceProviderHolder(): RuntimeServiceProviderHolder
     fun serviceBootstrap(): RuntimeServiceBootstrap
     fun runtimeServiceBootstrapHolder(): RuntimeServiceBootstrapHolder
+
+    fun registerRuntimeService(
+        service: RuntimeService
+    )
+
+    fun runtimeServiceStates(): Map<String, RuntimeServiceState>
+    fun runtimeServiceFailures(): List<RuntimeServiceFailure>
+    fun runtimeServiceHealth(): Map<String, RuntimeServiceHealth>
+    fun runtimeServiceRecoverySnapshot(): RuntimeRecoverySnapshot?
+
     fun startRuntimeServices()
     fun stopRuntimeServices()
 

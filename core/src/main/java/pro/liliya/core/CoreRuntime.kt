@@ -57,10 +57,10 @@ object CoreRuntime {
             runtimeState = runtimeComposition.runtimeStateHolder().state(),
             moduleStates = runtimeComposition.moduleManagerHolder().get()?.getModuleStates()
                 ?: runtimeComposition.runtimeStateHolder().moduleStates(),
-            runtimeServiceStates = runtimeComposition.runtimeServiceBootstrapHolder().get().getStates(),
-            runtimeServiceFailures = runtimeComposition.runtimeServiceBootstrapHolder().get().getFailures(),
-            runtimeServiceHealth = runtimeComposition.runtimeServiceBootstrapHolder().get().getHealth(),
-            runtimeRecoverySnapshot = runtimeComposition.runtimeServiceBootstrapHolder().get().getRecoverySnapshot(),
+            runtimeServiceStates = runtimeComposition.runtimeServiceStates(),
+            runtimeServiceFailures = runtimeComposition.runtimeServiceFailures(),
+            runtimeServiceHealth = runtimeComposition.runtimeServiceHealth(),
+            runtimeRecoverySnapshot = runtimeComposition.runtimeServiceRecoverySnapshot(),
             runtimeStatusSnapshot = getRuntimeStatusSnapshot(),
             failureReason = runtimeComposition.runtimeStateHolder().failureReason()
         )
@@ -75,7 +75,7 @@ object CoreRuntime {
     }
 
     fun registerRuntimeService(service: RuntimeService) {
-        runtimeComposition.runtimeServiceBootstrapHolder().get().register(service)
+        runtimeComposition.registerRuntimeService(service)
     }
 
     internal fun setRuntimeServiceProvider(
