@@ -12,6 +12,7 @@ import pro.liliya.core.module.CoreModuleProvider
 import pro.liliya.core.module.ModuleRegistry
 import pro.liliya.core.module.ModuleManager
 import pro.liliya.core.module.ModuleManagerHolder
+import pro.liliya.core.module.ModuleState
 import pro.liliya.core.runtime.lifecycle.DefaultRuntimeLifecycleRecorder
 import pro.liliya.core.runtime.lifecycle.RuntimeLifecycleRecorder
 import pro.liliya.core.runtime.lifecycle.RuntimeLifecycleRecorderHolder
@@ -243,6 +244,14 @@ class DefaultRuntimeComposition : RuntimeComposition {
 
     override fun setRuntimeState(state: CoreRuntimeState) {
         runtimeStateHolder.setState(state)
+    }
+
+    override fun moduleStates(): Map<String, ModuleState> {
+        return runtimeStateHolder.moduleStates()
+    }
+
+    override fun setModuleStates(states: Map<String, ModuleState>) {
+        runtimeStateHolder.setModuleStates(states)
     }
 
     override fun runtimeBridgeStateHolder(): RuntimeBridgeStateHolder {

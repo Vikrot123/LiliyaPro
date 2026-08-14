@@ -56,7 +56,7 @@ object CoreRuntime {
         return CoreDiagnosticSnapshot(
             runtimeState = runtimeComposition.runtimeState(),
             moduleStates = runtimeComposition.moduleManagerHolder().get()?.getModuleStates()
-                ?: runtimeComposition.runtimeStateHolder().moduleStates(),
+                ?: runtimeComposition.moduleStates(),
             runtimeServiceStates = runtimeComposition.runtimeServiceStates(),
             runtimeServiceFailures = runtimeComposition.runtimeServiceFailures(),
             runtimeServiceHealth = runtimeComposition.runtimeServiceHealth(),
@@ -321,7 +321,7 @@ object CoreRuntime {
                 "Core runtime startup failed: ${error.message}"
             )
 
-            runtimeComposition.runtimeStateHolder().setModuleStates(manager.getModuleStates())
+            runtimeComposition.setModuleStates(manager.getModuleStates())
 
             try {
                 manager.stopModules()
@@ -382,7 +382,7 @@ object CoreRuntime {
             RuntimeLifecycleEvent.STOPPED
         )
           runtimeComposition.runtimeStateHolder().setFailureReason(null)
-          runtimeComposition.runtimeStateHolder().setModuleStates(emptyMap())
+          runtimeComposition.setModuleStates(emptyMap())
 
         runtimeComposition.context().diagnosticEventBus.publish(
             CoreDiagnosticEvent(

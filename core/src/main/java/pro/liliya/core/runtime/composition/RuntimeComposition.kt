@@ -9,6 +9,7 @@ import pro.liliya.core.module.ModuleProviderHolder
 import pro.liliya.core.module.ModuleProvider
 import pro.liliya.core.module.ModuleManager
 import pro.liliya.core.module.ModuleManagerHolder
+import pro.liliya.core.module.ModuleState
 import pro.liliya.core.runtime.lifecycle.RuntimeLifecycleRecorder
 import pro.liliya.core.runtime.lifecycle.RuntimeLifecycleRecorderHolder
 import pro.liliya.core.runtime.observer.RuntimeObserverBridge
@@ -46,6 +47,9 @@ interface RuntimeComposition {
 
     fun runtimeState(): CoreRuntimeState
     fun setRuntimeState(state: CoreRuntimeState)
+
+    fun moduleStates(): Map<String, ModuleState>
+    fun setModuleStates(states: Map<String, ModuleState>)
 
     fun runtimeBridgeStateHolder(): RuntimeBridgeStateHolder
 
