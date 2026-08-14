@@ -26,6 +26,7 @@ import pro.liliya.core.runtime.health.RuntimeRecoveryTracker
 import pro.liliya.core.runtime.health.RuntimeHealthReportProvider
 import pro.liliya.core.runtime.health.RuntimeFailureHealthSnapshot
 import pro.liliya.core.runtime.health.RuntimeHealthReport
+import pro.liliya.core.runtime.status.RuntimeStatusSnapshot
 import pro.liliya.core.runtime.status.RuntimeStatusProvider
 import pro.liliya.core.runtime.monitor.DefaultRuntimeMonitor
 import pro.liliya.core.runtime.monitor.RuntimeMonitor
@@ -368,6 +369,14 @@ class DefaultRuntimeComposition : RuntimeComposition {
 
     override fun statusProvider(): RuntimeStatusProvider {
         return statusProvider
+    }
+
+    override fun createRuntimeStatus(
+        report: RuntimeHealthReport
+    ): RuntimeStatusSnapshot {
+        return statusProvider.createStatus(
+            report = report
+        )
     }
 
     override fun telemetryObserver(): RuntimeTelemetryObserver {

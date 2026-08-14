@@ -20,6 +20,7 @@ import pro.liliya.core.runtime.health.RuntimeFailureTracker
 import pro.liliya.core.runtime.health.RuntimeRecoveryTracker
 import pro.liliya.core.runtime.health.RuntimeHealthReportProvider
 import pro.liliya.core.runtime.health.RuntimeHealthReport
+import pro.liliya.core.runtime.status.RuntimeStatusSnapshot
 import pro.liliya.core.runtime.health.RuntimeFailureHealthSnapshot
 import pro.liliya.core.runtime.status.RuntimeStatusProvider
 import pro.liliya.core.runtime.monitor.RuntimeMonitor
@@ -124,6 +125,10 @@ interface RuntimeComposition {
 
 
     fun statusProvider(): RuntimeStatusProvider
+
+    fun createRuntimeStatus(
+        report: RuntimeHealthReport
+    ): RuntimeStatusSnapshot
 
     fun runtimeMonitor(): RuntimeMonitor
 

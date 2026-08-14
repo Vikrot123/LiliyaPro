@@ -156,7 +156,7 @@ object CoreRuntime {
     }
     
     fun getRuntimeStatusSnapshot(): RuntimeStatusSnapshot {
-        return runtimeComposition.statusProvider().createStatus(
+        return runtimeComposition.createRuntimeStatus(
             report = getRuntimeHealthReport()
         )
     }
