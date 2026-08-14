@@ -57,9 +57,6 @@ object CoreRuntime {
     private val runtimeCommandHistory =
         runtimeComposition.commandHistory()
 
-    private val runtimeActionAuditProvider =
-        runtimeComposition.actionAuditProvider()
-
     private val runtimeActionPolicyEvaluator =
         runtimeComposition.actionPolicyEvaluator()
 
@@ -216,7 +213,7 @@ private val runtimeServiceProviderHolder =
     }
 
     fun getRuntimeActionAudit(): List<RuntimeActionAuditRecord> {
-        return runtimeActionAuditProvider.snapshot()
+        return runtimeComposition.actionAuditProvider().snapshot()
     }
 
 
