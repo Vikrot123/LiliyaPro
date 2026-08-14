@@ -97,6 +97,7 @@ interface RuntimeComposition {
     fun runtimeServiceProviderHolder(): RuntimeServiceProviderHolder
     fun serviceBootstrap(): RuntimeServiceBootstrap
     fun runtimeServiceBootstrapHolder(): RuntimeServiceBootstrapHolder
+    fun startRuntimeServices()
 
     fun createServiceBootstrap(
         provider: RuntimeServiceProvider

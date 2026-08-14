@@ -317,6 +317,10 @@ class DefaultRuntimeComposition : RuntimeComposition {
         return runtimeServiceBootstrapHolder
     }
 
+    override fun startRuntimeServices() {
+        runtimeServiceBootstrapHolder.get().start()
+    }
+
     override fun createServiceBootstrap(
         provider: RuntimeServiceProvider
     ): RuntimeServiceBootstrap {

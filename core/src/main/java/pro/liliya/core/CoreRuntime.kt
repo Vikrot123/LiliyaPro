@@ -288,7 +288,7 @@ object CoreRuntime {
 
             runtimeComposition.startModuleRuntime(manager)
 
-            runtimeComposition.runtimeServiceBootstrapHolder().get().start()
+            runtimeComposition.startRuntimeServices()
 
             runtimeComposition.registerRuntimeControls()
             runtimeComposition.registerRuntimeActionHandlers()
