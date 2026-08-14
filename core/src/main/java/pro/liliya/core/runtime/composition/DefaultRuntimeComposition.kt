@@ -384,6 +384,16 @@ class DefaultRuntimeComposition : RuntimeComposition {
         return runtimeServiceBootstrapHolder
     }
 
+    override fun setRuntimeServiceBootstrap(bootstrap: RuntimeServiceBootstrap) {
+        runtimeServiceBootstrapHolder.set(bootstrap)
+    }
+
+    override fun runtimeServiceBootstrap(): RuntimeServiceBootstrap {
+        return runtimeServiceBootstrapHolder.get()
+            ?: error("RuntimeServiceBootstrap is not initialized")
+    }
+
+
     override fun registerRuntimeService(
         service: RuntimeService
     ) {

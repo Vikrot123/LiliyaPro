@@ -82,7 +82,7 @@ object CoreRuntime {
         provider: RuntimeServiceProvider
     ) {
         runtimeComposition.setRuntimeServiceProvider(provider)
-        runtimeComposition.runtimeServiceBootstrapHolder().set(
+        runtimeComposition.setRuntimeServiceBootstrap(
             runtimeComposition.createServiceBootstrap(
                 runtimeComposition.runtimeServiceProvider()
             )
@@ -93,7 +93,7 @@ object CoreRuntime {
     internal fun resetRuntimeServiceProvider() {
         runtimeComposition.resetRuntimeServiceProvider()
 
-        runtimeComposition.runtimeServiceBootstrapHolder().set(
+        runtimeComposition.setRuntimeServiceBootstrap(
             runtimeComposition.createServiceBootstrap(
                 runtimeComposition.runtimeServiceProvider()
             )

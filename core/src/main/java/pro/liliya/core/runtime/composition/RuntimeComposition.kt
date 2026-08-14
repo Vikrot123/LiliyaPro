@@ -125,6 +125,9 @@ interface RuntimeComposition {
 
     fun serviceBootstrap(): RuntimeServiceBootstrap
     fun runtimeServiceBootstrapHolder(): RuntimeServiceBootstrapHolder
+    fun setRuntimeServiceBootstrap(bootstrap: RuntimeServiceBootstrap)
+    fun runtimeServiceBootstrap(): RuntimeServiceBootstrap
+
 
     fun registerRuntimeService(
         service: RuntimeService
