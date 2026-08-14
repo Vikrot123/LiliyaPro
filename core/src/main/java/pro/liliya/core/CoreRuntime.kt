@@ -52,8 +52,6 @@ object CoreRuntime {
         runtimeComposition.recoveryTracker()
 
 
-    private val runtimeActionDispatcher =
-        runtimeComposition.actionDispatcher()
 
 
 
@@ -215,7 +213,7 @@ object CoreRuntime {
     fun dispatchRuntimeAction(
         request: RuntimeActionRequest
     ): RuntimeActionResult {
-        return runtimeActionDispatcher.dispatch(request)
+        return runtimeComposition.actionDispatcher().dispatch(request)
     }
 
     fun executeRuntimeCommand(
