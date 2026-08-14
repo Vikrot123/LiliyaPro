@@ -43,8 +43,6 @@ object CoreRuntime {
 
     private val context = runtimeComposition.context()
 
-    private val runtimeObserverBridge =
-        runtimeComposition.observerBridge()
 
     private val runtimeTelemetryObserver =
         runtimeComposition.telemetryObserver()
@@ -263,7 +261,7 @@ object CoreRuntime {
             return
         }
 
-        runtimeObserverBridge.install()
+        runtimeComposition.observerBridge().install()
 
         runtimeComposition.observerRegistry().subscribe(
             runtimeTelemetryObserver
@@ -437,7 +435,7 @@ object CoreRuntime {
             RuntimeEvent.SystemStop
         )
 
-        runtimeObserverBridge.uninstall()
+        runtimeComposition.observerBridge().uninstall()
 
         runtimeComposition.observerRegistry().unsubscribe(
             runtimeTelemetryObserver
