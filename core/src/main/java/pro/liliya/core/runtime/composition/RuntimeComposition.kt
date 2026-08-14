@@ -18,6 +18,7 @@ import pro.liliya.core.runtime.audit.RuntimeActionAuditProvider
 import pro.liliya.core.runtime.dispatcher.RuntimeActionHandlerRegistry
 import pro.liliya.core.runtime.dispatcher.RuntimeActionDispatcher
 import pro.liliya.core.runtime.RuntimeServiceBootstrap
+import pro.liliya.core.runtime.RuntimeServiceProvider
 
 interface RuntimeComposition {
 
@@ -57,4 +58,8 @@ interface RuntimeComposition {
     fun actionDispatcher(): RuntimeActionDispatcher
 
     fun serviceBootstrap(): RuntimeServiceBootstrap
+
+    fun createServiceBootstrap(
+        provider: RuntimeServiceProvider
+    ): RuntimeServiceBootstrap
 }

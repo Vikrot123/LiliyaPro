@@ -91,14 +91,10 @@ object CoreRuntime {
         runtimeComposition.actionPolicyEvaluator()
 
     private val runtimeActionHandlerRegistry =
-        RuntimeActionHandlerRegistry()
+        runtimeComposition.actionHandlerRegistry()
 
     private val runtimeActionDispatcher =
-        RuntimeActionDispatcher(
-            runtimeActionHandlerRegistry,
-            runtimeActionAuditProvider,
-            runtimeActionPolicyEvaluator
-        )
+        runtimeComposition.actionDispatcher()
 
     private var runtimeObserverBridgeInstalled = false
 
@@ -119,13 +115,9 @@ object CoreRuntime {
     private var moduleEventBridgeInstalled = false
 
 private var runtimeServiceBootstrap =
-    RuntimeServiceBootstrap(
-        CoreRuntimeServiceProvider(),
-        RuntimeServiceRegistry()
-    )
+        runtimeComposition.serviceBootstrap()
 
-
-    private var runtimeServiceProvider: RuntimeServiceProvider =
+private var runtimeServiceProvider: RuntimeServiceProvider =
         CoreRuntimeServiceProvider()
 
     private val diagnosticEventBus = context.diagnosticEventBus
@@ -196,19 +188,19 @@ private var runtimeServiceBootstrap =
         provider: RuntimeServiceProvider
     ) {
         runtimeServiceProvider = provider
-        runtimeServiceBootstrap = RuntimeServiceBootstrap(
-            runtimeServiceProvider,
-            RuntimeServiceRegistry()
-        )
+        runtimeServiceBootstrap =
+            runtimeComposition.createServiceBootstrap(
+                runtimeServiceProvider
+            )
     }
 
     internal fun resetRuntimeServiceProvider() {
         runtimeServiceProvider = CoreRuntimeServiceProvider()
 
-        runtimeServiceBootstrap = RuntimeServiceBootstrap(
-            runtimeServiceProvider,
-            RuntimeServiceRegistry()
-        )
+        runtimeServiceBootstrap =
+            runtimeComposition.createServiceBootstrap(
+                runtimeServiceProvider
+            )
     }
 
 
