@@ -100,8 +100,8 @@ object CoreRuntime {
 
     private var moduleEventBridgeInstalled = false
 
-private var runtimeServiceBootstrap =
-        runtimeComposition.serviceBootstrap()
+private val runtimeServiceBootstrapHolder =
+        runtimeComposition.runtimeServiceBootstrapHolder()
 
 private val runtimeServiceProviderHolder =
         runtimeComposition.runtimeServiceProviderHolder()
@@ -136,10 +136,10 @@ private val runtimeServiceProviderHolder =
             runtimeState = runtimeState,
             moduleStates = moduleManager?.getModuleStates()
                 ?: lastModuleStates,
-            runtimeServiceStates = runtimeServiceBootstrap.getStates(),
-            runtimeServiceFailures = runtimeServiceBootstrap.getFailures(),
-            runtimeServiceHealth = runtimeServiceBootstrap.getHealth(),
-            runtimeRecoverySnapshot = runtimeServiceBootstrap.getRecoverySnapshot(),
+            runtimeServiceStates = runtimeServiceBootstrapHolder.get().getStates(),
+            runtimeServiceFailures = runtimeServiceBootstrapHolder.get().getFailures(),
+            runtimeServiceHealth = runtimeServiceBootstrapHolder.get().getHealth(),
+            runtimeRecoverySnapshot = runtimeServiceBootstrapHolder.get().getRecoverySnapshot(),
             runtimeStatusSnapshot = getRuntimeStatusSnapshot(),
             failureReason = lastFailureReason
         )
@@ -154,26 +154,29 @@ private val runtimeServiceProviderHolder =
     }
 
     fun registerRuntimeService(service: RuntimeService) {
-        runtimeServiceBootstrap.register(service)
+        runtimeServiceBootstrapHolder.get().register(service)
     }
 
     internal fun setRuntimeServiceProvider(
         provider: RuntimeServiceProvider
     ) {
         runtimeServiceProviderHolder.set(provider)
-        runtimeServiceBootstrap =
+        runtimeServiceBootstrapHolder.set(
             runtimeComposition.createServiceBootstrap(
                 runtimeServiceProviderHolder.get()
             )
+        )
+
     }
 
     internal fun resetRuntimeServiceProvider() {
         runtimeServiceProviderHolder.reset()
 
-        runtimeServiceBootstrap =
+        runtimeServiceBootstrapHolder.set(
             runtimeComposition.createServiceBootstrap(
                 runtimeServiceProviderHolder.get()
             )
+    )
     }
 
 
@@ -368,7 +371,7 @@ private val runtimeServiceProviderHolder =
             manager.loadModules()
             manager.startModules()
 
-            runtimeServiceBootstrap.start()
+            runtimeServiceBootstrapHolder.get().start()
 
             runtimeComposition.registerRuntimeControls()
             runtimeComposition.registerRuntimeActionHandlers()
@@ -449,7 +452,7 @@ private val runtimeServiceProviderHolder =
             return
         }
 
-        runtimeServiceBootstrap.stop()
+        runtimeServiceBootstrapHolder.get().stop()
 
         moduleManager?.stopModules()
 
