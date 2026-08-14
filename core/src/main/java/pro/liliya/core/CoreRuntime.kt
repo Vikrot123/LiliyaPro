@@ -357,12 +357,12 @@ private var runtimeServiceProvider: RuntimeServiceProvider =
             "Core runtime starting"
         )
 
-        val manager = ModuleManager(
-            registry = runtimeComposition.createModuleRegistry(),
-            provider = moduleProvider
-        )
+        val manager = runtimeComposition.createModuleManager(
+                registry = runtimeComposition.createModuleRegistry(),
+                provider = moduleProvider
+            )
 
-        try {
+            try {
             moduleManager = manager
 
             manager.loadModules()

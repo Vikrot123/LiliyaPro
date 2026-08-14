@@ -7,6 +7,7 @@ import pro.liliya.core.CoreRuntimeContext
 import pro.liliya.core.module.ModuleProvider
 import pro.liliya.core.module.CoreModuleProvider
 import pro.liliya.core.module.ModuleRegistry
+import pro.liliya.core.module.ModuleManager
 import pro.liliya.core.runtime.lifecycle.DefaultRuntimeLifecycleRecorder
 import pro.liliya.core.runtime.lifecycle.RuntimeLifecycleRecorder
 import pro.liliya.core.runtime.observer.DefaultRuntimeObserverRegistry
@@ -131,6 +132,16 @@ class DefaultRuntimeComposition : RuntimeComposition {
 
     override fun createModuleRegistry(): ModuleRegistry {
         return ModuleRegistry()
+    }
+
+    override fun createModuleManager(
+        registry: ModuleRegistry,
+        provider: ModuleProvider
+    ): ModuleManager {
+        return ModuleManager(
+            registry = registry,
+            provider = provider
+        )
     }
 
     override fun moduleProvider(): ModuleProvider {
