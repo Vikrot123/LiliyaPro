@@ -87,9 +87,6 @@ object CoreRuntime {
         runtimeComposition.moduleManagerHolder()
 
 
-    private val runtimeStateHolder =
-        runtimeComposition.runtimeStateHolder()
-
 
 
 
@@ -118,20 +115,20 @@ private val runtimeServiceProviderHolder =
         )
 
     fun state(): CoreRuntimeState {
-        return runtimeStateHolder.state()
+        return runtimeComposition.runtimeStateHolder().state()
     }
 
     fun snapshot(): CoreDiagnosticSnapshot {
         return CoreDiagnosticSnapshot(
-            runtimeState = runtimeStateHolder.state(),
+            runtimeState = runtimeComposition.runtimeStateHolder().state(),
             moduleStates = moduleManagerHolder.get()?.getModuleStates()
-                ?: runtimeStateHolder.moduleStates(),
+                ?: runtimeComposition.runtimeStateHolder().moduleStates(),
             runtimeServiceStates = runtimeComposition.runtimeServiceBootstrapHolder().get().getStates(),
             runtimeServiceFailures = runtimeComposition.runtimeServiceBootstrapHolder().get().getFailures(),
             runtimeServiceHealth = runtimeComposition.runtimeServiceBootstrapHolder().get().getHealth(),
             runtimeRecoverySnapshot = runtimeComposition.runtimeServiceBootstrapHolder().get().getRecoverySnapshot(),
             runtimeStatusSnapshot = getRuntimeStatusSnapshot(),
-            failureReason = runtimeStateHolder.failureReason()
+            failureReason = runtimeComposition.runtimeStateHolder().failureReason()
         )
     }
 
@@ -199,9 +196,9 @@ private val runtimeServiceProviderHolder =
     fun getRuntimeHealthSnapshot():
             RuntimeHealthSnapshot {
         return runtimeHealthProvider.createSnapshot(
-            state = runtimeStateHolder.state(),
+            state = runtimeComposition.runtimeStateHolder().state(),
             telemetry = runtimeTelemetryObserver.snapshot(),
-            failureReason = runtimeStateHolder.failureReason()
+            failureReason = runtimeComposition.runtimeStateHolder().failureReason()
         )
     }
 
@@ -217,7 +214,7 @@ private val runtimeServiceProviderHolder =
     
     fun getRuntimeHealthReport(): RuntimeHealthReport {
         return runtimeHealthReportProvider.createReport(
-            state = runtimeStateHolder.state(),
+            state = runtimeComposition.runtimeStateHolder().state(),
             telemetry = runtimeTelemetryObserver.snapshot(),
             failure = runtimeFailureTracker.snapshot(),
             recovery = runtimeRecoveryTracker.snapshot()
@@ -242,7 +239,7 @@ private val runtimeServiceProviderHolder =
 
 
     fun getRuntimeState(): CoreRuntimeState {
-        return runtimeStateHolder.state()
+        return runtimeComposition.runtimeStateHolder().state()
     }
 
 
@@ -261,8 +258,8 @@ private val runtimeServiceProviderHolder =
             ?: RuntimeControlResult(
                 command = command,
                 success = false,
-                previousState = runtimeStateHolder.state(),
-                currentState = runtimeStateHolder.state(),
+                previousState = runtimeComposition.runtimeStateHolder().state(),
+                currentState = runtimeComposition.runtimeStateHolder().state(),
                 status = getRuntimeStatusSnapshot(),
                 message = "Runtime control is not available"
             )
@@ -323,13 +320,13 @@ private val runtimeServiceProviderHolder =
     }
 
     fun start() {
-        if (runtimeStateHolder.state() == CoreRuntimeState.RUNNING ||
-            runtimeStateHolder.state() == CoreRuntimeState.STARTING
+        if (runtimeComposition.runtimeStateHolder().state() == CoreRuntimeState.RUNNING ||
+            runtimeComposition.runtimeStateHolder().state() == CoreRuntimeState.STARTING
         ) {
             return
         }
 
-        runtimeStateHolder.setState(CoreRuntimeState.STARTING)
+        runtimeComposition.runtimeStateHolder().setState(CoreRuntimeState.STARTING)
 
         runtimeTelemetryObserver.reset()
         runtimeFailureTracker.clear()
@@ -362,7 +359,7 @@ private val runtimeServiceProviderHolder =
 
             runtimeComposition.registerRuntimeControls()
             runtimeComposition.registerRuntimeActionHandlers()
-            runtimeStateHolder.setState(CoreRuntimeState.RUNNING)
+            runtimeComposition.runtimeStateHolder().setState(CoreRuntimeState.RUNNING)
 
             runtimeLifecycleRecorder.record(
                 RuntimeLifecycleEvent.STARTED
@@ -391,7 +388,7 @@ private val runtimeServiceProviderHolder =
                 "Core runtime startup failed: ${error.message}"
             )
 
-            runtimeStateHolder.setModuleStates(manager.getModuleStates())
+            runtimeComposition.runtimeStateHolder().setModuleStates(manager.getModuleStates())
 
             try {
                 manager.stopModules()
@@ -399,12 +396,12 @@ private val runtimeServiceProviderHolder =
             }
 
             moduleManagerHolder.clear()
-            runtimeStateHolder.setFailureReason(error.message ?: "unknown")
-            runtimeStateHolder.setState(CoreRuntimeState.FAILED)
+            runtimeComposition.runtimeStateHolder().setFailureReason(error.message ?: "unknown")
+            runtimeComposition.runtimeStateHolder().setState(CoreRuntimeState.FAILED)
 
             runtimeLifecycleRecorder.record(
                 RuntimeLifecycleEvent.FAILED,
-                runtimeStateHolder.failureReason()
+                runtimeComposition.runtimeStateHolder().failureReason()
             )
 
             diagnosticEventBus.publish(
@@ -435,7 +432,7 @@ private val runtimeServiceProviderHolder =
     }
 
     fun stop() {
-        if (runtimeStateHolder.state() == CoreRuntimeState.STOPPED) {
+        if (runtimeComposition.runtimeStateHolder().state() == CoreRuntimeState.STOPPED) {
             return
         }
 
@@ -444,13 +441,13 @@ private val runtimeServiceProviderHolder =
         moduleManagerHolder.get()?.stopModules()
 
         moduleManagerHolder.clear()
-          runtimeStateHolder.setState(CoreRuntimeState.STOPPED)
+          runtimeComposition.runtimeStateHolder().setState(CoreRuntimeState.STOPPED)
 
         runtimeLifecycleRecorder.record(
             RuntimeLifecycleEvent.STOPPED
         )
-          runtimeStateHolder.setFailureReason(null)
-          runtimeStateHolder.setModuleStates(emptyMap())
+          runtimeComposition.runtimeStateHolder().setFailureReason(null)
+          runtimeComposition.runtimeStateHolder().setModuleStates(emptyMap())
 
         diagnosticEventBus.publish(
             CoreDiagnosticEvent(
