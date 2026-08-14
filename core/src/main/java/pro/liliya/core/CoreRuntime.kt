@@ -371,7 +371,9 @@ object CoreRuntime {
 
         runtimeComposition.stopRuntimeServices()
 
-        runtimeComposition.moduleManagerHolder().get()?.stopModules()
+        runtimeComposition.moduleManagerHolder().get()?.let {
+            runtimeComposition.stopModuleRuntime(it)
+        }
 
         runtimeComposition.moduleManagerHolder().clear()
           runtimeComposition.runtimeStateHolder().setState(CoreRuntimeState.STOPPED)
