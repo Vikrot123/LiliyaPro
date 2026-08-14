@@ -49,9 +49,6 @@ object CoreRuntime {
     private val runtimeTelemetryObserver =
         runtimeComposition.telemetryObserver()
 
-    private val runtimeHealthProvider =
-        runtimeComposition.healthProvider()
-
     private val runtimeFailureTracker =
         runtimeComposition.failureTracker()
 
@@ -186,7 +183,7 @@ private val runtimeServiceProviderHolder =
 
     fun getRuntimeHealthSnapshot():
             RuntimeHealthSnapshot {
-        return runtimeHealthProvider.createSnapshot(
+        return runtimeComposition.healthProvider().createSnapshot(
             state = runtimeComposition.runtimeStateHolder().state(),
             telemetry = runtimeTelemetryObserver.snapshot(),
             failureReason = runtimeComposition.runtimeStateHolder().failureReason()
