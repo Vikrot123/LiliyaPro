@@ -1,5 +1,6 @@
 package pro.liliya.core.runtime.composition
 
+import pro.liliya.core.CoreRuntimeStateHolder
 import pro.liliya.core.CoreRuntimeDiagnosticsService
 import pro.liliya.core.DefaultCoreRuntimeDiagnosticsService
 import pro.liliya.core.CoreDiagnosticProvider
@@ -70,6 +71,8 @@ class DefaultRuntimeComposition : RuntimeComposition {
     private val moduleManagerHolder =
         ModuleManagerHolder()
 
+    private val runtimeStateHolder =
+        CoreRuntimeStateHolder()
 
     private val observerRegistry =
         DefaultRuntimeObserverRegistry()
@@ -174,6 +177,10 @@ class DefaultRuntimeComposition : RuntimeComposition {
 
     override fun moduleManagerHolder(): ModuleManagerHolder {
         return moduleManagerHolder
+    }
+
+    override fun runtimeStateHolder(): CoreRuntimeStateHolder {
+        return runtimeStateHolder
     }
 
     override fun moduleProvider(): ModuleProvider {

@@ -92,12 +92,8 @@ object CoreRuntime {
     private val moduleProviderHolder =
         runtimeComposition.moduleProviderHolder()
 
-    private var runtimeState = CoreRuntimeState.STOPPED
-
-    private var lastFailureReason: String? = null
-
-    private var lastModuleStates: Map<String, pro.liliya.core.module.ModuleState> =
-        emptyMap()
+    private val runtimeStateHolder =
+        runtimeComposition.runtimeStateHolder()
 
     private var moduleEventBridgeInstalled = false
 
@@ -129,20 +125,20 @@ private val runtimeServiceProviderHolder =
         )
 
     fun state(): CoreRuntimeState {
-        return runtimeState
+        return runtimeStateHolder.state()
     }
 
     fun snapshot(): CoreDiagnosticSnapshot {
         return CoreDiagnosticSnapshot(
-            runtimeState = runtimeState,
+            runtimeState = runtimeStateHolder.state(),
             moduleStates = moduleManagerHolder.get()?.getModuleStates()
-                ?: lastModuleStates,
+                ?: runtimeStateHolder.moduleStates(),
             runtimeServiceStates = runtimeServiceBootstrapHolder.get().getStates(),
             runtimeServiceFailures = runtimeServiceBootstrapHolder.get().getFailures(),
             runtimeServiceHealth = runtimeServiceBootstrapHolder.get().getHealth(),
             runtimeRecoverySnapshot = runtimeServiceBootstrapHolder.get().getRecoverySnapshot(),
             runtimeStatusSnapshot = getRuntimeStatusSnapshot(),
-            failureReason = lastFailureReason
+            failureReason = runtimeStateHolder.failureReason()
         )
     }
 
@@ -210,9 +206,9 @@ private val runtimeServiceProviderHolder =
     fun getRuntimeHealthSnapshot():
             RuntimeHealthSnapshot {
         return runtimeHealthProvider.createSnapshot(
-            state = runtimeState,
+            state = runtimeStateHolder.state(),
             telemetry = runtimeTelemetryObserver.snapshot(),
-            failureReason = lastFailureReason
+            failureReason = runtimeStateHolder.failureReason()
         )
     }
 
@@ -228,7 +224,7 @@ private val runtimeServiceProviderHolder =
     
     fun getRuntimeHealthReport(): RuntimeHealthReport {
         return runtimeHealthReportProvider.createReport(
-            state = runtimeState,
+            state = runtimeStateHolder.state(),
             telemetry = runtimeTelemetryObserver.snapshot(),
             failure = runtimeFailureTracker.snapshot(),
             recovery = runtimeRecoveryTracker.snapshot()
@@ -253,7 +249,7 @@ private val runtimeServiceProviderHolder =
 
 
     fun getRuntimeState(): CoreRuntimeState {
-        return runtimeState
+        return runtimeStateHolder.state()
     }
 
 
@@ -272,8 +268,8 @@ private val runtimeServiceProviderHolder =
             ?: RuntimeControlResult(
                 command = command,
                 success = false,
-                previousState = runtimeState,
-                currentState = runtimeState,
+                previousState = runtimeStateHolder.state(),
+                currentState = runtimeStateHolder.state(),
                 status = getRuntimeStatusSnapshot(),
                 message = "Runtime control is not available"
             )
@@ -334,13 +330,13 @@ private val runtimeServiceProviderHolder =
     }
 
     fun start() {
-        if (runtimeState == CoreRuntimeState.RUNNING ||
-            runtimeState == CoreRuntimeState.STARTING
+        if (runtimeStateHolder.state() == CoreRuntimeState.RUNNING ||
+            runtimeStateHolder.state() == CoreRuntimeState.STARTING
         ) {
             return
         }
 
-        runtimeState = CoreRuntimeState.STARTING
+        runtimeStateHolder.setState(CoreRuntimeState.STARTING)
 
         runtimeTelemetryObserver.reset()
         runtimeFailureTracker.clear()
@@ -376,7 +372,7 @@ private val runtimeServiceProviderHolder =
 
             runtimeComposition.registerRuntimeControls()
             runtimeComposition.registerRuntimeActionHandlers()
-            runtimeState = CoreRuntimeState.RUNNING
+            runtimeStateHolder.setState(CoreRuntimeState.RUNNING)
 
             runtimeLifecycleRecorder.record(
                 RuntimeLifecycleEvent.STARTED
@@ -405,7 +401,7 @@ private val runtimeServiceProviderHolder =
                 "Core runtime startup failed: ${error.message}"
             )
 
-            lastModuleStates = manager.getModuleStates()
+            runtimeStateHolder.setModuleStates(manager.getModuleStates())
 
             try {
                 manager.stopModules()
@@ -413,12 +409,12 @@ private val runtimeServiceProviderHolder =
             }
 
             moduleManagerHolder.clear()
-            lastFailureReason = error.message ?: "unknown"
-            runtimeState = CoreRuntimeState.FAILED
+            runtimeStateHolder.setFailureReason(error.message ?: "unknown")
+            runtimeStateHolder.setState(CoreRuntimeState.FAILED)
 
             runtimeLifecycleRecorder.record(
                 RuntimeLifecycleEvent.FAILED,
-                lastFailureReason
+                runtimeStateHolder.failureReason()
             )
 
             diagnosticEventBus.publish(
@@ -449,7 +445,7 @@ private val runtimeServiceProviderHolder =
     }
 
     fun stop() {
-        if (runtimeState == CoreRuntimeState.STOPPED) {
+        if (runtimeStateHolder.state() == CoreRuntimeState.STOPPED) {
             return
         }
 
@@ -458,13 +454,13 @@ private val runtimeServiceProviderHolder =
         moduleManagerHolder.get()?.stopModules()
 
         moduleManagerHolder.clear()
-          runtimeState = CoreRuntimeState.STOPPED
+          runtimeStateHolder.setState(CoreRuntimeState.STOPPED)
 
         runtimeLifecycleRecorder.record(
             RuntimeLifecycleEvent.STOPPED
         )
-          lastFailureReason = null
-          lastModuleStates = emptyMap()
+          runtimeStateHolder.setFailureReason(null)
+          runtimeStateHolder.setModuleStates(emptyMap())
 
         diagnosticEventBus.publish(
             CoreDiagnosticEvent(
