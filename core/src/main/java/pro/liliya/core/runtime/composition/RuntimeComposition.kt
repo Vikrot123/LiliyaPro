@@ -2,6 +2,7 @@ package pro.liliya.core.runtime.composition
 
 import pro.liliya.core.CoreRuntimeDiagnosticsService
 import pro.liliya.core.CoreRuntimeContext
+import pro.liliya.core.module.ModuleRegistry
 import pro.liliya.core.runtime.lifecycle.RuntimeLifecycleRecorder
 import pro.liliya.core.runtime.observer.RuntimeObserverBridge
 import pro.liliya.core.runtime.observer.DefaultRuntimeObserverRegistry
@@ -24,6 +25,7 @@ interface RuntimeComposition {
 
     fun context(): CoreRuntimeContext
 
+    fun createModuleRegistry(): ModuleRegistry
     fun moduleProvider(): pro.liliya.core.module.ModuleProvider
     fun diagnosticsService(): CoreRuntimeDiagnosticsService
 
