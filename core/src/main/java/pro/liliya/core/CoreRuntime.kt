@@ -51,8 +51,6 @@ object CoreRuntime {
     private val runtimeRecoveryTracker =
         runtimeComposition.recoveryTracker()
 
-    private val runtimeActionPolicyEvaluator =
-        runtimeComposition.actionPolicyEvaluator()
 
     private val runtimeActionDispatcher =
         runtimeComposition.actionDispatcher()
