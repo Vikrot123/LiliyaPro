@@ -40,6 +40,7 @@ import pro.liliya.core.runtime.dispatcher.RuntimeActionHandlerRegistry
 import pro.liliya.core.runtime.dispatcher.RuntimeActionDispatcher
 import pro.liliya.core.runtime.RuntimeServiceBootstrap
 import pro.liliya.core.runtime.RuntimeServiceBootstrapHolder
+import pro.liliya.core.runtime.RuntimeBridgeStateHolder
 import pro.liliya.core.runtime.RuntimeServiceProvider
 import pro.liliya.core.runtime.RuntimeServiceProviderHolder
 import pro.liliya.core.runtime.CoreRuntimeServiceProvider
@@ -73,6 +74,9 @@ class DefaultRuntimeComposition : RuntimeComposition {
 
     private val runtimeStateHolder =
         CoreRuntimeStateHolder()
+
+    private val runtimeBridgeStateHolder =
+        RuntimeBridgeStateHolder()
 
     private val observerRegistry =
         DefaultRuntimeObserverRegistry()
@@ -181,6 +185,10 @@ class DefaultRuntimeComposition : RuntimeComposition {
 
     override fun runtimeStateHolder(): CoreRuntimeStateHolder {
         return runtimeStateHolder
+    }
+
+    override fun runtimeBridgeStateHolder(): RuntimeBridgeStateHolder {
+        return runtimeBridgeStateHolder
     }
 
     override fun moduleProvider(): ModuleProvider {

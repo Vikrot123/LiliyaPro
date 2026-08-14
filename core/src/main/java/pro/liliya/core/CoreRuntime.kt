@@ -82,7 +82,8 @@ object CoreRuntime {
     private val runtimeActionDispatcher =
         runtimeComposition.actionDispatcher()
 
-    private var runtimeObserverBridgeInstalled = false
+    private val runtimeBridgeStateHolder =
+        runtimeComposition.runtimeBridgeStateHolder()
 
 
 
@@ -95,7 +96,7 @@ object CoreRuntime {
     private val runtimeStateHolder =
         runtimeComposition.runtimeStateHolder()
 
-    private var moduleEventBridgeInstalled = false
+
 
 private val runtimeServiceBootstrapHolder =
         runtimeComposition.runtimeServiceBootstrapHolder()
@@ -292,7 +293,7 @@ private val runtimeServiceProviderHolder =
 
 
     private fun installRuntimeObserverBridge() {
-        if (runtimeObserverBridgeInstalled) {
+        if (runtimeBridgeStateHolder.isRuntimeObserverBridgeInstalled()) {
             return
         }
 
@@ -301,7 +302,7 @@ private val runtimeServiceProviderHolder =
         runtimeObserverRegistry.subscribe(
             runtimeTelemetryObserver
         )
-        runtimeObserverBridgeInstalled = true
+        runtimeBridgeStateHolder.markRuntimeObserverBridgeInstalled()
     }
 
     private fun installModuleEventBridge() {
@@ -326,7 +327,7 @@ private val runtimeServiceProviderHolder =
             }
         }
 
-        moduleEventBridgeInstalled = true
+        runtimeBridgeStateHolder.markModuleEventBridgeInstalled()
     }
 
     fun start() {
@@ -479,7 +480,7 @@ private val runtimeServiceProviderHolder =
             runtimeTelemetryObserver
         )
 
-        runtimeObserverBridgeInstalled = false
+        runtimeBridgeStateHolder.reset()
 
         logger.info(
             LogConfig.SYSTEM_STOP,
