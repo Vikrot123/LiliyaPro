@@ -8,7 +8,7 @@ import pro.liliya.core.runtime.RuntimeService
 import pro.liliya.core.runtime.RuntimeServiceRegistry
 import pro.liliya.core.runtime.RuntimeServiceProvider
 import pro.liliya.core.runtime.RuntimeServiceBootstrap
-import pro.liliya.core.runtime.composition.DefaultRuntimeComposition
+import pro.liliya.core.runtime.composition.RuntimeCompositionFactory
 import pro.liliya.core.runtime.monitor.RuntimeMonitor
 import pro.liliya.core.runtime.lifecycle.DefaultRuntimeLifecycleRecorder
 import pro.liliya.core.runtime.lifecycle.RuntimeLifecycleRecorder
@@ -43,7 +43,7 @@ import pro.liliya.core.runtime.telemetry.RuntimeTelemetrySnapshot
 object CoreRuntime {
 
     private val runtimeComposition =
-        DefaultRuntimeComposition()
+        RuntimeCompositionFactory.create()
 
     private val context = runtimeComposition.context()
 
