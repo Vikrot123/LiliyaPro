@@ -56,12 +56,10 @@ object CoreRuntime {
 
     private val diagnosticEventBus = context.diagnosticEventBus
 
-    private val runtimeDiagnosticsService =
-        runtimeComposition.diagnosticsService()
 
     private val runtimeMonitor: RuntimeMonitor =
         runtimeComposition.runtimeMonitor(
-            runtimeDiagnosticsService,
+            runtimeComposition.diagnosticsService(),
             runtimeComposition.lifecycleRecorder()
         )
 
@@ -91,7 +89,7 @@ object CoreRuntime {
     }
 
     fun diagnostics(): CoreRuntimeDiagnosticsSnapshot {
-        return runtimeDiagnosticsService.snapshot()
+        return runtimeComposition.diagnosticsService().snapshot()
     }
 
     fun monitor(): pro.liliya.core.runtime.monitor.RuntimeMonitorSnapshot {
