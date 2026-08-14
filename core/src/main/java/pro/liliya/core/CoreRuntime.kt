@@ -53,9 +53,6 @@ object CoreRuntime {
 
 
 
-    private val runtimeMonitor: RuntimeMonitor =
-        runtimeComposition.runtimeMonitor()
-
     private val logger: Logger
         get() = LoggerFactory.create(
             module = "CORE",
@@ -86,7 +83,7 @@ object CoreRuntime {
     }
 
     fun monitor(): pro.liliya.core.runtime.monitor.RuntimeMonitorSnapshot {
-        return runtimeMonitor.snapshot()
+        return runtimeComposition.runtimeMonitor().snapshot()
     }
 
     fun registerRuntimeService(service: RuntimeService) {
