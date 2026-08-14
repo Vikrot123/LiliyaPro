@@ -41,7 +41,6 @@ object CoreRuntime {
     private val runtimeComposition =
         RuntimeCompositionFactory.create()
 
-    private val context = runtimeComposition.context()
 
 
 
@@ -52,9 +51,6 @@ object CoreRuntime {
 
 
 
-
-
-    private val diagnosticEventBus = context.diagnosticEventBus
 
 
     private val runtimeMonitor: RuntimeMonitor =
@@ -124,13 +120,13 @@ object CoreRuntime {
     fun registerDiagnosticListener(
         listener: CoreDiagnosticEventListener
     ) {
-        diagnosticEventBus.register(listener)
+        runtimeComposition.context().diagnosticEventBus.register(listener)
     }
 
     fun unregisterDiagnosticListener(
         listener: CoreDiagnosticEventListener
     ) {
-        diagnosticEventBus.unregister(listener)
+        runtimeComposition.context().diagnosticEventBus.unregister(listener)
     }
 
     fun registerRuntimeObserver(observer: RuntimeObserver) {
@@ -318,7 +314,7 @@ object CoreRuntime {
                 RuntimeLifecycleEvent.STARTED
             )
 
-            diagnosticEventBus.publish(
+            runtimeComposition.context().diagnosticEventBus.publish(
                 CoreDiagnosticEvent(
                     type = CoreDiagnosticEventType.RUNTIME_STARTED,
                     snapshot = snapshot()
@@ -357,7 +353,7 @@ object CoreRuntime {
                 runtimeComposition.runtimeStateHolder().failureReason()
             )
 
-            diagnosticEventBus.publish(
+            runtimeComposition.context().diagnosticEventBus.publish(
                 CoreDiagnosticEvent(
                     type = CoreDiagnosticEventType.RUNTIME_FAILED,
                     snapshot = snapshot()
@@ -402,7 +398,7 @@ object CoreRuntime {
           runtimeComposition.runtimeStateHolder().setFailureReason(null)
           runtimeComposition.runtimeStateHolder().setModuleStates(emptyMap())
 
-        diagnosticEventBus.publish(
+        runtimeComposition.context().diagnosticEventBus.publish(
             CoreDiagnosticEvent(
                 type = CoreDiagnosticEventType.RUNTIME_STOPPED,
                 snapshot = snapshot()
