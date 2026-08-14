@@ -369,7 +369,7 @@ object CoreRuntime {
             return
         }
 
-        runtimeComposition.runtimeServiceBootstrapHolder().get().stop()
+        runtimeComposition.stopRuntimeServices()
 
         runtimeComposition.moduleManagerHolder().get()?.stopModules()
 
