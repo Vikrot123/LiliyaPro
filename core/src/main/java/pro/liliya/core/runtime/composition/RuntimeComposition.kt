@@ -58,6 +58,11 @@ interface RuntimeComposition {
     fun setModuleStates(states: Map<String, ModuleState>)
 
     fun runtimeBridgeStateHolder(): RuntimeBridgeStateHolder
+    fun isRuntimeObserverBridgeInstalled(): Boolean
+    fun markRuntimeObserverBridgeInstalled()
+    fun markModuleEventBridgeInstalled()
+    fun resetRuntimeBridgeState()
+
 
     fun createModuleManager(
         registry: ModuleRegistry,

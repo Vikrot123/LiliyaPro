@@ -278,6 +278,23 @@ class DefaultRuntimeComposition : RuntimeComposition {
         return runtimeBridgeStateHolder
     }
 
+    override fun isRuntimeObserverBridgeInstalled(): Boolean {
+        return runtimeBridgeStateHolder.isRuntimeObserverBridgeInstalled()
+    }
+
+    override fun markRuntimeObserverBridgeInstalled() {
+        runtimeBridgeStateHolder.markRuntimeObserverBridgeInstalled()
+    }
+
+    override fun markModuleEventBridgeInstalled() {
+        runtimeBridgeStateHolder.markModuleEventBridgeInstalled()
+    }
+
+    override fun resetRuntimeBridgeState() {
+        runtimeBridgeStateHolder.reset()
+    }
+
+
     override fun moduleProvider(): ModuleProvider {
         return moduleProvider
     }

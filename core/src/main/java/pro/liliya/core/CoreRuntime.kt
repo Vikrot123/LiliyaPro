@@ -216,7 +216,7 @@ object CoreRuntime {
 
 
     private fun installRuntimeObserverBridge() {
-        if (runtimeComposition.runtimeBridgeStateHolder().isRuntimeObserverBridgeInstalled()) {
+        if (runtimeComposition.isRuntimeObserverBridgeInstalled()) {
             return
         }
 
@@ -225,7 +225,7 @@ object CoreRuntime {
         runtimeComposition.observerRegistry().subscribe(
             runtimeComposition.telemetryObserver()
         )
-        runtimeComposition.runtimeBridgeStateHolder().markRuntimeObserverBridgeInstalled()
+        runtimeComposition.markRuntimeObserverBridgeInstalled()
     }
 
     private fun installModuleEventBridge() {
@@ -250,7 +250,7 @@ object CoreRuntime {
             }
         }
 
-        runtimeComposition.runtimeBridgeStateHolder().markModuleEventBridgeInstalled()
+        runtimeComposition.markModuleEventBridgeInstalled()
     }
 
     fun start() {
@@ -401,7 +401,7 @@ object CoreRuntime {
             runtimeComposition.telemetryObserver()
         )
 
-        runtimeComposition.runtimeBridgeStateHolder().reset()
+        runtimeComposition.resetRuntimeBridgeState()
 
         logger.info(
             LogConfig.SYSTEM_STOP,
