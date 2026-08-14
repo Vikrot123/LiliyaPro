@@ -110,20 +110,7 @@ private var runtimeServiceProvider: RuntimeServiceProvider =
     private val diagnosticEventBus = context.diagnosticEventBus
 
     private val runtimeDiagnosticsService =
-        DefaultCoreRuntimeDiagnosticsService(
-            CoreDiagnosticProvider {
-                CoreDiagnosticSnapshot(
-                    runtimeState = runtimeState,
-                    moduleStates = moduleManager?.getModuleStates()
-                        ?: lastModuleStates,
-                    runtimeServiceStates = runtimeServiceBootstrap.getStates(),
-                    runtimeServiceFailures = runtimeServiceBootstrap.getFailures(),
-                    runtimeServiceHealth = runtimeServiceBootstrap.getHealth(),
-                    runtimeRecoverySnapshot = runtimeServiceBootstrap.getRecoverySnapshot(),
-                    failureReason = lastFailureReason
-                )
-            }
-        )
+        runtimeComposition.diagnosticsService()
 
     private val runtimeLifecycleRecorder: RuntimeLifecycleRecorder =
         runtimeComposition.lifecycleRecorder()

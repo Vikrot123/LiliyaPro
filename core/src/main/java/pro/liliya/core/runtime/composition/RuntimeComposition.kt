@@ -25,6 +25,8 @@ interface RuntimeComposition {
     fun context(): CoreRuntimeContext
 
     fun moduleProvider(): pro.liliya.core.module.ModuleProvider
+    fun diagnosticsService(): CoreRuntimeDiagnosticsService
+
     fun observerRegistry(): DefaultRuntimeObserverRegistry
 
     fun observerBridge(): RuntimeObserverBridge
