@@ -5,6 +5,7 @@ import pro.liliya.core.DefaultCoreRuntimeDiagnosticsService
 import pro.liliya.core.CoreDiagnosticProvider
 import pro.liliya.core.CoreRuntimeContext
 import pro.liliya.core.module.ModuleProvider
+import pro.liliya.core.module.ModuleProviderHolder
 import pro.liliya.core.module.CoreModuleProvider
 import pro.liliya.core.module.ModuleRegistry
 import pro.liliya.core.module.ModuleManager
@@ -44,6 +45,7 @@ class DefaultRuntimeComposition : RuntimeComposition {
 
 
 
+
     private val diagnosticsService: CoreRuntimeDiagnosticsService =
         DefaultCoreRuntimeDiagnosticsService(
             CoreDiagnosticProvider()
@@ -55,6 +57,12 @@ class DefaultRuntimeComposition : RuntimeComposition {
 
     private val moduleProvider: ModuleProvider =
         CoreModuleProvider()
+
+
+    private val moduleProviderHolder =
+        ModuleProviderHolder(
+            moduleProvider
+        )
 
 
     private val observerRegistry =
@@ -142,6 +150,10 @@ class DefaultRuntimeComposition : RuntimeComposition {
             registry = registry,
             provider = provider
         )
+    }
+
+    override fun moduleProviderHolder(): ModuleProviderHolder {
+        return moduleProviderHolder
     }
 
     override fun moduleProvider(): ModuleProvider {

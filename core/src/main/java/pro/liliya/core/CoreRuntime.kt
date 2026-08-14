@@ -88,8 +88,8 @@ object CoreRuntime {
 
     private var moduleManager: ModuleManager? = null
 
-    private var moduleProvider: pro.liliya.core.module.ModuleProvider =
-        runtimeComposition.moduleProvider()
+    private val moduleProviderHolder =
+        runtimeComposition.moduleProviderHolder()
 
     private var runtimeState = CoreRuntimeState.STOPPED
 
@@ -359,7 +359,7 @@ private var runtimeServiceProvider: RuntimeServiceProvider =
 
         val manager = runtimeComposition.createModuleManager(
                 registry = runtimeComposition.createModuleRegistry(),
-                provider = moduleProvider
+                provider = moduleProviderHolder.get()
             )
 
             try {
@@ -437,11 +437,11 @@ private var runtimeServiceProvider: RuntimeServiceProvider =
     internal fun setModuleProvider(
         provider: pro.liliya.core.module.ModuleProvider
     ) {
-        moduleProvider = provider
+        moduleProviderHolder.set(provider)
     }
 
     internal fun resetModuleProvider() {
-        moduleProvider = runtimeComposition.moduleProvider()
+        moduleProviderHolder.reset()
     }
 
     fun stop() {
