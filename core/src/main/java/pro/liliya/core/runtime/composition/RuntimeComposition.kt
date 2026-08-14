@@ -51,6 +51,7 @@ interface RuntimeComposition {
     fun stopModuleRuntime(
         manager: ModuleManager
     )
+    fun clearModuleRuntime()
     fun moduleProvider(): pro.liliya.core.module.ModuleProvider
     fun moduleProviderHolder(): ModuleProviderHolder
 

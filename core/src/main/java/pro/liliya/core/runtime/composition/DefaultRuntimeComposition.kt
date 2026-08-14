@@ -205,6 +205,10 @@ class DefaultRuntimeComposition : RuntimeComposition {
         manager.stopModules()
     }
 
+    override fun clearModuleRuntime() {
+        moduleManagerHolder.clear()
+    }
+
     override fun moduleProviderHolder(): ModuleProviderHolder {
         return moduleProviderHolder
     }

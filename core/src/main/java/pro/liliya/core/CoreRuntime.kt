@@ -328,7 +328,7 @@ object CoreRuntime {
             } catch (_: Exception) {
             }
 
-            runtimeComposition.moduleManagerHolder().clear()
+            runtimeComposition.clearModuleRuntime()
             runtimeComposition.runtimeStateHolder().setFailureReason(error.message ?: "unknown")
             runtimeComposition.runtimeStateHolder().setState(CoreRuntimeState.FAILED)
 
@@ -375,7 +375,7 @@ object CoreRuntime {
             runtimeComposition.stopModuleRuntime(it)
         }
 
-        runtimeComposition.moduleManagerHolder().clear()
+        runtimeComposition.clearModuleRuntime()
           runtimeComposition.runtimeStateHolder().setState(CoreRuntimeState.STOPPED)
 
         runtimeComposition.lifecycleRecorder().record(
