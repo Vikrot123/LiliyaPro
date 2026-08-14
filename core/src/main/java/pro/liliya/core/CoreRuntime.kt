@@ -286,8 +286,7 @@ object CoreRuntime {
             try {
             runtimeComposition.moduleManagerHolder().set(manager)
 
-            manager.loadModules()
-            manager.startModules()
+            runtimeComposition.startModuleRuntime(manager)
 
             runtimeComposition.runtimeServiceBootstrapHolder().get().start()
 

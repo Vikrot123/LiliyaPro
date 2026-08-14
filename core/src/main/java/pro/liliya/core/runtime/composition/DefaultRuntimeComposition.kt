@@ -192,6 +192,13 @@ class DefaultRuntimeComposition : RuntimeComposition {
         )
     }
 
+    override fun startModuleRuntime(
+        manager: ModuleManager
+    ) {
+        manager.loadModules()
+        manager.startModules()
+    }
+
     override fun moduleProviderHolder(): ModuleProviderHolder {
         return moduleProviderHolder
     }

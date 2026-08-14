@@ -45,6 +45,9 @@ interface RuntimeComposition {
     ): ModuleManager
 
     fun createModuleRuntime(): ModuleManager
+    fun startModuleRuntime(
+        manager: ModuleManager
+    )
     fun moduleProvider(): pro.liliya.core.module.ModuleProvider
     fun moduleProviderHolder(): ModuleProviderHolder
 
