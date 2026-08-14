@@ -190,6 +190,16 @@ class DefaultRuntimeComposition : RuntimeComposition {
         return moduleProviderHolder
     }
 
+    override fun setModuleProvider(
+        provider: ModuleProvider
+    ) {
+        moduleProviderHolder.set(provider)
+    }
+
+    override fun resetModuleProvider() {
+        moduleProviderHolder.reset()
+    }
+
     override fun moduleManagerHolder(): ModuleManagerHolder {
         return moduleManagerHolder
     }

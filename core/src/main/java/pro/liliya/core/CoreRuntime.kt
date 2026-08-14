@@ -86,8 +86,6 @@ object CoreRuntime {
     private val moduleManagerHolder =
         runtimeComposition.moduleManagerHolder()
 
-    private val moduleProviderHolder =
-        runtimeComposition.moduleProviderHolder()
 
     private val runtimeStateHolder =
         runtimeComposition.runtimeStateHolder()
@@ -431,11 +429,11 @@ private val runtimeServiceProviderHolder =
     internal fun setModuleProvider(
         provider: pro.liliya.core.module.ModuleProvider
     ) {
-        moduleProviderHolder.set(provider)
+        runtimeComposition.setModuleProvider(provider)
     }
 
     internal fun resetModuleProvider() {
-        moduleProviderHolder.reset()
+        runtimeComposition.resetModuleProvider()
     }
 
     fun stop() {

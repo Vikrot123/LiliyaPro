@@ -5,6 +5,7 @@ import pro.liliya.core.CoreRuntimeDiagnosticsService
 import pro.liliya.core.CoreRuntimeContext
 import pro.liliya.core.module.ModuleRegistry
 import pro.liliya.core.module.ModuleProviderHolder
+import pro.liliya.core.module.ModuleProvider
 import pro.liliya.core.module.ModuleManager
 import pro.liliya.core.module.ModuleManagerHolder
 import pro.liliya.core.runtime.lifecycle.RuntimeLifecycleRecorder
@@ -46,6 +47,12 @@ interface RuntimeComposition {
     fun createModuleRuntime(): ModuleManager
     fun moduleProvider(): pro.liliya.core.module.ModuleProvider
     fun moduleProviderHolder(): ModuleProviderHolder
+
+    fun setModuleProvider(
+        provider: ModuleProvider
+    )
+
+    fun resetModuleProvider()
     fun diagnosticsService(): CoreRuntimeDiagnosticsService
 
     fun observerRegistry(): DefaultRuntimeObserverRegistry
