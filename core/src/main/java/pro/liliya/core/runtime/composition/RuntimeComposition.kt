@@ -119,6 +119,10 @@ interface RuntimeComposition {
     fun defaultRuntimeControl(): RuntimeControl
     fun serviceProvider(): RuntimeServiceProvider
     fun runtimeServiceProviderHolder(): RuntimeServiceProviderHolder
+    fun setRuntimeServiceProvider(provider: RuntimeServiceProvider)
+    fun runtimeServiceProvider(): RuntimeServiceProvider
+    fun resetRuntimeServiceProvider()
+
     fun serviceBootstrap(): RuntimeServiceBootstrap
     fun runtimeServiceBootstrapHolder(): RuntimeServiceBootstrapHolder
 

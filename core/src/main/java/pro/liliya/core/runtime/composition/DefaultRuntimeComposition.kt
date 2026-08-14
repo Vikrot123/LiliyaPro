@@ -362,6 +362,20 @@ class DefaultRuntimeComposition : RuntimeComposition {
         return runtimeServiceProviderHolder
     }
 
+    override fun setRuntimeServiceProvider(provider: RuntimeServiceProvider) {
+        runtimeServiceProviderHolder.set(provider)
+    }
+
+    override fun runtimeServiceProvider(): RuntimeServiceProvider {
+        return runtimeServiceProviderHolder.get()
+            ?: error("RuntimeServiceProvider is not initialized")
+    }
+
+    override fun resetRuntimeServiceProvider() {
+        runtimeServiceProviderHolder.reset()
+    }
+
+
     override fun serviceBootstrap(): RuntimeServiceBootstrap {
         return serviceBootstrap
     }
