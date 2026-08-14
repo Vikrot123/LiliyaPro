@@ -8,6 +8,7 @@ import pro.liliya.core.module.ModuleProviderHolder
 import pro.liliya.core.module.ModuleManager
 import pro.liliya.core.module.ModuleManagerHolder
 import pro.liliya.core.runtime.lifecycle.RuntimeLifecycleRecorder
+import pro.liliya.core.runtime.lifecycle.RuntimeLifecycleRecorderHolder
 import pro.liliya.core.runtime.observer.RuntimeObserverBridge
 import pro.liliya.core.runtime.observer.DefaultRuntimeObserverRegistry
 import pro.liliya.core.runtime.policy.RuntimeActionPolicyEvaluator
@@ -52,6 +53,8 @@ interface RuntimeComposition {
     fun actionPolicyEvaluator(): RuntimeActionPolicyEvaluator
 
     fun lifecycleRecorder(): RuntimeLifecycleRecorder
+
+    fun lifecycleRecorderHolder(): RuntimeLifecycleRecorderHolder
 
     fun healthProvider(): RuntimeHealthProvider
 

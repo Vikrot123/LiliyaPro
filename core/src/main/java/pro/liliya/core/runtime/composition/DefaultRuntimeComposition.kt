@@ -13,6 +13,7 @@ import pro.liliya.core.module.ModuleManager
 import pro.liliya.core.module.ModuleManagerHolder
 import pro.liliya.core.runtime.lifecycle.DefaultRuntimeLifecycleRecorder
 import pro.liliya.core.runtime.lifecycle.RuntimeLifecycleRecorder
+import pro.liliya.core.runtime.lifecycle.RuntimeLifecycleRecorderHolder
 import pro.liliya.core.runtime.observer.DefaultRuntimeObserverRegistry
 import pro.liliya.core.runtime.observer.RuntimeObserverBridge
 import pro.liliya.core.runtime.policy.DefaultRuntimeActionPolicyEvaluator
@@ -89,6 +90,9 @@ class DefaultRuntimeComposition : RuntimeComposition {
 
     private val lifecycleRecorder: RuntimeLifecycleRecorder =
         DefaultRuntimeLifecycleRecorder()
+
+    private val lifecycleRecorderHolder =
+        RuntimeLifecycleRecorderHolder(lifecycleRecorder)
 
     private val healthProvider =
         RuntimeHealthProvider()
@@ -208,7 +212,11 @@ class DefaultRuntimeComposition : RuntimeComposition {
     }
 
     override fun lifecycleRecorder(): RuntimeLifecycleRecorder {
-        return lifecycleRecorder
+        return lifecycleRecorderHolder.get()
+    }
+
+    override fun lifecycleRecorderHolder(): RuntimeLifecycleRecorderHolder {
+        return lifecycleRecorderHolder
     }
 
     override fun healthProvider(): RuntimeHealthProvider {
