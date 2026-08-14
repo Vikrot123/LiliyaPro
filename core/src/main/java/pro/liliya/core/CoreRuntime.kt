@@ -86,7 +86,8 @@ object CoreRuntime {
 
 
 
-    private var moduleManager: ModuleManager? = null
+    private val moduleManagerHolder =
+        runtimeComposition.moduleManagerHolder()
 
     private val moduleProviderHolder =
         runtimeComposition.moduleProviderHolder()
@@ -134,7 +135,7 @@ private val runtimeServiceProviderHolder =
     fun snapshot(): CoreDiagnosticSnapshot {
         return CoreDiagnosticSnapshot(
             runtimeState = runtimeState,
-            moduleStates = moduleManager?.getModuleStates()
+            moduleStates = moduleManagerHolder.get()?.getModuleStates()
                 ?: lastModuleStates,
             runtimeServiceStates = runtimeServiceBootstrapHolder.get().getStates(),
             runtimeServiceFailures = runtimeServiceBootstrapHolder.get().getFailures(),
@@ -366,7 +367,7 @@ private val runtimeServiceProviderHolder =
             )
 
             try {
-            moduleManager = manager
+            moduleManagerHolder.set(manager)
 
             manager.loadModules()
             manager.startModules()
@@ -411,7 +412,7 @@ private val runtimeServiceProviderHolder =
             } catch (_: Exception) {
             }
 
-            moduleManager = null
+            moduleManagerHolder.clear()
             lastFailureReason = error.message ?: "unknown"
             runtimeState = CoreRuntimeState.FAILED
 
@@ -454,9 +455,9 @@ private val runtimeServiceProviderHolder =
 
         runtimeServiceBootstrapHolder.get().stop()
 
-        moduleManager?.stopModules()
+        moduleManagerHolder.get()?.stopModules()
 
-        moduleManager = null
+        moduleManagerHolder.clear()
           runtimeState = CoreRuntimeState.STOPPED
 
         runtimeLifecycleRecorder.record(

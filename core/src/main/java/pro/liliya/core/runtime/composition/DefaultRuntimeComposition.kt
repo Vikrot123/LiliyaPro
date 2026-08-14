@@ -9,6 +9,7 @@ import pro.liliya.core.module.ModuleProviderHolder
 import pro.liliya.core.module.CoreModuleProvider
 import pro.liliya.core.module.ModuleRegistry
 import pro.liliya.core.module.ModuleManager
+import pro.liliya.core.module.ModuleManagerHolder
 import pro.liliya.core.runtime.lifecycle.DefaultRuntimeLifecycleRecorder
 import pro.liliya.core.runtime.lifecycle.RuntimeLifecycleRecorder
 import pro.liliya.core.runtime.observer.DefaultRuntimeObserverRegistry
@@ -65,6 +66,9 @@ class DefaultRuntimeComposition : RuntimeComposition {
         ModuleProviderHolder(
             moduleProvider
         )
+
+    private val moduleManagerHolder =
+        ModuleManagerHolder()
 
 
     private val observerRegistry =
@@ -166,6 +170,10 @@ class DefaultRuntimeComposition : RuntimeComposition {
 
     override fun moduleProviderHolder(): ModuleProviderHolder {
         return moduleProviderHolder
+    }
+
+    override fun moduleManagerHolder(): ModuleManagerHolder {
+        return moduleManagerHolder
     }
 
     override fun moduleProvider(): ModuleProvider {
