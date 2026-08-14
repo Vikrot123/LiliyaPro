@@ -19,6 +19,8 @@ import pro.liliya.core.runtime.health.RuntimeHealthProvider
 import pro.liliya.core.runtime.health.RuntimeFailureTracker
 import pro.liliya.core.runtime.health.RuntimeRecoveryTracker
 import pro.liliya.core.runtime.health.RuntimeHealthReportProvider
+import pro.liliya.core.runtime.health.RuntimeHealthReport
+import pro.liliya.core.runtime.health.RuntimeFailureHealthSnapshot
 import pro.liliya.core.runtime.status.RuntimeStatusProvider
 import pro.liliya.core.runtime.monitor.RuntimeMonitor
 import pro.liliya.core.runtime.telemetry.RuntimeTelemetryObserver
@@ -36,6 +38,7 @@ import pro.liliya.core.runtime.RuntimeServiceState
 import pro.liliya.core.runtime.RuntimeServiceFailure
 import pro.liliya.core.runtime.RuntimeServiceHealth
 import pro.liliya.core.runtime.RuntimeRecoverySnapshot
+import pro.liliya.core.runtime.health.RuntimeRecoverySnapshot as HealthRecoverySnapshot
 import pro.liliya.core.runtime.health.RuntimeHealthSnapshot
 import pro.liliya.core.runtime.telemetry.RuntimeTelemetrySnapshot
 
@@ -112,6 +115,13 @@ interface RuntimeComposition {
     fun recoveryTracker(): RuntimeRecoveryTracker
 
     fun healthReportProvider(): RuntimeHealthReportProvider
+    fun createHealthReport(
+        state: CoreRuntimeState,
+        telemetry: RuntimeTelemetrySnapshot,
+        failure: RuntimeFailureHealthSnapshot,
+        recovery: HealthRecoverySnapshot
+    ): RuntimeHealthReport
+
 
     fun statusProvider(): RuntimeStatusProvider
 

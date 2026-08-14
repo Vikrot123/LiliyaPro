@@ -147,7 +147,7 @@ object CoreRuntime {
     }
     
     fun getRuntimeHealthReport(): RuntimeHealthReport {
-        return runtimeComposition.healthReportProvider().createReport(
+        return runtimeComposition.createHealthReport(
             state = runtimeComposition.runtimeState(),
             telemetry = runtimeComposition.telemetryObserver().snapshot(),
             failure = runtimeComposition.failureTracker().snapshot(),
