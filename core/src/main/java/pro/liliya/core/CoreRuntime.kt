@@ -55,7 +55,7 @@ object CoreRuntime {
     fun snapshot(): CoreDiagnosticSnapshot {
         return CoreDiagnosticSnapshot(
             runtimeState = runtimeComposition.runtimeState(),
-            moduleStates = runtimeComposition.moduleManagerHolder().get()?.getModuleStates()
+            moduleStates = runtimeComposition.moduleManager()?.getModuleStates()
                 ?: runtimeComposition.moduleStates(),
             runtimeServiceStates = runtimeComposition.runtimeServiceStates(),
             runtimeServiceFailures = runtimeComposition.runtimeServiceFailures(),
@@ -284,7 +284,7 @@ object CoreRuntime {
         val manager = runtimeComposition.createModuleRuntime()
 
             try {
-            runtimeComposition.moduleManagerHolder().set(manager)
+            runtimeComposition.setModuleManager(manager)
 
             runtimeComposition.startModuleRuntime(manager)
 
@@ -371,7 +371,7 @@ object CoreRuntime {
 
         runtimeComposition.stopRuntimeServices()
 
-        runtimeComposition.moduleManagerHolder().get()?.let {
+        runtimeComposition.moduleManager()?.let {
             runtimeComposition.stopModuleRuntime(it)
         }
 

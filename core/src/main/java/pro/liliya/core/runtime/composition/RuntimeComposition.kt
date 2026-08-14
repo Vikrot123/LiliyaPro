@@ -43,6 +43,10 @@ interface RuntimeComposition {
 
     fun createModuleRegistry(): ModuleRegistry
     fun moduleManagerHolder(): ModuleManagerHolder
+    fun moduleManager(): ModuleManager?
+    fun setModuleManager(manager: ModuleManager)
+    fun clearModuleManager()
+
     fun runtimeStateHolder(): CoreRuntimeStateHolder
 
     fun runtimeState(): CoreRuntimeState

@@ -234,6 +234,18 @@ class DefaultRuntimeComposition : RuntimeComposition {
         return moduleManagerHolder
     }
 
+    override fun moduleManager(): ModuleManager? {
+        return moduleManagerHolder.get()
+    }
+
+    override fun setModuleManager(manager: ModuleManager) {
+        moduleManagerHolder.set(manager)
+    }
+
+    override fun clearModuleManager() {
+        moduleManagerHolder.clear()
+    }
+
     override fun runtimeStateHolder(): CoreRuntimeStateHolder {
         return runtimeStateHolder
     }
