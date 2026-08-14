@@ -103,8 +103,8 @@ object CoreRuntime {
 private var runtimeServiceBootstrap =
         runtimeComposition.serviceBootstrap()
 
-private var runtimeServiceProvider: RuntimeServiceProvider =
-        runtimeComposition.serviceProvider()
+private val runtimeServiceProviderHolder =
+        runtimeComposition.runtimeServiceProviderHolder()
 
     private val diagnosticEventBus = context.diagnosticEventBus
 
@@ -160,19 +160,19 @@ private var runtimeServiceProvider: RuntimeServiceProvider =
     internal fun setRuntimeServiceProvider(
         provider: RuntimeServiceProvider
     ) {
-        runtimeServiceProvider = provider
+        runtimeServiceProviderHolder.set(provider)
         runtimeServiceBootstrap =
             runtimeComposition.createServiceBootstrap(
-                runtimeServiceProvider
+                runtimeServiceProviderHolder.get()
             )
     }
 
     internal fun resetRuntimeServiceProvider() {
-        runtimeServiceProvider = runtimeComposition.serviceProvider()
+        runtimeServiceProviderHolder.reset()
 
         runtimeServiceBootstrap =
             runtimeComposition.createServiceBootstrap(
-                runtimeServiceProvider
+                runtimeServiceProviderHolder.get()
             )
     }
 

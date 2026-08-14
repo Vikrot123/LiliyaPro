@@ -38,6 +38,7 @@ import pro.liliya.core.runtime.dispatcher.RuntimeActionHandlerRegistry
 import pro.liliya.core.runtime.dispatcher.RuntimeActionDispatcher
 import pro.liliya.core.runtime.RuntimeServiceBootstrap
 import pro.liliya.core.runtime.RuntimeServiceProvider
+import pro.liliya.core.runtime.RuntimeServiceProviderHolder
 import pro.liliya.core.runtime.CoreRuntimeServiceProvider
 import pro.liliya.core.runtime.RuntimeServiceRegistry
 
@@ -124,6 +125,11 @@ class DefaultRuntimeComposition : RuntimeComposition {
 
     private val serviceProvider =
         CoreRuntimeServiceProvider()
+
+    private val runtimeServiceProviderHolder =
+        RuntimeServiceProviderHolder(
+            serviceProvider
+        )
 
     private val serviceBootstrap =
         createServiceBootstrap(
@@ -230,6 +236,10 @@ class DefaultRuntimeComposition : RuntimeComposition {
 
     override fun serviceProvider(): RuntimeServiceProvider {
         return serviceProvider
+    }
+
+    override fun runtimeServiceProviderHolder(): RuntimeServiceProviderHolder {
+        return runtimeServiceProviderHolder
     }
 
     override fun serviceBootstrap(): RuntimeServiceBootstrap {
