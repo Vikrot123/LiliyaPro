@@ -50,8 +50,6 @@ object CoreRuntime {
 
     private val runtimeRecoveryTracker =
         runtimeComposition.recoveryTracker()
-    private val runtimeCommandHistory =
-        runtimeComposition.commandHistory()
 
     private val runtimeActionPolicyEvaluator =
         runtimeComposition.actionPolicyEvaluator()
@@ -203,7 +201,7 @@ object CoreRuntime {
 
 
     fun getRuntimeCommandHistory(): List<RuntimeCommandRecord> {
-        return runtimeCommandHistory.snapshot()
+        return runtimeComposition.commandHistory().snapshot()
     }
 
     fun getRuntimeActionAudit(): List<RuntimeActionAuditRecord> {
@@ -237,7 +235,7 @@ object CoreRuntime {
                 message = "Runtime control is not available"
             )
 
-        runtimeCommandHistory.record(
+        runtimeComposition.commandHistory().record(
             RuntimeCommandRecord(
                 command = result.command,
                 success = result.success,
