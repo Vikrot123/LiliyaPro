@@ -43,10 +43,10 @@ import pro.liliya.core.runtime.telemetry.RuntimeTelemetrySnapshot
 
 object CoreRuntime {
 
-    private val context = CoreRuntimeContext()
-
     private val runtimeComposition =
         DefaultRuntimeComposition()
+
+    private val context = runtimeComposition.context()
 
     private val runtimeObserverRegistry =
         runtimeComposition.observerRegistry()
