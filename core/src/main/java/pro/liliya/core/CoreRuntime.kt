@@ -45,12 +45,6 @@ object CoreRuntime {
 
 
 
-    private val runtimeFailureTracker =
-        runtimeComposition.failureTracker()
-
-    private val runtimeRecoveryTracker =
-        runtimeComposition.recoveryTracker()
-
 
 
 
@@ -171,20 +165,20 @@ object CoreRuntime {
 
     fun getRuntimeFailureHealthSnapshot():
         RuntimeFailureHealthSnapshot {
-        return runtimeFailureTracker.snapshot()
+        return runtimeComposition.failureTracker().snapshot()
     }
     
     fun getRuntimeRecoverySnapshot():
         RuntimeRecoverySnapshot {
-        return runtimeRecoveryTracker.snapshot()
+        return runtimeComposition.recoveryTracker().snapshot()
     }
     
     fun getRuntimeHealthReport(): RuntimeHealthReport {
         return runtimeComposition.healthReportProvider().createReport(
             state = runtimeComposition.runtimeStateHolder().state(),
             telemetry = runtimeComposition.telemetryObserver().snapshot(),
-            failure = runtimeFailureTracker.snapshot(),
-            recovery = runtimeRecoveryTracker.snapshot()
+            failure = runtimeComposition.failureTracker().snapshot(),
+            recovery = runtimeComposition.recoveryTracker().snapshot()
         )
     }
     
@@ -269,7 +263,7 @@ object CoreRuntime {
 
         ModuleEventBus.subscribe { event ->
             if (event is ModuleEvent.Failed) {
-                runtimeFailureTracker.recordFailure(
+                runtimeComposition.failureTracker().recordFailure(
                     reason = "${event.phase}: ${event.reason}",
                     module = event.moduleName
                 )
@@ -296,7 +290,7 @@ object CoreRuntime {
         runtimeComposition.runtimeStateHolder().setState(CoreRuntimeState.STARTING)
 
         runtimeComposition.telemetryObserver().reset()
-        runtimeFailureTracker.clear()
+        runtimeComposition.failureTracker().clear()
 
         installRuntimeObserverBridge()
         installModuleEventBridge()
@@ -339,7 +333,7 @@ object CoreRuntime {
                 )
             )
 
-            runtimeRecoveryTracker.markRecovered()
+            runtimeComposition.recoveryTracker().markRecovered()
 
             RuntimeEventBus.publish(
                 RuntimeEvent.RuntimeReady
