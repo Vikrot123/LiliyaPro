@@ -80,9 +80,6 @@ object CoreRuntime {
 
 
 
-    private val moduleManagerHolder =
-        runtimeComposition.moduleManagerHolder()
-
 
 
 
@@ -118,7 +115,7 @@ private val runtimeServiceProviderHolder =
     fun snapshot(): CoreDiagnosticSnapshot {
         return CoreDiagnosticSnapshot(
             runtimeState = runtimeComposition.runtimeStateHolder().state(),
-            moduleStates = moduleManagerHolder.get()?.getModuleStates()
+            moduleStates = runtimeComposition.moduleManagerHolder().get()?.getModuleStates()
                 ?: runtimeComposition.runtimeStateHolder().moduleStates(),
             runtimeServiceStates = runtimeComposition.runtimeServiceBootstrapHolder().get().getStates(),
             runtimeServiceFailures = runtimeComposition.runtimeServiceBootstrapHolder().get().getFailures(),
@@ -347,7 +344,7 @@ private val runtimeServiceProviderHolder =
         val manager = runtimeComposition.createModuleRuntime()
 
             try {
-            moduleManagerHolder.set(manager)
+            runtimeComposition.moduleManagerHolder().set(manager)
 
             manager.loadModules()
             manager.startModules()
@@ -392,7 +389,7 @@ private val runtimeServiceProviderHolder =
             } catch (_: Exception) {
             }
 
-            moduleManagerHolder.clear()
+            runtimeComposition.moduleManagerHolder().clear()
             runtimeComposition.runtimeStateHolder().setFailureReason(error.message ?: "unknown")
             runtimeComposition.runtimeStateHolder().setState(CoreRuntimeState.FAILED)
 
@@ -435,9 +432,9 @@ private val runtimeServiceProviderHolder =
 
         runtimeComposition.runtimeServiceBootstrapHolder().get().stop()
 
-        moduleManagerHolder.get()?.stopModules()
+        runtimeComposition.moduleManagerHolder().get()?.stopModules()
 
-        moduleManagerHolder.clear()
+        runtimeComposition.moduleManagerHolder().clear()
           runtimeComposition.runtimeStateHolder().setState(CoreRuntimeState.STOPPED)
 
         runtimeLifecycleRecorder.record(
