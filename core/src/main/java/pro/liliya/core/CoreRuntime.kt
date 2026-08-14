@@ -59,13 +59,10 @@ object CoreRuntime {
     private val runtimeDiagnosticsService =
         runtimeComposition.diagnosticsService()
 
-    private val runtimeLifecycleRecorder: RuntimeLifecycleRecorder =
-        runtimeComposition.lifecycleRecorder()
-
     private val runtimeMonitor: RuntimeMonitor =
         runtimeComposition.runtimeMonitor(
             runtimeDiagnosticsService,
-            runtimeLifecycleRecorder
+            runtimeComposition.lifecycleRecorder()
         )
 
     private val logger: Logger
@@ -322,7 +319,7 @@ object CoreRuntime {
             runtimeComposition.registerRuntimeActionHandlers()
             runtimeComposition.runtimeStateHolder().setState(CoreRuntimeState.RUNNING)
 
-            runtimeLifecycleRecorder.record(
+            runtimeComposition.lifecycleRecorder().record(
                 RuntimeLifecycleEvent.STARTED
             )
 
@@ -360,7 +357,7 @@ object CoreRuntime {
             runtimeComposition.runtimeStateHolder().setFailureReason(error.message ?: "unknown")
             runtimeComposition.runtimeStateHolder().setState(CoreRuntimeState.FAILED)
 
-            runtimeLifecycleRecorder.record(
+            runtimeComposition.lifecycleRecorder().record(
                 RuntimeLifecycleEvent.FAILED,
                 runtimeComposition.runtimeStateHolder().failureReason()
             )
@@ -404,7 +401,7 @@ object CoreRuntime {
         runtimeComposition.moduleManagerHolder().clear()
           runtimeComposition.runtimeStateHolder().setState(CoreRuntimeState.STOPPED)
 
-        runtimeLifecycleRecorder.record(
+        runtimeComposition.lifecycleRecorder().record(
             RuntimeLifecycleEvent.STOPPED
         )
           runtimeComposition.runtimeStateHolder().setFailureReason(null)
