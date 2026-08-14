@@ -21,6 +21,7 @@ import pro.liliya.core.runtime.RuntimeServiceProvider
 
 interface RuntimeComposition {
 
+    fun moduleProvider(): pro.liliya.core.module.ModuleProvider
     fun observerRegistry(): DefaultRuntimeObserverRegistry
 
     fun observerBridge(): RuntimeObserverBridge

@@ -3,7 +3,6 @@ package pro.liliya.core
 import pro.liliya.core.logging.LogConfig
 import pro.liliya.core.logging.Logger
 import pro.liliya.core.logging.LoggerFactory
-import pro.liliya.core.module.CoreModuleProvider
 import pro.liliya.core.module.ModuleManager
 import pro.liliya.core.module.ModuleRegistry
 import pro.liliya.core.runtime.RuntimeService
@@ -91,7 +90,7 @@ object CoreRuntime {
     private var moduleManager: ModuleManager? = null
 
     private var moduleProvider: pro.liliya.core.module.ModuleProvider =
-        CoreModuleProvider()
+        runtimeComposition.moduleProvider()
 
     private var runtimeState = CoreRuntimeState.STOPPED
 
@@ -456,7 +455,7 @@ private var runtimeServiceProvider: RuntimeServiceProvider =
     }
 
     internal fun resetModuleProvider() {
-        moduleProvider = CoreModuleProvider()
+        moduleProvider = runtimeComposition.moduleProvider()
     }
 
     fun stop() {
