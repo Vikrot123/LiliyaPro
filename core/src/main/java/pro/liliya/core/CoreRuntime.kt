@@ -44,8 +44,6 @@ object CoreRuntime {
     private val context = runtimeComposition.context()
 
 
-    private val runtimeTelemetryObserver =
-        runtimeComposition.telemetryObserver()
 
     private val runtimeFailureTracker =
         runtimeComposition.failureTracker()
@@ -165,14 +163,14 @@ object CoreRuntime {
 
     fun getRuntimeTelemetrySnapshot():
         RuntimeTelemetrySnapshot {
-        return runtimeTelemetryObserver.snapshot()
+        return runtimeComposition.telemetryObserver().snapshot()
     }
 
     fun getRuntimeHealthSnapshot():
             RuntimeHealthSnapshot {
         return runtimeComposition.healthProvider().createSnapshot(
             state = runtimeComposition.runtimeStateHolder().state(),
-            telemetry = runtimeTelemetryObserver.snapshot(),
+            telemetry = runtimeComposition.telemetryObserver().snapshot(),
             failureReason = runtimeComposition.runtimeStateHolder().failureReason()
         )
     }
@@ -190,7 +188,7 @@ object CoreRuntime {
     fun getRuntimeHealthReport(): RuntimeHealthReport {
         return runtimeComposition.healthReportProvider().createReport(
             state = runtimeComposition.runtimeStateHolder().state(),
-            telemetry = runtimeTelemetryObserver.snapshot(),
+            telemetry = runtimeComposition.telemetryObserver().snapshot(),
             failure = runtimeFailureTracker.snapshot(),
             recovery = runtimeRecoveryTracker.snapshot()
         )
@@ -264,7 +262,7 @@ object CoreRuntime {
         runtimeComposition.observerBridge().install()
 
         runtimeComposition.observerRegistry().subscribe(
-            runtimeTelemetryObserver
+            runtimeComposition.telemetryObserver()
         )
         runtimeComposition.runtimeBridgeStateHolder().markRuntimeObserverBridgeInstalled()
     }
@@ -303,7 +301,7 @@ object CoreRuntime {
 
         runtimeComposition.runtimeStateHolder().setState(CoreRuntimeState.STARTING)
 
-        runtimeTelemetryObserver.reset()
+        runtimeComposition.telemetryObserver().reset()
         runtimeFailureTracker.clear()
 
         installRuntimeObserverBridge()
@@ -438,7 +436,7 @@ object CoreRuntime {
         runtimeComposition.observerBridge().uninstall()
 
         runtimeComposition.observerRegistry().unsubscribe(
-            runtimeTelemetryObserver
+            runtimeComposition.telemetryObserver()
         )
 
         runtimeComposition.runtimeBridgeStateHolder().reset()
