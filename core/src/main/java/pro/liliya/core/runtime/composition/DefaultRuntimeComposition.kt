@@ -94,6 +94,12 @@ class DefaultRuntimeComposition : RuntimeComposition {
     private val lifecycleRecorderHolder =
         RuntimeLifecycleRecorderHolder(lifecycleRecorder)
 
+    private val runtimeMonitor =
+        DefaultRuntimeMonitor(
+            diagnosticsService,
+            lifecycleRecorder
+        )
+
     private val healthProvider =
         RuntimeHealthProvider()
 
@@ -314,13 +320,7 @@ class DefaultRuntimeComposition : RuntimeComposition {
     }
 
     
-    override fun runtimeMonitor(
-        diagnosticsService: CoreRuntimeDiagnosticsService,
-        lifecycleRecorder: RuntimeLifecycleRecorder
-    ): RuntimeMonitor {
-        return DefaultRuntimeMonitor(
-            diagnosticsService,
-            lifecycleRecorder
-        )
+    override fun runtimeMonitor(): RuntimeMonitor {
+        return runtimeMonitor
     }
 }

@@ -58,10 +58,7 @@ object CoreRuntime {
 
 
     private val runtimeMonitor: RuntimeMonitor =
-        runtimeComposition.runtimeMonitor(
-            runtimeComposition.diagnosticsService(),
-            runtimeComposition.lifecycleRecorder()
-        )
+        runtimeComposition.runtimeMonitor()
 
     private val logger: Logger
         get() = LoggerFactory.create(

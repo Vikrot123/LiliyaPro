@@ -75,10 +75,7 @@ interface RuntimeComposition {
 
     fun statusProvider(): RuntimeStatusProvider
 
-    fun runtimeMonitor(
-        diagnosticsService: CoreRuntimeDiagnosticsService,
-        lifecycleRecorder: RuntimeLifecycleRecorder
-    ): RuntimeMonitor
+    fun runtimeMonitor(): RuntimeMonitor
 
     fun telemetryObserver(): RuntimeTelemetryObserver
 
