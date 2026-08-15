@@ -12,8 +12,10 @@ import pro.liliya.core.ModuleEvent
 import pro.liliya.core.ModuleEventBus
 
 import pro.liliya.core.CoreDiagnosticSnapshot
+import pro.liliya.core.CoreDiagnosticSource
 import pro.liliya.core.CoreRuntimeStateHolder
 import pro.liliya.core.CoreRuntimeState
+import pro.liliya.core.CoreRuntimeDiagnostics
 import pro.liliya.core.CoreRuntimeDiagnosticsService
 import pro.liliya.core.DefaultCoreRuntimeDiagnosticsService
 import pro.liliya.core.CoreDiagnosticProvider
@@ -80,6 +82,10 @@ import pro.liliya.core.runtime.RuntimeServiceRegistry
 
 class DefaultRuntimeComposition : RuntimeComposition {
 
+    private val diagnosticSource: CoreDiagnosticSource =
+        CoreDiagnosticProvider()
+
+
     private val logger: Logger =
         LoggerFactory.create(
             module = "CORE",
@@ -94,9 +100,12 @@ class DefaultRuntimeComposition : RuntimeComposition {
 
 
 
+    private val runtimeDiagnostics: CoreRuntimeDiagnostics =
+        CoreRuntimeDiagnostics(diagnosticSource)
+
     private val diagnosticsService: CoreRuntimeDiagnosticsService =
         DefaultCoreRuntimeDiagnosticsService(
-            CoreDiagnosticProvider()
+            runtimeDiagnostics
         )
 
 
@@ -836,5 +845,10 @@ class DefaultRuntimeComposition : RuntimeComposition {
     override fun logger(): Logger {
         return logger
     }
+
+    override fun diagnosticSource(): CoreDiagnosticSource {
+        return diagnosticSource
+    }
+
 
 }

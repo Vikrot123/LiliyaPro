@@ -1,7 +1,7 @@
 package pro.liliya.core
 
 class CoreRuntimeDiagnosticService(
-    private val diagnostics: CoreRuntimeDiagnostics = CoreRuntimeDiagnostics()
+    private val diagnostics: CoreRuntimeDiagnostics
 ) {
 
     fun snapshot(): CoreDiagnosticSnapshot {

@@ -1,11 +1,11 @@
 package pro.liliya.core
 
 class DefaultCoreRuntimeDiagnosticsService(
-    private val provider: CoreDiagnosticProvider
+    private val diagnostics: CoreRuntimeDiagnostics
 ) : CoreRuntimeDiagnosticsService {
 
     override fun snapshot(): CoreRuntimeDiagnosticsSnapshot {
-        return provider.snapshot()
+        return diagnostics.snapshot()
             .toRuntimeDiagnosticsSnapshot()
     }
 }
