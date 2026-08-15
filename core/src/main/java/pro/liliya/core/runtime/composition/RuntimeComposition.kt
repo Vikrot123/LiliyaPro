@@ -20,6 +20,7 @@ import pro.liliya.core.runtime.observer.RuntimeObserverBridge
 import pro.liliya.core.runtime.observer.DefaultRuntimeObserverRegistry
 import pro.liliya.core.runtime.policy.RuntimeActionPolicyEvaluator
 import pro.liliya.core.runtime.capability.RuntimeCapabilityRegistry
+import pro.liliya.core.runtime.capability.RuntimeCapabilityInfrastructure
 import pro.liliya.core.runtime.capability.RuntimeCapabilityAuthorityEvaluator
 import pro.liliya.core.runtime.capability.RuntimeCapabilityResolver
 import pro.liliya.core.runtime.health.RuntimeHealthProvider
@@ -120,6 +121,7 @@ interface RuntimeComposition {
     fun actionPolicyEvaluator(): RuntimeActionPolicyEvaluator
 
     fun capabilityRegistry(): RuntimeCapabilityRegistry
+    fun capabilityInfrastructure(): RuntimeCapabilityInfrastructure
 
     fun capabilityAuthorityEvaluator(): RuntimeCapabilityAuthorityEvaluator
 

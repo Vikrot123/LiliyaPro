@@ -6,19 +6,14 @@ import pro.liliya.core.ModuleEventBus
 import pro.liliya.core.logging.LogConfig
 import pro.liliya.core.logging.LoggerFactory
 import pro.liliya.core.runtime.capability.RuntimeCapabilityInfrastructure
-import pro.liliya.core.runtime.capability.RuntimeCapabilityInfrastructureProvider
-import pro.liliya.core.runtime.capability.DefaultRuntimeCapabilityInfrastructureProvider
 import pro.liliya.core.runtime.module.RuntimeModuleCapabilityLifecycle
 
 class ModuleRegistry(
-    private val capabilityInfrastructureProvider: RuntimeCapabilityInfrastructureProvider =
-        DefaultRuntimeCapabilityInfrastructureProvider(),
-    private val capabilityInfrastructure: RuntimeCapabilityInfrastructure =
-        capabilityInfrastructureProvider.provide(),
+    private val capabilityInfrastructure: RuntimeCapabilityInfrastructure
+) {
 
     private val capabilityLifecycle: RuntimeModuleCapabilityLifecycle =
         capabilityInfrastructure.moduleCapabilityLifecycle()
-) {
 
     private val modules = mutableListOf<LiliyaModule>()
 

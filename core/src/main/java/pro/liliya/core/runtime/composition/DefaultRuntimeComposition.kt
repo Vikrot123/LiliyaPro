@@ -35,6 +35,8 @@ import pro.liliya.core.runtime.observer.DefaultRuntimeObserverRegistry
 import pro.liliya.core.runtime.observer.RuntimeObserverBridge
 import pro.liliya.core.runtime.policy.DefaultRuntimeActionPolicyEvaluator
 import pro.liliya.core.runtime.capability.RuntimeCapabilityRegistry
+import pro.liliya.core.runtime.capability.RuntimeCapabilityInfrastructure
+import pro.liliya.core.runtime.capability.DefaultRuntimeCapabilityInfrastructureProvider
 import pro.liliya.core.runtime.capability.DefaultRuntimeCapabilityRegistry
 import pro.liliya.core.runtime.capability.RuntimeCapabilityAuthorityEvaluator
 import pro.liliya.core.runtime.capability.DefaultRuntimeCapabilityAuthorityEvaluator
@@ -138,6 +140,11 @@ class DefaultRuntimeComposition : RuntimeComposition {
 
     private val capabilityRegistry: RuntimeCapabilityRegistry =
         DefaultRuntimeCapabilityRegistry()
+
+    private val capabilityInfrastructure: RuntimeCapabilityInfrastructure =
+        DefaultRuntimeCapabilityInfrastructureProvider()
+            .provide()
+
 
     private val capabilityAuthorityEvaluator: RuntimeCapabilityAuthorityEvaluator =
         DefaultRuntimeCapabilityAuthorityEvaluator()
@@ -243,7 +250,7 @@ class DefaultRuntimeComposition : RuntimeComposition {
     }
 
     override fun createModuleRegistry(): ModuleRegistry {
-        return ModuleRegistry()
+        return ModuleRegistry(capabilityInfrastructure)
     }
 
     override fun createModuleManager(
@@ -421,6 +428,10 @@ class DefaultRuntimeComposition : RuntimeComposition {
 
     override fun capabilityRegistry(): RuntimeCapabilityRegistry {
         return capabilityRegistry
+    }
+
+    override fun capabilityInfrastructure(): RuntimeCapabilityInfrastructure {
+        return capabilityInfrastructure
     }
 
     override fun capabilityAuthorityEvaluator(): RuntimeCapabilityAuthorityEvaluator {
