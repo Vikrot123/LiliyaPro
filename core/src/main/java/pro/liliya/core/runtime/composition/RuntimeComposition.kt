@@ -122,6 +122,8 @@ interface RuntimeComposition {
         failureReason: String?
     ): RuntimeHealthSnapshot
 
+    fun runtimeHealthSnapshot(): RuntimeHealthSnapshot
+
 
     fun failureTracker(): RuntimeFailureTracker
 
@@ -135,12 +137,16 @@ interface RuntimeComposition {
         recovery: HealthRecoverySnapshot
     ): RuntimeHealthReport
 
+    fun runtimeHealthReport(): RuntimeHealthReport
+
 
     fun statusProvider(): RuntimeStatusProvider
 
     fun createRuntimeStatus(
         report: RuntimeHealthReport
     ): RuntimeStatusSnapshot
+
+    fun runtimeStatusSnapshot(): RuntimeStatusSnapshot
 
     fun runtimeMonitor(): RuntimeMonitor
 

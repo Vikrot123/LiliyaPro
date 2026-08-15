@@ -120,11 +120,7 @@ object CoreRuntime {
 
     fun getRuntimeHealthSnapshot():
             RuntimeHealthSnapshot {
-        return runtimeComposition.createHealthSnapshot(
-            state = runtimeComposition.runtimeState(),
-            telemetry = runtimeComposition.telemetryObserver().snapshot(),
-            failureReason = runtimeComposition.failureReason()
-        )
+        return runtimeComposition.runtimeHealthSnapshot()
     }
 
     fun getRuntimeFailureHealthSnapshot():
@@ -138,18 +134,11 @@ object CoreRuntime {
     }
     
     fun getRuntimeHealthReport(): RuntimeHealthReport {
-        return runtimeComposition.createHealthReport(
-            state = runtimeComposition.runtimeState(),
-            telemetry = runtimeComposition.telemetryObserver().snapshot(),
-            failure = runtimeComposition.failureTracker().snapshot(),
-            recovery = runtimeComposition.recoveryTracker().snapshot()
-        )
+        return runtimeComposition.runtimeHealthReport()
     }
     
     fun getRuntimeStatusSnapshot(): RuntimeStatusSnapshot {
-        return runtimeComposition.createRuntimeStatus(
-            report = getRuntimeHealthReport()
-        )
+        return runtimeComposition.runtimeStatusSnapshot()
     }
 
 

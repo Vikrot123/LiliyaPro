@@ -533,6 +533,29 @@ class DefaultRuntimeComposition : RuntimeComposition {
         return runtimeMonitor
     }
 
+    override fun runtimeHealthSnapshot(): RuntimeHealthSnapshot {
+        return createHealthSnapshot(
+            state = runtimeState(),
+            telemetry = telemetryObserver().snapshot(),
+            failureReason = failureReason()
+        )
+    }
+
+    override fun runtimeHealthReport(): RuntimeHealthReport {
+        return createHealthReport(
+            state = runtimeState(),
+            telemetry = telemetryObserver().snapshot(),
+            failure = failureTracker().snapshot(),
+            recovery = recoveryTracker().snapshot()
+        )
+    }
+
+    override fun runtimeStatusSnapshot(): RuntimeStatusSnapshot {
+        return createRuntimeStatus(
+            report = runtimeHealthReport()
+        )
+    }
+
     override fun createDiagnosticSnapshot(): CoreDiagnosticSnapshot {
         return CoreDiagnosticSnapshot(
             runtimeState = runtimeState(),
