@@ -124,6 +124,10 @@ interface RuntimeComposition {
 
     fun lifecycleRecorderHolder(): RuntimeLifecycleRecorderHolder
 
+    fun recordRuntimeStarted()
+    fun recordRuntimeStopped()
+    fun recordRuntimeFailure(reason: String?)
+
     fun healthProvider(): RuntimeHealthProvider
     fun createHealthSnapshot(
         state: CoreRuntimeState,

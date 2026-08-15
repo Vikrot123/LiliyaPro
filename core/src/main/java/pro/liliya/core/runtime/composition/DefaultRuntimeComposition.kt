@@ -17,6 +17,7 @@ import pro.liliya.core.module.ModuleState
 import pro.liliya.core.runtime.lifecycle.DefaultRuntimeLifecycleRecorder
 import pro.liliya.core.runtime.lifecycle.RuntimeLifecycleRecorder
 import pro.liliya.core.runtime.lifecycle.RuntimeLifecycleRecorderHolder
+import pro.liliya.core.runtime.lifecycle.RuntimeLifecycleEvent
 import pro.liliya.core.runtime.observer.DefaultRuntimeObserverRegistry
 import pro.liliya.core.runtime.observer.RuntimeObserverBridge
 import pro.liliya.core.runtime.policy.DefaultRuntimeActionPolicyEvaluator
@@ -405,6 +406,25 @@ class DefaultRuntimeComposition : RuntimeComposition {
 
     override fun lifecycleRecorderHolder(): RuntimeLifecycleRecorderHolder {
         return lifecycleRecorderHolder
+    }
+
+    override fun recordRuntimeStarted() {
+        lifecycleRecorder().record(
+            RuntimeLifecycleEvent.STARTED
+        )
+    }
+
+    override fun recordRuntimeStopped() {
+        lifecycleRecorder().record(
+            RuntimeLifecycleEvent.STOPPED
+        )
+    }
+
+    override fun recordRuntimeFailure(reason: String?) {
+        lifecycleRecorder().record(
+            RuntimeLifecycleEvent.FAILED,
+            reason
+        )
     }
 
     override fun healthProvider(): RuntimeHealthProvider {

@@ -9,7 +9,6 @@ import pro.liliya.core.runtime.RuntimeServiceProvider
 import pro.liliya.core.runtime.RuntimeServiceBootstrap
 import pro.liliya.core.runtime.composition.RuntimeCompositionFactory
 import pro.liliya.core.runtime.lifecycle.RuntimeLifecycleRecorder
-import pro.liliya.core.runtime.lifecycle.RuntimeLifecycleEvent
 import pro.liliya.core.runtime.observer.RuntimeObserver
 import pro.liliya.core.runtime.health.RuntimeHealthSnapshot
 import pro.liliya.core.runtime.health.RuntimeRecoverySnapshot
@@ -217,9 +216,7 @@ object CoreRuntime {
 
             runtimeComposition.setRuntimeState(CoreRuntimeState.RUNNING)
 
-            runtimeComposition.lifecycleRecorder().record(
-                RuntimeLifecycleEvent.STARTED
-            )
+            runtimeComposition.recordRuntimeStarted()
 
             runtimeComposition.context().diagnosticEventBus.publish(
                 CoreDiagnosticEvent(
@@ -260,8 +257,7 @@ object CoreRuntime {
                 error.message ?: "unknown"
             )
 
-            runtimeComposition.lifecycleRecorder().record(
-                RuntimeLifecycleEvent.FAILED,
+            runtimeComposition.recordRuntimeFailure(
                 runtimeComposition.failureReason()
             )
 
@@ -299,9 +295,7 @@ object CoreRuntime {
 
         runtimeComposition.stopRuntimeLifecycle()
 
-        runtimeComposition.lifecycleRecorder().record(
-            RuntimeLifecycleEvent.STOPPED
-        )
+        runtimeComposition.recordRuntimeStopped()
           runtimeComposition.setFailureReason(null)
           runtimeComposition.setModuleStates(emptyMap())
 
