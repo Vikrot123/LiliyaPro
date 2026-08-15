@@ -244,6 +244,32 @@ class DefaultRuntimeComposition : RuntimeComposition {
         return manager
     }
 
+    override fun startRuntimeLifecycle(): ModuleManager {
+        setRuntimeState(CoreRuntimeState.STARTING)
+
+        resetRuntimeHealth()
+
+        return startRuntimeComponents().also {
+            setRuntimeState(CoreRuntimeState.RUNNING)
+        }
+    }
+
+    override fun stopRuntimeLifecycle() {
+        stopRuntimeServices()
+
+        moduleManager()?.let {
+            stopModuleRuntime(it)
+        }
+
+        clearModuleRuntime()
+
+        setRuntimeState(CoreRuntimeState.STOPPED)
+
+        setFailureReason(null)
+
+        setModuleStates(emptyMap())
+    }
+
     override fun startModuleRuntime(
         manager: ModuleManager
     ) {

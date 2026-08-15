@@ -296,14 +296,7 @@ object CoreRuntime {
             return
         }
 
-        runtimeComposition.stopRuntimeServices()
-
-        runtimeComposition.moduleManager()?.let {
-            runtimeComposition.stopModuleRuntime(it)
-        }
-
-        runtimeComposition.clearModuleRuntime()
-          runtimeComposition.setRuntimeState(CoreRuntimeState.STOPPED)
+        runtimeComposition.stopRuntimeLifecycle()
 
         runtimeComposition.lifecycleRecorder().record(
             RuntimeLifecycleEvent.STOPPED
