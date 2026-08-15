@@ -210,17 +210,11 @@ object CoreRuntime {
             "Core runtime starting"
         )
 
-        val manager = runtimeComposition.createModuleRuntime()
+        var manager: pro.liliya.core.module.ModuleManager? = null
 
-            try {
-            runtimeComposition.setModuleManager(manager)
+        try {
+            manager = runtimeComposition.startRuntimeComponents()
 
-            runtimeComposition.startModuleRuntime(manager)
-
-            runtimeComposition.startRuntimeServices()
-
-            runtimeComposition.registerRuntimeControls()
-            runtimeComposition.registerRuntimeActionHandlers()
             runtimeComposition.setRuntimeState(CoreRuntimeState.RUNNING)
 
             runtimeComposition.lifecycleRecorder().record(
@@ -250,11 +244,15 @@ object CoreRuntime {
                 "Core runtime startup failed: ${error.message}"
             )
 
-            runtimeComposition.setModuleStates(manager.getModuleStates())
+            runtimeComposition.moduleManager()?.let {
+                runtimeComposition.setModuleStates(it.getModuleStates())
+            }
 
-            try {
-                manager.stopModules()
-            } catch (_: Exception) {
+            manager?.let {
+                try {
+                    it.stopModules()
+                } catch (_: Exception) {
+                }
             }
 
             runtimeComposition.clearModuleRuntime()

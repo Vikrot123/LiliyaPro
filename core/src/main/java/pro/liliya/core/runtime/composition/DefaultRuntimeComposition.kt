@@ -231,6 +231,19 @@ class DefaultRuntimeComposition : RuntimeComposition {
         )
     }
 
+    override fun startRuntimeComponents(): ModuleManager {
+        val manager = createModuleRuntime()
+
+        setModuleManager(manager)
+
+        startModuleRuntime(manager)
+        startRuntimeServices()
+        registerRuntimeControls()
+        registerRuntimeActionHandlers()
+
+        return manager
+    }
+
     override fun startModuleRuntime(
         manager: ModuleManager
     ) {

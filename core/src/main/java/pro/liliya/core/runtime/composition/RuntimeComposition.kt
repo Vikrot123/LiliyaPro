@@ -80,6 +80,9 @@ interface RuntimeComposition {
     ): ModuleManager
 
     fun createModuleRuntime(): ModuleManager
+
+    fun startRuntimeComponents(): ModuleManager
+
     fun startModuleRuntime(
         manager: ModuleManager
     )
