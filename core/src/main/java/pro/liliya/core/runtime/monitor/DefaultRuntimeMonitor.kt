@@ -1,16 +1,20 @@
 package pro.liliya.core.runtime.monitor
 
-import pro.liliya.core.CoreRuntimeDiagnosticsService
-import pro.liliya.core.runtime.lifecycle.RuntimeLifecycleRecorder
+import pro.liliya.core.runtime.composition.RuntimeComposition
 
 class DefaultRuntimeMonitor(
-    private val diagnosticsService: CoreRuntimeDiagnosticsService,
-    private val lifecycleRecorder: RuntimeLifecycleRecorder
+    private val runtimeComposition: RuntimeComposition
 ) : RuntimeMonitor {
 
     override fun snapshot(): RuntimeMonitorSnapshot {
-        val diagnostics = diagnosticsService.snapshot()
-        val lifecycleHistory = lifecycleRecorder.records()
+        val diagnostics =
+            runtimeComposition.diagnosticsService().snapshot()
+
+        val lifecycleRecorder =
+            runtimeComposition.lifecycleRecorder()
+
+        val lifecycleHistory =
+            lifecycleRecorder.records()
 
         return RuntimeMonitorSnapshot(
             diagnostics = diagnostics,

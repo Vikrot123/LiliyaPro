@@ -19,6 +19,11 @@ import pro.liliya.core.runtime.lifecycle.RuntimeLifecycleRecorderHolder
 import pro.liliya.core.runtime.observer.DefaultRuntimeObserverRegistry
 import pro.liliya.core.runtime.observer.RuntimeObserverBridge
 import pro.liliya.core.runtime.policy.DefaultRuntimeActionPolicyEvaluator
+import pro.liliya.core.runtime.capability.RuntimeCapabilityRegistry
+import pro.liliya.core.runtime.capability.DefaultRuntimeCapabilityRegistry
+import pro.liliya.core.runtime.capability.RuntimeCapabilityAuthorityEvaluator
+import pro.liliya.core.runtime.capability.DefaultRuntimeCapabilityAuthorityEvaluator
+import pro.liliya.core.runtime.capability.RuntimeCapabilityResolver
 import pro.liliya.core.runtime.policy.RuntimeActionPolicyEvaluator
 import pro.liliya.core.runtime.health.RuntimeHealthProvider
 import pro.liliya.core.runtime.health.RuntimeFailureTracker
@@ -98,8 +103,22 @@ class DefaultRuntimeComposition : RuntimeComposition {
     private val observerBridge =
         RuntimeObserverBridge(observerRegistry)
 
+    private val capabilityRegistry: RuntimeCapabilityRegistry =
+        DefaultRuntimeCapabilityRegistry()
+
+    private val capabilityAuthorityEvaluator: RuntimeCapabilityAuthorityEvaluator =
+        DefaultRuntimeCapabilityAuthorityEvaluator()
+
+    private val capabilityResolver =
+        RuntimeCapabilityResolver(
+            registry = capabilityRegistry,
+            authorityEvaluator = capabilityAuthorityEvaluator
+        )
+
     private val actionPolicyEvaluator =
-        DefaultRuntimeActionPolicyEvaluator()
+        DefaultRuntimeActionPolicyEvaluator(
+            capabilityResolver
+        )
 
     private val lifecycleRecorder: RuntimeLifecycleRecorder =
         DefaultRuntimeLifecycleRecorder()
@@ -109,8 +128,7 @@ class DefaultRuntimeComposition : RuntimeComposition {
 
     private val runtimeMonitor =
         DefaultRuntimeMonitor(
-            diagnosticsService,
-            lifecycleRecorder
+            this
         )
 
     private val healthProvider =
@@ -123,7 +141,9 @@ class DefaultRuntimeComposition : RuntimeComposition {
         RuntimeRecoveryTracker()
 
     private val healthReportProvider =
-        RuntimeHealthReportProvider()
+        RuntimeHealthReportProvider(
+            healthProvider
+        )
 
     private val statusProvider =
         RuntimeStatusProvider()
@@ -147,15 +167,20 @@ class DefaultRuntimeComposition : RuntimeComposition {
         RuntimeActionDispatcher(
             actionHandlerRegistry,
             actionAuditProvider,
-            actionPolicyEvaluator
+            actionPolicyEvaluator,
+            this
         )
 
     private val defaultRuntimeControl =
-        DefaultRuntimeControl()
+        DefaultRuntimeControl(
+            this
+        )
 
     private val healthRuntimeActionHandler =
         HealthRuntimeActionHandler(
-            RuntimeActionExecutor()
+            RuntimeActionExecutor(
+                defaultRuntimeControl
+            )
         )
 
     private val serviceProvider =
@@ -315,6 +340,18 @@ class DefaultRuntimeComposition : RuntimeComposition {
 
     override fun actionPolicyEvaluator(): RuntimeActionPolicyEvaluator {
         return actionPolicyEvaluator
+    }
+
+    override fun capabilityRegistry(): RuntimeCapabilityRegistry {
+        return capabilityRegistry
+    }
+
+    override fun capabilityAuthorityEvaluator(): RuntimeCapabilityAuthorityEvaluator {
+        return capabilityAuthorityEvaluator
+    }
+
+    override fun capabilityResolver(): RuntimeCapabilityResolver {
+        return capabilityResolver
     }
 
     override fun lifecycleRecorder(): RuntimeLifecycleRecorder {
