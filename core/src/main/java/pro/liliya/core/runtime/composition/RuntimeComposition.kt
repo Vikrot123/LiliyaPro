@@ -178,6 +178,12 @@ interface RuntimeComposition {
     fun runtimeServiceProvider(): RuntimeServiceProvider
     fun resetRuntimeServiceProvider()
 
+    fun configureRuntimeServiceProvider(
+        provider: RuntimeServiceProvider
+    )
+
+    fun resetRuntimeServiceConfiguration()
+
     fun serviceBootstrap(): RuntimeServiceBootstrap
     fun runtimeServiceBootstrapHolder(): RuntimeServiceBootstrapHolder
     fun setRuntimeServiceBootstrap(bootstrap: RuntimeServiceBootstrap)

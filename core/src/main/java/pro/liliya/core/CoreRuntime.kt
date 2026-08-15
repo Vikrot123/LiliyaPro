@@ -72,134 +72,12 @@ object CoreRuntime {
     internal fun setRuntimeServiceProvider(
         provider: RuntimeServiceProvider
     ) {
-        runtimeComposition.setRuntimeServiceProvider(provider)
-        runtimeComposition.setRuntimeServiceBootstrap(
-            runtimeComposition.createServiceBootstrap(
-                runtimeComposition.runtimeServiceProvider()
-            )
-        )
-
+        runtimeComposition.configureRuntimeServiceProvider(provider)
     }
 
     internal fun resetRuntimeServiceProvider() {
-        runtimeComposition.resetRuntimeServiceProvider()
-
-        runtimeComposition.setRuntimeServiceBootstrap(
-            runtimeComposition.createServiceBootstrap(
-                runtimeComposition.runtimeServiceProvider()
-            )
-    )
+        runtimeComposition.resetRuntimeServiceConfiguration()
     }
-
-
-
-    fun registerDiagnosticListener(
-        listener: CoreDiagnosticEventListener
-    ) {
-        runtimeComposition.context().diagnosticEventBus.register(listener)
-    }
-
-    fun unregisterDiagnosticListener(
-        listener: CoreDiagnosticEventListener
-    ) {
-        runtimeComposition.context().diagnosticEventBus.unregister(listener)
-    }
-
-    fun registerRuntimeObserver(observer: RuntimeObserver) {
-        runtimeComposition.observerRegistry().subscribe(observer)
-    }
-
-    fun unregisterRuntimeObserver(observer: RuntimeObserver) {
-        runtimeComposition.observerRegistry().unsubscribe(observer)
-    }
-
-    fun getRuntimeTelemetrySnapshot():
-        RuntimeTelemetrySnapshot {
-        return runtimeComposition.telemetryObserver().snapshot()
-    }
-
-    fun getRuntimeHealthSnapshot():
-            RuntimeHealthSnapshot {
-        return runtimeComposition.runtimeHealthSnapshot()
-    }
-
-    fun getRuntimeFailureHealthSnapshot():
-        RuntimeFailureHealthSnapshot {
-        return runtimeComposition.failureTracker().snapshot()
-    }
-    
-    fun getRuntimeRecoverySnapshot():
-        RuntimeRecoverySnapshot {
-        return runtimeComposition.recoveryTracker().snapshot()
-    }
-    
-    fun getRuntimeHealthReport(): RuntimeHealthReport {
-        return runtimeComposition.runtimeHealthReport()
-    }
-    
-    fun getRuntimeStatusSnapshot(): RuntimeStatusSnapshot {
-        return runtimeComposition.runtimeStatusSnapshot()
-    }
-
-
-
-    fun getRuntimeCommandHistory(): List<RuntimeCommandRecord> {
-        return runtimeComposition.commandHistory().snapshot()
-    }
-
-    fun getRuntimeActionAudit(): List<RuntimeActionAuditRecord> {
-        return runtimeComposition.actionAuditProvider().snapshot()
-    }
-
-
-    fun getRuntimeState(): CoreRuntimeState {
-        return runtimeComposition.runtimeState()
-    }
-
-
-    fun dispatchRuntimeAction(
-        request: RuntimeActionRequest
-    ): RuntimeActionResult {
-        return runtimeComposition.actionDispatcher().dispatch(request)
-    }
-
-
-    fun runtimeControl(): RuntimeControl {
-        return runtimeComposition.defaultRuntimeControl()
-            ?: error("Runtime control is not available")
-    }
-
-    fun executeRuntimeCommand(
-        command: RuntimeCommand
-    ): RuntimeControlResult {
-        val control = runtimeComposition.defaultRuntimeControl()
-
-        val result = control?.execute(command)
-            ?: RuntimeControlResult(
-                command = command,
-                success = false,
-                previousState = runtimeComposition.runtimeState(),
-                currentState = runtimeComposition.runtimeState(),
-                status = getRuntimeStatusSnapshot(),
-                message = "Runtime control is not available"
-            )
-
-        runtimeComposition.commandHistory().record(
-            RuntimeCommandRecord(
-                command = result.command,
-                success = result.success,
-                previousState = result.previousState,
-                currentState = result.currentState,
-                message = result.message
-            )
-        )
-
-        return result
-    }
-
-
-
-
 
     private fun installRuntimeObserverBridge() {
         if (runtimeComposition.isRuntimeObserverBridgeInstalled()) {
@@ -211,11 +89,11 @@ object CoreRuntime {
         runtimeComposition.observerRegistry().subscribe(
             runtimeComposition.telemetryObserver()
         )
+
         runtimeComposition.markRuntimeObserverBridgeInstalled()
     }
 
     private fun installModuleEventBridge() {
-
         if (ModuleEventBus.hasListeners()) {
             return
         }
@@ -237,6 +115,72 @@ object CoreRuntime {
         }
 
         runtimeComposition.markModuleEventBridgeInstalled()
+    }
+
+    fun getRuntimeTelemetrySnapshot(): RuntimeTelemetrySnapshot {
+        return runtimeComposition.telemetryObserver().snapshot()
+    }
+
+    fun getRuntimeHealthSnapshot(): RuntimeHealthSnapshot {
+        return runtimeComposition.runtimeHealthSnapshot()
+    }
+
+    fun getRuntimeFailureHealthSnapshot(): RuntimeFailureHealthSnapshot {
+        return runtimeComposition.failureTracker().snapshot()
+    }
+
+    fun getRuntimeRecoverySnapshot(): RuntimeRecoverySnapshot {
+        return runtimeComposition.recoveryTracker().snapshot()
+    }
+
+    fun getRuntimeHealthReport(): RuntimeHealthReport {
+        return runtimeComposition.runtimeHealthReport()
+    }
+
+    fun getRuntimeStatusSnapshot(): RuntimeStatusSnapshot {
+        return runtimeComposition.runtimeStatusSnapshot()
+    }
+
+    fun getRuntimeState(): CoreRuntimeState {
+        return runtimeComposition.runtimeState()
+    }
+
+    fun dispatchRuntimeAction(
+        request: pro.liliya.core.runtime.action.RuntimeActionRequest
+    ): pro.liliya.core.runtime.action.RuntimeActionResult {
+        return runtimeComposition.actionDispatcher().dispatch(request)
+    }
+
+    fun executeRuntimeCommand(
+        command: pro.liliya.core.runtime.control.RuntimeCommand
+    ): pro.liliya.core.runtime.control.RuntimeControlResult {
+        return runtimeComposition.defaultRuntimeControl().execute(command)
+    }
+
+    fun getRuntimeActionAudit():
+            List<pro.liliya.core.runtime.audit.RuntimeActionAuditRecord> {
+        return runtimeComposition.actionAuditProvider().snapshot()
+    }
+
+    fun getRuntimeCommandHistory():
+            List<pro.liliya.core.runtime.history.RuntimeCommandRecord> {
+        return runtimeComposition.commandHistory().snapshot()
+    }
+
+    fun runtimeControl(): pro.liliya.core.runtime.control.RuntimeControl {
+        return runtimeComposition.defaultRuntimeControl()
+    }
+
+    fun registerRuntimeObserver(
+        observer: pro.liliya.core.runtime.observer.RuntimeObserver
+    ) {
+        runtimeComposition.observerRegistry().subscribe(observer)
+    }
+
+    fun unregisterRuntimeObserver(
+        observer: pro.liliya.core.runtime.observer.RuntimeObserver
+    ) {
+        runtimeComposition.observerRegistry().unsubscribe(observer)
     }
 
     fun start() {
