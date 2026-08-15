@@ -15,6 +15,9 @@ import pro.liliya.core.runtime.lifecycle.RuntimeLifecycleRecorderHolder
 import pro.liliya.core.runtime.observer.RuntimeObserverBridge
 import pro.liliya.core.runtime.observer.DefaultRuntimeObserverRegistry
 import pro.liliya.core.runtime.policy.RuntimeActionPolicyEvaluator
+import pro.liliya.core.runtime.capability.RuntimeCapabilityRegistry
+import pro.liliya.core.runtime.capability.RuntimeCapabilityAuthorityEvaluator
+import pro.liliya.core.runtime.capability.RuntimeCapabilityResolver
 import pro.liliya.core.runtime.health.RuntimeHealthProvider
 import pro.liliya.core.runtime.health.RuntimeFailureTracker
 import pro.liliya.core.runtime.health.RuntimeRecoveryTracker
@@ -98,6 +101,12 @@ interface RuntimeComposition {
     fun observerBridge(): RuntimeObserverBridge
 
     fun actionPolicyEvaluator(): RuntimeActionPolicyEvaluator
+
+    fun capabilityRegistry(): RuntimeCapabilityRegistry
+
+    fun capabilityAuthorityEvaluator(): RuntimeCapabilityAuthorityEvaluator
+
+    fun capabilityResolver(): RuntimeCapabilityResolver
 
     fun lifecycleRecorder(): RuntimeLifecycleRecorder
 

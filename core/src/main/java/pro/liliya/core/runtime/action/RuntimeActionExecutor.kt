@@ -1,14 +1,16 @@
 package pro.liliya.core.runtime.action
 
-import pro.liliya.core.CoreRuntime
+import pro.liliya.core.runtime.control.RuntimeControl
 
-class RuntimeActionExecutor {
+class RuntimeActionExecutor(
+    private val runtimeControl: RuntimeControl
+) {
 
     fun execute(
         request: RuntimeActionRequest
     ): RuntimeActionResult {
 
-        val result = CoreRuntime.executeRuntimeCommand(
+        val result = runtimeControl.execute(
             request.command
         )
 

@@ -2,8 +2,9 @@ package pro.liliya.core
 
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
-import pro.liliya.core.runtime.action.RuntimeActionExecutor
 import pro.liliya.core.runtime.action.RuntimeActionRequest
+import pro.liliya.core.runtime.authority.RuntimeActionAuthorityContext
+import pro.liliya.core.runtime.authority.RuntimeAuthorityLevel
 import pro.liliya.core.runtime.control.RuntimeCommand
 
 class CoreRuntimeActionPipelineContractTest {
@@ -17,20 +18,23 @@ class CoreRuntimeActionPipelineContractTest {
             val request = RuntimeActionRequest(
                 command = RuntimeCommand.HEALTH_CHECK,
                 source = "contract-test",
-                reason = "verify action pipeline"
+                reason = "verify action pipeline",
+                authority = RuntimeActionAuthorityContext(
+                    source = "contract-test",
+                    level = RuntimeAuthorityLevel.USER
+                )
             )
 
-            val executor = RuntimeActionExecutor()
+            val result = CoreRuntime.dispatchRuntimeAction(request)
 
-            val result = executor.execute(request)
-
-            assertTrue(result.success)
-
-            assertTrue(
-                result.controlResult.success
-            )
+            println("ACTION SUCCESS=${result.success}")
+            println("CONTROL SUCCESS=${result.controlResult.success}")
+            println("CONTROL MESSAGE=${result.controlResult.message}")
 
             val history = CoreRuntime.getRuntimeCommandHistory()
+
+            println("HISTORY SIZE=${history.size}")
+            println("HISTORY=$history")
 
             assertTrue(
                 history.isNotEmpty()

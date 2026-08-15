@@ -3,7 +3,9 @@ package pro.liliya.core.runtime.health
 import pro.liliya.core.CoreRuntimeState
 import pro.liliya.core.runtime.telemetry.RuntimeTelemetrySnapshot
 
-class RuntimeHealthReportProvider {
+class RuntimeHealthReportProvider(
+    private val healthProvider: RuntimeHealthProvider
+) {
 
     fun createReport(
         state: CoreRuntimeState,
@@ -13,7 +15,7 @@ class RuntimeHealthReportProvider {
     ): RuntimeHealthReport {
 
         return RuntimeHealthReport(
-            runtime = RuntimeHealthProvider().createSnapshot(
+            runtime = healthProvider.createSnapshot(
                 state = state,
                 telemetry = telemetry,
                 failureReason = failure.failureReason

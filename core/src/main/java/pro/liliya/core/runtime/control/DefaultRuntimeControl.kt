@@ -1,14 +1,27 @@
 package pro.liliya.core.runtime.control
 
-import pro.liliya.core.CoreRuntime
+import pro.liliya.core.runtime.composition.RuntimeComposition
 
-class DefaultRuntimeControl : RuntimeControl {
+class DefaultRuntimeControl(
+    private val runtimeComposition: RuntimeComposition
+) : RuntimeControl {
 
     override fun execute(
         command: RuntimeCommand
     ): RuntimeControlResult {
 
-        val previousState = CoreRuntime.state()
+        val previousState =
+            runtimeComposition.runtimeState()
+
+        val status =
+            runtimeComposition.createRuntimeStatus(
+                report = runtimeComposition.createHealthReport(
+                    state = runtimeComposition.runtimeState(),
+                    telemetry = runtimeComposition.telemetryObserver().snapshot(),
+                    failure = runtimeComposition.failureTracker().snapshot(),
+                    recovery = runtimeComposition.recoveryTracker().snapshot()
+                )
+            )
 
         return when (command) {
 
@@ -17,8 +30,8 @@ class DefaultRuntimeControl : RuntimeControl {
                     command = command,
                     success = true,
                     previousState = previousState,
-                    currentState = CoreRuntime.state(),
-                    status = CoreRuntime.getRuntimeStatusSnapshot(),
+                    currentState = runtimeComposition.runtimeState(),
+                    status = status,
                     message = "Runtime health check completed"
                 )
             }
@@ -28,8 +41,8 @@ class DefaultRuntimeControl : RuntimeControl {
                     command = command,
                     success = false,
                     previousState = previousState,
-                    currentState = CoreRuntime.state(),
-                    status = CoreRuntime.getRuntimeStatusSnapshot(),
+                    currentState = runtimeComposition.runtimeState(),
+                    status = status,
                     message = "Command not implemented yet"
                 )
             }

@@ -1,6 +1,7 @@
 package pro.liliya.core.runtime.dispatcher
 
-import pro.liliya.core.CoreRuntime
+import pro.liliya.core.runtime.composition.RuntimeComposition
+import pro.liliya.core.runtime.status.RuntimeStatusSnapshot
 import pro.liliya.core.runtime.action.RuntimeActionRequest
 import pro.liliya.core.runtime.action.RuntimeActionResult
 import pro.liliya.core.runtime.audit.RuntimeActionAuditRecord
@@ -12,7 +13,8 @@ import pro.liliya.core.runtime.control.RuntimeControlResult
 class RuntimeActionDispatcher(
     private val registry: RuntimeActionHandlerRegistry,
     private val auditProvider: RuntimeActionAuditProvider,
-    private val policyEvaluator: RuntimeActionPolicyEvaluator
+    private val policyEvaluator: RuntimeActionPolicyEvaluator,
+    private val runtimeComposition: RuntimeComposition
 ) {
 
     fun dispatch(
@@ -29,9 +31,9 @@ class RuntimeActionDispatcher(
                 controlResult = RuntimeControlResult(
                     command = request.command,
                     success = false,
-                    previousState = CoreRuntime.getRuntimeState(),
-                    currentState = CoreRuntime.getRuntimeState(),
-                    status = CoreRuntime.getRuntimeStatusSnapshot(),
+                    previousState = runtimeComposition.runtimeState(),
+                    currentState = runtimeComposition.runtimeState(),
+                    status = createStatus(),
                     message = policyResult.reason
                 )
             )
@@ -63,6 +65,16 @@ class RuntimeActionDispatcher(
 
             val result = handler.handle(request)
 
+            runtimeComposition.commandHistory().record(
+                pro.liliya.core.runtime.history.RuntimeCommandRecord(
+                    command = result.controlResult.command,
+                    success = result.success,
+                    previousState = result.controlResult.previousState,
+                    currentState = result.controlResult.currentState,
+                    message = result.controlResult.message
+                )
+            )
+
             auditProvider.record(
                 RuntimeActionAuditRecord(
                     request = request,
@@ -88,9 +100,9 @@ class RuntimeActionDispatcher(
             controlResult = RuntimeControlResult(
                 command = request.command,
                 success = false,
-                previousState = CoreRuntime.getRuntimeState(),
-                currentState = CoreRuntime.getRuntimeState(),
-                status = CoreRuntime.getRuntimeStatusSnapshot(),
+                previousState = runtimeComposition.runtimeState(),
+                currentState = runtimeComposition.runtimeState(),
+                status = createStatus(),
                 message = "No action handler for ${request.command}"
             )
         )
@@ -112,5 +124,16 @@ authorityLevel = policyResult.authorityLevel,
         )
 
         return failureResult
+    }
+
+    private fun createStatus(): RuntimeStatusSnapshot {
+        return runtimeComposition.createRuntimeStatus(
+            report = runtimeComposition.createHealthReport(
+                state = runtimeComposition.runtimeState(),
+                telemetry = runtimeComposition.telemetryObserver().snapshot(),
+                failure = runtimeComposition.failureTracker().snapshot(),
+                recovery = runtimeComposition.recoveryTracker().snapshot()
+            )
+        )
     }
 }

@@ -16,6 +16,7 @@ import pro.liliya.core.runtime.health.RuntimeRecoverySnapshot
 import pro.liliya.core.runtime.health.RuntimeHealthReport
 import pro.liliya.core.runtime.status.RuntimeStatusSnapshot
 import pro.liliya.core.runtime.control.RuntimeControlResult
+import pro.liliya.core.runtime.control.RuntimeControl
 import pro.liliya.core.runtime.history.RuntimeCommandRecord
 import pro.liliya.core.runtime.action.RuntimeActionResult
 import pro.liliya.core.runtime.audit.RuntimeActionAuditRecord
@@ -181,6 +182,12 @@ object CoreRuntime {
         request: RuntimeActionRequest
     ): RuntimeActionResult {
         return runtimeComposition.actionDispatcher().dispatch(request)
+    }
+
+
+    fun runtimeControl(): RuntimeControl {
+        return runtimeComposition.defaultRuntimeControl()
+            ?: error("Runtime control is not available")
     }
 
     fun executeRuntimeCommand(
