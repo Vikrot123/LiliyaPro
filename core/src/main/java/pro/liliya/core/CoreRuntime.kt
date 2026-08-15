@@ -222,7 +222,7 @@ object CoreRuntime {
 
         ModuleEventBus.subscribe { event ->
             if (event is ModuleEvent.Failed) {
-                runtimeComposition.failureTracker().recordFailure(
+                runtimeComposition.recordRuntimeFailure(
                     reason = "${event.phase}: ${event.reason}",
                     module = event.moduleName
                 )
@@ -248,8 +248,7 @@ object CoreRuntime {
 
         runtimeComposition.setRuntimeState(CoreRuntimeState.STARTING)
 
-        runtimeComposition.telemetryObserver().reset()
-        runtimeComposition.failureTracker().clear()
+        runtimeComposition.resetRuntimeHealth()
 
         installRuntimeObserverBridge()
         installModuleEventBridge()
@@ -291,7 +290,7 @@ object CoreRuntime {
                 )
             )
 
-            runtimeComposition.recoveryTracker().markRecovered()
+            runtimeComposition.markRuntimeRecovered()
 
             RuntimeEventBus.publish(
                 RuntimeEvent.RuntimeReady

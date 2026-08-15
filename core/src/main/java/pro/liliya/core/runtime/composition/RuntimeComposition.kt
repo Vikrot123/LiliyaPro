@@ -129,6 +129,15 @@ interface RuntimeComposition {
 
     fun recoveryTracker(): RuntimeRecoveryTracker
 
+    fun recordRuntimeFailure(
+        reason: String,
+        module: String
+    )
+
+    fun resetRuntimeHealth()
+
+    fun markRuntimeRecovered()
+
     fun healthReportProvider(): RuntimeHealthReportProvider
     fun createHealthReport(
         state: CoreRuntimeState,

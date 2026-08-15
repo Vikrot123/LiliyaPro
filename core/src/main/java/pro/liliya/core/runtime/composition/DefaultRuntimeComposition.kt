@@ -387,6 +387,25 @@ class DefaultRuntimeComposition : RuntimeComposition {
         return recoveryTracker
     }
 
+    override fun recordRuntimeFailure(
+        reason: String,
+        module: String
+    ) {
+        failureTracker.recordFailure(
+            reason = reason,
+            module = module
+        )
+    }
+
+    override fun resetRuntimeHealth() {
+        telemetryObserver.reset()
+        failureTracker.clear()
+    }
+
+    override fun markRuntimeRecovered() {
+        recoveryTracker.markRecovered()
+    }
+
     override fun healthReportProvider(): RuntimeHealthReportProvider {
         return healthReportProvider
     }
