@@ -162,6 +162,10 @@ interface RuntimeComposition {
         reason: String
     )
 
+    fun installModuleEventBridge()
+
+    fun uninstallModuleEventBridge()
+
     fun publishRuntimeStartedDiagnostic()
 
     fun publishRuntimeFailedDiagnostic()

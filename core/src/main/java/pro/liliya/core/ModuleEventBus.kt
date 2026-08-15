@@ -11,6 +11,12 @@ object ModuleEventBus {
         listeners.add(listener)
     }
 
+    fun unsubscribe(
+        listener: (ModuleEvent) -> Unit
+    ) {
+        listeners.remove(listener)
+    }
+
     fun publish(
         event: ModuleEvent
     ) {

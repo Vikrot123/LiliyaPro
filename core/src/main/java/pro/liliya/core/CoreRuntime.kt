@@ -92,27 +92,7 @@ object CoreRuntime {
         runtimeComposition.markRuntimeObserverBridgeInstalled()
     }
 
-    private fun installModuleEventBridge() {
-        if (ModuleEventBus.hasListeners()) {
-            return
-        }
 
-        ModuleEventBus.subscribe { event ->
-            if (event is ModuleEvent.Failed) {
-                runtimeComposition.recordRuntimeFailure(
-                    reason = "${event.phase}: ${event.reason}",
-                    module = event.moduleName
-                )
-
-                runtimeComposition.publishModuleFailed(
-                    moduleName = event.moduleName,
-                    reason = "${event.moduleName}: ${event.phase}: ${event.reason}"
-                )
-            }
-        }
-
-        runtimeComposition.markModuleEventBridgeInstalled()
-    }
 
     fun getRuntimeTelemetrySnapshot(): RuntimeTelemetrySnapshot {
         return runtimeComposition.telemetryObserver().snapshot()
@@ -192,7 +172,7 @@ object CoreRuntime {
         runtimeComposition.resetRuntimeHealth()
 
         installRuntimeObserverBridge()
-        installModuleEventBridge()
+        runtimeComposition.installModuleEventBridge()
 
         runtimeComposition.publishSystemStart()
 
@@ -289,7 +269,7 @@ object CoreRuntime {
             runtimeComposition.telemetryObserver()
         )
 
-        runtimeComposition.resetRuntimeBridgeState()
+        runtimeComposition.uninstallModuleEventBridge()
 
         logger.info(
             LogConfig.SYSTEM_STOP,
