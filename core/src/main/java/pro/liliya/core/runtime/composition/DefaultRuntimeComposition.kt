@@ -337,6 +337,11 @@ class DefaultRuntimeComposition : RuntimeComposition {
         runtimeStateHolder.setFailureReason(reason)
     }
 
+    override fun markRuntimeFailed(reason: String) {
+        setFailureReason(reason)
+        setRuntimeState(CoreRuntimeState.FAILED)
+    }
+
     override fun moduleStates(): Map<String, ModuleState> {
         return runtimeStateHolder.moduleStates()
     }

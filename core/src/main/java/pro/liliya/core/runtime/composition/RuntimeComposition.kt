@@ -64,6 +64,8 @@ interface RuntimeComposition {
     fun failureReason(): String?
     fun setFailureReason(reason: String?)
 
+    fun markRuntimeFailed(reason: String)
+
     fun moduleStates(): Map<String, ModuleState>
     fun setModuleStates(states: Map<String, ModuleState>)
 

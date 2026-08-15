@@ -256,8 +256,9 @@ object CoreRuntime {
             }
 
             runtimeComposition.clearModuleRuntime()
-            runtimeComposition.setFailureReason(error.message ?: "unknown")
-            runtimeComposition.setRuntimeState(CoreRuntimeState.FAILED)
+            runtimeComposition.markRuntimeFailed(
+                error.message ?: "unknown"
+            )
 
             runtimeComposition.lifecycleRecorder().record(
                 RuntimeLifecycleEvent.FAILED,
