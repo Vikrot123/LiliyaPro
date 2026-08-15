@@ -701,7 +701,7 @@ class DefaultRuntimeComposition : RuntimeComposition {
         controlRegistry.register(defaultRuntimeControl)
     }
 
-    override fun commandHistory(): RuntimeCommandHistoryProvider {
+    override fun commandHistoryProvider(): RuntimeCommandHistoryProvider {
         return commandHistory
     }
 

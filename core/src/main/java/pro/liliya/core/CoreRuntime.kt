@@ -132,7 +132,7 @@ object CoreRuntime {
 
     fun getRuntimeCommandHistory():
             List<pro.liliya.core.runtime.history.RuntimeCommandRecord> {
-        return runtimeComposition.commandHistory().snapshot()
+        return runtimeComposition.commandHistoryProvider().snapshot()
     }
 
     fun runtimeControl(): pro.liliya.core.runtime.control.RuntimeControl {

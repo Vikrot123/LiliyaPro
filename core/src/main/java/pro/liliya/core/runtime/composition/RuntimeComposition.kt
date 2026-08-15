@@ -212,7 +212,7 @@ interface RuntimeComposition {
 
     fun registerRuntimeControls()
 
-    fun commandHistory(): RuntimeCommandHistoryProvider
+    fun commandHistoryProvider(): RuntimeCommandHistoryProvider
 
     fun actionAuditProvider(): RuntimeActionAuditProvider
 

@@ -65,7 +65,7 @@ class RuntimeActionDispatcher(
 
             val result = handler.handle(request)
 
-            runtimeComposition.commandHistory().record(
+            runtimeComposition.commandHistoryProvider().record(
                 pro.liliya.core.runtime.history.RuntimeCommandRecord(
                     command = result.controlResult.command,
                     success = result.success,
