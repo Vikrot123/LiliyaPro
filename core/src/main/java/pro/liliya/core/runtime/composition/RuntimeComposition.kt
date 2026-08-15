@@ -147,6 +147,21 @@ interface RuntimeComposition {
         module: String
     )
 
+    fun publishSystemStart()
+
+    fun publishRuntimeStarting()
+
+    fun publishRuntimeReady()
+
+    fun publishRuntimeFailed(reason: String)
+
+    fun publishSystemStop()
+
+    fun publishModuleFailed(
+        moduleName: String,
+        reason: String
+    )
+
     fun resetRuntimeHealth()
 
     fun markRuntimeRecovered()

@@ -1,5 +1,8 @@
 package pro.liliya.core.runtime.composition
 
+import pro.liliya.core.RuntimeEventBus
+import pro.liliya.core.RuntimeEvent
+
 import pro.liliya.core.CoreDiagnosticSnapshot
 import pro.liliya.core.CoreRuntimeStateHolder
 import pro.liliya.core.CoreRuntimeState
@@ -424,6 +427,48 @@ class DefaultRuntimeComposition : RuntimeComposition {
         lifecycleRecorder().record(
             RuntimeLifecycleEvent.FAILED,
             reason
+        )
+    }
+
+    override fun publishSystemStart() {
+        RuntimeEventBus.publish(
+            RuntimeEvent.SystemStart
+        )
+    }
+
+    override fun publishRuntimeStarting() {
+        RuntimeEventBus.publish(
+            RuntimeEvent.RuntimeStarting
+        )
+    }
+
+    override fun publishRuntimeReady() {
+        RuntimeEventBus.publish(
+            RuntimeEvent.RuntimeReady
+        )
+    }
+
+    override fun publishRuntimeFailed(reason: String) {
+        RuntimeEventBus.publish(
+            RuntimeEvent.RuntimeFailed(reason)
+        )
+    }
+
+    override fun publishSystemStop() {
+        RuntimeEventBus.publish(
+            RuntimeEvent.SystemStop
+        )
+    }
+
+    override fun publishModuleFailed(
+        moduleName: String,
+        reason: String
+    ) {
+        RuntimeEventBus.publish(
+            RuntimeEvent.ModuleFailed(
+                moduleName = moduleName,
+                reason = reason
+            )
         )
     }
 

@@ -104,11 +104,9 @@ object CoreRuntime {
                     module = event.moduleName
                 )
 
-                RuntimeEventBus.publish(
-                    RuntimeEvent.ModuleFailed(
-                        moduleName = event.moduleName,
-                        reason = "${event.moduleName}: ${event.phase}: ${event.reason}"
-                    )
+                runtimeComposition.publishModuleFailed(
+                    moduleName = event.moduleName,
+                    reason = "${event.moduleName}: ${event.phase}: ${event.reason}"
                 )
             }
         }
@@ -196,13 +194,9 @@ object CoreRuntime {
         installRuntimeObserverBridge()
         installModuleEventBridge()
 
-        RuntimeEventBus.publish(
-            RuntimeEvent.SystemStart
-        )
+        runtimeComposition.publishSystemStart()
 
-        RuntimeEventBus.publish(
-            RuntimeEvent.RuntimeStarting
-        )
+        runtimeComposition.publishRuntimeStarting()
 
         logger.info(
             LogConfig.SYSTEM_START,
@@ -227,9 +221,7 @@ object CoreRuntime {
 
             runtimeComposition.markRuntimeRecovered()
 
-            RuntimeEventBus.publish(
-                RuntimeEvent.RuntimeReady
-            )
+            runtimeComposition.publishRuntimeReady()
 
             logger.info(
                 LogConfig.MODULE_READY,
@@ -268,10 +260,8 @@ object CoreRuntime {
                 )
             )
 
-            RuntimeEventBus.publish(
-                RuntimeEvent.RuntimeFailed(
-                    error.message ?: "unknown"
-                )
+            runtimeComposition.publishRuntimeFailed(
+                error.message ?: "unknown"
             )
 
             throw error
@@ -306,9 +296,7 @@ object CoreRuntime {
             )
         )
 
-        RuntimeEventBus.publish(
-            RuntimeEvent.SystemStop
-        )
+        runtimeComposition.publishSystemStop()
 
         runtimeComposition.observerBridge().uninstall()
 
