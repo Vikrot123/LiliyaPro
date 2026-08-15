@@ -1,5 +1,8 @@
 package pro.liliya.core.runtime.composition
 
+import pro.liliya.core.logging.Logger
+import pro.liliya.core.logging.LoggerFactory
+
 import pro.liliya.core.CoreDiagnosticEvent
 import pro.liliya.core.CoreDiagnosticEventType
 
@@ -76,6 +79,14 @@ import pro.liliya.core.runtime.CoreRuntimeServiceProvider
 import pro.liliya.core.runtime.RuntimeServiceRegistry
 
 class DefaultRuntimeComposition : RuntimeComposition {
+
+    private val logger: Logger =
+        LoggerFactory.create(
+            module = "CORE",
+            component = "CoreRuntime",
+            method = "lifecycle"
+        )
+
 
     private var moduleEventBridgeListener: ((ModuleEvent) -> Unit)? = null
     private var runtimeFailureEventListener: ((RuntimeEvent) -> Unit)? = null
@@ -821,4 +832,9 @@ class DefaultRuntimeComposition : RuntimeComposition {
             failureReason = failureReason()
         )
     }
+
+    override fun logger(): Logger {
+        return logger
+    }
+
 }

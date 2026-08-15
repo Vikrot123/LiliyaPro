@@ -1,8 +1,6 @@
 package pro.liliya.core
 
 import pro.liliya.core.logging.LogConfig
-import pro.liliya.core.logging.Logger
-import pro.liliya.core.logging.LoggerFactory
 import pro.liliya.core.runtime.RuntimeService
 import pro.liliya.core.runtime.RuntimeServiceRegistry
 import pro.liliya.core.runtime.RuntimeServiceProvider
@@ -40,13 +38,6 @@ object CoreRuntime {
 
 
 
-
-    private val logger: Logger
-        get() = LoggerFactory.create(
-            module = "CORE",
-            component = "CoreRuntime",
-            method = "lifecycle"
-        )
 
     fun state(): CoreRuntimeState {
         return runtimeComposition.runtimeState()
@@ -178,7 +169,7 @@ object CoreRuntime {
 
         runtimeComposition.publishRuntimeStarting()
 
-        logger.info(
+        runtimeComposition.logger().info(
             LogConfig.SYSTEM_START,
             "Core runtime starting"
         )
@@ -198,12 +189,12 @@ object CoreRuntime {
 
             runtimeComposition.publishRuntimeReady()
 
-            logger.info(
+            runtimeComposition.logger().info(
                 LogConfig.MODULE_READY,
                 "Core runtime ready"
             )
         } catch (error: Exception) {
-            logger.info(
+            runtimeComposition.logger().info(
                 LogConfig.ERROR_CAUGHT,
                 "Core runtime startup failed: ${error.message}"
             )
@@ -271,7 +262,7 @@ object CoreRuntime {
 
         runtimeComposition.uninstallModuleEventBridge()
 
-        logger.info(
+        runtimeComposition.logger().info(
             LogConfig.SYSTEM_STOP,
             "Core runtime stopped"
         )

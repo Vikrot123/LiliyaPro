@@ -1,5 +1,7 @@
 package pro.liliya.core.runtime.composition
 
+import pro.liliya.core.logging.Logger
+
 import pro.liliya.core.CoreDiagnosticSnapshot
 import pro.liliya.core.CoreRuntimeStateHolder
 import pro.liliya.core.CoreRuntimeState
@@ -50,6 +52,7 @@ import pro.liliya.core.runtime.telemetry.RuntimeTelemetrySnapshot
 interface RuntimeComposition {
 
     fun context(): CoreRuntimeContext
+    fun logger(): Logger
 
     fun createModuleRegistry(): ModuleRegistry
     fun moduleManagerHolder(): ModuleManagerHolder
