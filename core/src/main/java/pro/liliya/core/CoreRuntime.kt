@@ -54,17 +54,7 @@ object CoreRuntime {
     }
 
     fun snapshot(): CoreDiagnosticSnapshot {
-        return CoreDiagnosticSnapshot(
-            runtimeState = runtimeComposition.runtimeState(),
-            moduleStates = runtimeComposition.moduleManager()?.getModuleStates()
-                ?: runtimeComposition.moduleStates(),
-            runtimeServiceStates = runtimeComposition.runtimeServiceStates(),
-            runtimeServiceFailures = runtimeComposition.runtimeServiceFailures(),
-            runtimeServiceHealth = runtimeComposition.runtimeServiceHealth(),
-            runtimeRecoverySnapshot = runtimeComposition.runtimeServiceRecoverySnapshot(),
-            runtimeStatusSnapshot = getRuntimeStatusSnapshot(),
-            failureReason = runtimeComposition.failureReason()
-        )
+        return runtimeComposition.createDiagnosticSnapshot()
     }
 
     fun diagnostics(): CoreRuntimeDiagnosticsSnapshot {

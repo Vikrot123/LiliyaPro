@@ -1,5 +1,6 @@
 package pro.liliya.core.runtime.composition
 
+import pro.liliya.core.CoreDiagnosticSnapshot
 import pro.liliya.core.CoreRuntimeStateHolder
 import pro.liliya.core.CoreRuntimeState
 import pro.liliya.core.CoreRuntimeDiagnosticsService
@@ -530,5 +531,26 @@ class DefaultRuntimeComposition : RuntimeComposition {
     
     override fun runtimeMonitor(): RuntimeMonitor {
         return runtimeMonitor
+    }
+
+    override fun createDiagnosticSnapshot(): CoreDiagnosticSnapshot {
+        return CoreDiagnosticSnapshot(
+            runtimeState = runtimeState(),
+            moduleStates = moduleManager()?.getModuleStates()
+                ?: moduleStates(),
+            runtimeServiceStates = runtimeServiceStates(),
+            runtimeServiceFailures = runtimeServiceFailures(),
+            runtimeServiceHealth = runtimeServiceHealth(),
+            runtimeRecoverySnapshot = runtimeServiceRecoverySnapshot(),
+            runtimeStatusSnapshot = createRuntimeStatus(
+                report = createHealthReport(
+                    state = runtimeState(),
+                    telemetry = telemetryObserver().snapshot(),
+                    failure = failureTracker().snapshot(),
+                    recovery = recoveryTracker().snapshot()
+                )
+            ),
+            failureReason = failureReason()
+        )
     }
 }

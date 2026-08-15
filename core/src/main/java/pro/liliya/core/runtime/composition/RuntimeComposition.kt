@@ -1,5 +1,6 @@
 package pro.liliya.core.runtime.composition
 
+import pro.liliya.core.CoreDiagnosticSnapshot
 import pro.liliya.core.CoreRuntimeStateHolder
 import pro.liliya.core.CoreRuntimeState
 import pro.liliya.core.CoreRuntimeDiagnosticsService
@@ -95,6 +96,8 @@ interface RuntimeComposition {
 
     fun resetModuleProvider()
     fun diagnosticsService(): CoreRuntimeDiagnosticsService
+
+    fun createDiagnosticSnapshot(): CoreDiagnosticSnapshot
 
     fun observerRegistry(): DefaultRuntimeObserverRegistry
 
