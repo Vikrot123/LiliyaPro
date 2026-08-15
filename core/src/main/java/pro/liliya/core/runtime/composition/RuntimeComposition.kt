@@ -11,6 +11,8 @@ import pro.liliya.core.CoreRuntimeContext
 import pro.liliya.core.module.ModuleRegistry
 import pro.liliya.core.module.ModuleProviderHolder
 import pro.liliya.core.module.ModuleProvider
+import pro.liliya.core.module.ModuleExceptionHandler
+import pro.liliya.core.module.ModuleDependencyResolver
 import pro.liliya.core.module.ModuleManager
 import pro.liliya.core.module.ModuleManagerHolder
 import pro.liliya.core.module.ModuleState
@@ -122,6 +124,8 @@ interface RuntimeComposition {
 
     fun capabilityRegistry(): RuntimeCapabilityRegistry
     fun capabilityInfrastructure(): RuntimeCapabilityInfrastructure
+    fun moduleExceptionHandler(): ModuleExceptionHandler
+    fun moduleDependencyResolver(): ModuleDependencyResolver
 
     fun capabilityAuthorityEvaluator(): RuntimeCapabilityAuthorityEvaluator
 

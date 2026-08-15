@@ -21,6 +21,8 @@ import pro.liliya.core.DefaultCoreRuntimeDiagnosticsService
 import pro.liliya.core.CoreDiagnosticProvider
 import pro.liliya.core.CoreRuntimeContext
 import pro.liliya.core.module.ModuleProvider
+import pro.liliya.core.module.ModuleExceptionHandler
+import pro.liliya.core.module.ModuleDependencyResolver
 import pro.liliya.core.module.ModuleProviderHolder
 import pro.liliya.core.module.CoreModuleProvider
 import pro.liliya.core.module.ModuleRegistry
@@ -145,6 +147,12 @@ class DefaultRuntimeComposition : RuntimeComposition {
         DefaultRuntimeCapabilityInfrastructureProvider()
             .provide()
 
+    private val moduleExceptionHandler =
+        ModuleExceptionHandler()
+
+    private val moduleDependencyResolver =
+        ModuleDependencyResolver()
+
 
     private val capabilityAuthorityEvaluator: RuntimeCapabilityAuthorityEvaluator =
         DefaultRuntimeCapabilityAuthorityEvaluator()
@@ -250,7 +258,11 @@ class DefaultRuntimeComposition : RuntimeComposition {
     }
 
     override fun createModuleRegistry(): ModuleRegistry {
-        return ModuleRegistry(capabilityInfrastructure)
+        return ModuleRegistry(
+            capabilityInfrastructure,
+            moduleExceptionHandler,
+            moduleDependencyResolver
+        )
     }
 
     override fun createModuleManager(
@@ -328,6 +340,14 @@ class DefaultRuntimeComposition : RuntimeComposition {
 
     override fun moduleProviderHolder(): ModuleProviderHolder {
         return moduleProviderHolder
+    }
+
+    override fun moduleExceptionHandler(): ModuleExceptionHandler {
+        return moduleExceptionHandler
+    }
+
+    override fun moduleDependencyResolver(): ModuleDependencyResolver {
+        return moduleDependencyResolver
     }
 
     override fun setModuleProvider(

@@ -9,7 +9,9 @@ import pro.liliya.core.runtime.capability.RuntimeCapabilityInfrastructure
 import pro.liliya.core.runtime.module.RuntimeModuleCapabilityLifecycle
 
 class ModuleRegistry(
-    private val capabilityInfrastructure: RuntimeCapabilityInfrastructure
+    private val capabilityInfrastructure: RuntimeCapabilityInfrastructure,
+    private val exceptionHandler: ModuleExceptionHandler,
+    private val dependencyResolver: ModuleDependencyResolver
 ) {
 
     private val capabilityLifecycle: RuntimeModuleCapabilityLifecycle =
@@ -26,12 +28,6 @@ class ModuleRegistry(
         STOPPED,
         TERMINATED
     }
-
-    private val exceptionHandler =
-        ModuleExceptionHandler()
-
-    private val dependencyResolver =
-        ModuleDependencyResolver()
 
     private val logger = LoggerFactory.create(
         module = "CORE",
