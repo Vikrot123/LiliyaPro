@@ -212,12 +212,7 @@ object CoreRuntime {
 
             runtimeComposition.recordRuntimeStarted()
 
-            runtimeComposition.context().diagnosticEventBus.publish(
-                CoreDiagnosticEvent(
-                    type = CoreDiagnosticEventType.RUNTIME_STARTED,
-                    snapshot = snapshot()
-                )
-            )
+            runtimeComposition.publishRuntimeStartedDiagnostic()
 
             runtimeComposition.markRuntimeRecovered()
 
@@ -253,12 +248,7 @@ object CoreRuntime {
                 runtimeComposition.failureReason()
             )
 
-            runtimeComposition.context().diagnosticEventBus.publish(
-                CoreDiagnosticEvent(
-                    type = CoreDiagnosticEventType.RUNTIME_FAILED,
-                    snapshot = snapshot()
-                )
-            )
+            runtimeComposition.publishRuntimeFailedDiagnostic()
 
             runtimeComposition.publishRuntimeFailed(
                 error.message ?: "unknown"
@@ -289,12 +279,7 @@ object CoreRuntime {
           runtimeComposition.setFailureReason(null)
           runtimeComposition.setModuleStates(emptyMap())
 
-        runtimeComposition.context().diagnosticEventBus.publish(
-            CoreDiagnosticEvent(
-                type = CoreDiagnosticEventType.RUNTIME_STOPPED,
-                snapshot = snapshot()
-            )
-        )
+        runtimeComposition.publishRuntimeStoppedDiagnostic()
 
         runtimeComposition.publishSystemStop()
 

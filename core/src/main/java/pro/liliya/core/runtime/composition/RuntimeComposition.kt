@@ -162,6 +162,12 @@ interface RuntimeComposition {
         reason: String
     )
 
+    fun publishRuntimeStartedDiagnostic()
+
+    fun publishRuntimeFailedDiagnostic()
+
+    fun publishRuntimeStoppedDiagnostic()
+
     fun resetRuntimeHealth()
 
     fun markRuntimeRecovered()

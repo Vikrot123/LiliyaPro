@@ -1,5 +1,8 @@
 package pro.liliya.core.runtime.composition
 
+import pro.liliya.core.CoreDiagnosticEvent
+import pro.liliya.core.CoreDiagnosticEventType
+
 import pro.liliya.core.RuntimeEventBus
 import pro.liliya.core.RuntimeEvent
 
@@ -468,6 +471,33 @@ class DefaultRuntimeComposition : RuntimeComposition {
             RuntimeEvent.ModuleFailed(
                 moduleName = moduleName,
                 reason = reason
+            )
+        )
+    }
+
+    override fun publishRuntimeStartedDiagnostic() {
+        context().diagnosticEventBus.publish(
+            CoreDiagnosticEvent(
+                type = CoreDiagnosticEventType.RUNTIME_STARTED,
+                snapshot = createDiagnosticSnapshot()
+            )
+        )
+    }
+
+    override fun publishRuntimeFailedDiagnostic() {
+        context().diagnosticEventBus.publish(
+            CoreDiagnosticEvent(
+                type = CoreDiagnosticEventType.RUNTIME_FAILED,
+                snapshot = createDiagnosticSnapshot()
+            )
+        )
+    }
+
+    override fun publishRuntimeStoppedDiagnostic() {
+        context().diagnosticEventBus.publish(
+            CoreDiagnosticEvent(
+                type = CoreDiagnosticEventType.RUNTIME_STOPPED,
+                snapshot = createDiagnosticSnapshot()
             )
         )
     }
