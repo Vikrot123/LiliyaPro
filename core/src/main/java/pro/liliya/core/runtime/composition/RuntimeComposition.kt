@@ -18,6 +18,7 @@ import pro.liliya.core.module.ModuleManagerHolder
 import pro.liliya.core.module.ModuleState
 import pro.liliya.core.runtime.lifecycle.RuntimeLifecycleRecorder
 import pro.liliya.core.runtime.orchestration.RuntimeLifecycleController
+import pro.liliya.core.runtime.orchestration.RuntimeShutdownController
 import pro.liliya.core.runtime.lifecycle.RuntimeLifecycleRecorderHolder
 import pro.liliya.core.runtime.observer.RuntimeObserverBridge
 import pro.liliya.core.runtime.observer.DefaultRuntimeObserverRegistry
@@ -101,6 +102,8 @@ interface RuntimeComposition {
     fun stopRuntimeLifecycle()
 
     fun lifecycleController(): RuntimeLifecycleController
+
+    fun shutdownController(): RuntimeShutdownController
 
     fun startRuntime()
     fun stopRuntime()

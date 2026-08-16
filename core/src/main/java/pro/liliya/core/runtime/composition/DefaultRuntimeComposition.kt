@@ -39,6 +39,9 @@ import pro.liliya.core.runtime.orchestration.RuntimeLifecycleController
 import pro.liliya.core.runtime.orchestration.DefaultRuntimeLifecycleController
 import pro.liliya.core.runtime.orchestration.RuntimeLifecycleComposition
 import pro.liliya.core.runtime.orchestration.RuntimeStartupComposition
+import pro.liliya.core.runtime.orchestration.RuntimeShutdownComposition
+import pro.liliya.core.runtime.orchestration.RuntimeShutdownController
+import pro.liliya.core.runtime.orchestration.DefaultRuntimeShutdownController
 import pro.liliya.core.runtime.orchestration.RuntimeStartupController
 import pro.liliya.core.runtime.orchestration.DefaultRuntimeStartupController
 
@@ -96,7 +99,8 @@ import pro.liliya.core.runtime.RuntimeServiceRegistry
 class DefaultRuntimeComposition :
     RuntimeComposition,
     RuntimeLifecycleComposition,
-    RuntimeStartupComposition {
+    RuntimeStartupComposition,
+        RuntimeShutdownComposition {
 
     private val diagnosticSource: CoreDiagnosticSource =
         CoreDiagnosticProvider()
@@ -191,6 +195,9 @@ class DefaultRuntimeComposition :
 
     private val startupController: RuntimeStartupController =
         DefaultRuntimeStartupController(this)
+
+    private val shutdownController: RuntimeShutdownController =
+        DefaultRuntimeShutdownController(this)
 
     private val runtimeMonitor =
         DefaultRuntimeMonitor(
@@ -458,17 +465,7 @@ class DefaultRuntimeComposition :
     }
 
     override fun stopRuntime() {
-        stopRuntimeLifecycle()
-
-        recordRuntimeStopped()
-
-        setFailureReason(null)
-        setModuleStates(emptyMap())
-
-        publishRuntimeStoppedDiagnostic()
-        publishSystemStop()
-
-        stopRuntimeBridges()
+        shutdownController.stop()
     }
 
     override fun startModuleRuntime(
@@ -655,6 +652,10 @@ class DefaultRuntimeComposition :
 
     override fun startupController(): RuntimeStartupController {
         return startupController
+    }
+
+    override fun shutdownController(): RuntimeShutdownController {
+        return shutdownController
     }
 
     override fun lifecycleRecorder(): RuntimeLifecycleRecorder {
