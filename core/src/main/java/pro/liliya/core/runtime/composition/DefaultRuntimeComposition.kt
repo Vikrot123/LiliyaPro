@@ -896,6 +896,11 @@ class DefaultRuntimeComposition : RuntimeComposition {
     }
 
 
+    override fun prepareRuntime() {
+        resetRuntimeServiceConfiguration()
+    }
+
+
     override fun runtimeServiceRegistry(): RuntimeServiceRegistry {
         return runtimeServiceRegistry
     }

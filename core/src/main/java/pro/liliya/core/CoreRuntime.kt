@@ -63,7 +63,7 @@ object CoreRuntime {
     }
 
     internal fun resetRuntimeServiceProvider() {
-        runtimeComposition.resetRuntimeServiceConfiguration()
+        runtimeComposition.prepareRuntime()
     }
 
 

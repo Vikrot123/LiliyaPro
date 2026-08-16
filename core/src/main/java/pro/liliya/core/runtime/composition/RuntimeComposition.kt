@@ -247,6 +247,8 @@ interface RuntimeComposition {
 
     fun resetRuntimeServiceConfiguration()
 
+    fun prepareRuntime()
+
     fun runtimeServiceRegistry(): RuntimeServiceRegistry
     fun serviceBootstrap(): RuntimeServiceBootstrap
     fun runtimeServiceBootstrapHolder(): RuntimeServiceBootstrapHolder
