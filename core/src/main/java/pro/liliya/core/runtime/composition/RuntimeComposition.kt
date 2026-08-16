@@ -83,6 +83,7 @@ interface RuntimeComposition {
     fun markRuntimeObserverBridgeInstalled()
     fun markModuleEventBridgeInstalled()
     fun resetRuntimeBridgeState()
+    fun stopRuntimeBridges()
 
 
     fun createModuleManager(
@@ -97,6 +98,9 @@ interface RuntimeComposition {
     fun startRuntimeLifecycle(): ModuleManager
 
     fun stopRuntimeLifecycle()
+
+    fun startRuntime()
+    fun stopRuntime()
 
     fun resetRuntimeState()
 

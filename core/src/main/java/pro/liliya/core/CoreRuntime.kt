@@ -141,32 +141,12 @@ object CoreRuntime {
             return
         }
 
-        
-        runtimeComposition.resetRuntimeHealth()
-
-        runtimeComposition.installRuntimeObserverBridge()
-        runtimeComposition.installModuleEventBridge()
-
-        runtimeComposition.publishSystemStart()
-
-        runtimeComposition.publishRuntimeStarting()
-
-        runtimeComposition.logger().info(
-            LogConfig.SYSTEM_START,
-            "Core runtime starting"
-        )
-
-        var manager: pro.liliya.core.module.ModuleManager? = null
-
         try {
-            manager = runtimeComposition.startRuntimeLifecycle()
+            runtimeComposition.startRuntime()
 
             runtimeComposition.recordRuntimeStarted()
-
             runtimeComposition.publishRuntimeStartedDiagnostic()
-
             runtimeComposition.markRuntimeRecovered()
-
             runtimeComposition.publishRuntimeReady()
 
             runtimeComposition.logger().info(
@@ -183,14 +163,8 @@ object CoreRuntime {
                 runtimeComposition.setModuleStates(it.getModuleStates())
             }
 
-            manager?.let {
-                try {
-                    it.stopModules()
-                } catch (_: Exception) {
-                }
-            }
-
             runtimeComposition.clearModuleRuntime()
+
             runtimeComposition.markRuntimeFailed(
                 error.message ?: "unknown"
             )
@@ -224,28 +198,12 @@ object CoreRuntime {
             return
         }
 
-        runtimeComposition.stopRuntimeLifecycle()
-
-        runtimeComposition.recordRuntimeStopped()
-          runtimeComposition.setFailureReason(null)
-          runtimeComposition.setModuleStates(emptyMap())
-
-        runtimeComposition.publishRuntimeStoppedDiagnostic()
-
-        runtimeComposition.publishSystemStop()
-
-        runtimeComposition.observerBridge().uninstall()
-        runtimeComposition.resetRuntimeBridgeState()
-
-        runtimeComposition.observerRegistry().unsubscribe(
-            runtimeComposition.telemetryObserver()
-        )
-
-        runtimeComposition.uninstallModuleEventBridge()
+        runtimeComposition.stopRuntime()
 
         runtimeComposition.logger().info(
             LogConfig.SYSTEM_STOP,
             "Core runtime stopped"
         )
     }
+
 }

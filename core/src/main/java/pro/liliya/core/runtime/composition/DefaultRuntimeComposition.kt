@@ -2,6 +2,7 @@ package pro.liliya.core.runtime.composition
 
 import pro.liliya.core.logging.Logger
 import pro.liliya.core.logging.LoggerFactory
+import pro.liliya.core.logging.LogConfig
 
 import pro.liliya.core.CoreDiagnosticEvent
 import pro.liliya.core.CoreDiagnosticEventType
@@ -329,6 +330,64 @@ class DefaultRuntimeComposition : RuntimeComposition {
         setModuleStates(emptyMap())
     }
 
+
+    override fun startRuntime() {
+        resetRuntimeHealth()
+
+        installRuntimeObserverBridge()
+        installModuleEventBridge()
+
+        publishSystemStart()
+        publishRuntimeStarting()
+
+        try {
+            startRuntimeLifecycle()
+        } catch (error: Exception) {
+            moduleManager()?.let {
+                try {
+                    stopModuleRuntime(it)
+                } catch (_: Exception) {
+                }
+            }
+
+            moduleManager()?.let {
+                setModuleStates(it.getModuleStates())
+            }
+
+            clearModuleRuntime()
+
+            markRuntimeFailed(
+                error.message ?: "unknown"
+            )
+
+            recordRuntimeFailure(
+                failureReason()
+            )
+
+            publishRuntimeFailedDiagnostic()
+
+            publishRuntimeFailed(
+                error.message ?: "unknown"
+            )
+
+            throw error
+        }
+    }
+
+    override fun stopRuntime() {
+        stopRuntimeLifecycle()
+
+        recordRuntimeStopped()
+
+        setFailureReason(null)
+        setModuleStates(emptyMap())
+
+        publishRuntimeStoppedDiagnostic()
+        publishSystemStop()
+
+        stopRuntimeBridges()
+    }
+
     override fun startModuleRuntime(
         manager: ModuleManager
     ) {
@@ -441,6 +500,18 @@ class DefaultRuntimeComposition : RuntimeComposition {
         runtimeBridgeStateHolder.reset()
     }
 
+    override fun stopRuntimeBridges() {
+        observerBridge.uninstall()
+
+        observerRegistry.unsubscribe(
+            telemetryObserver()
+        )
+
+        uninstallModuleEventBridge()
+
+        resetRuntimeBridgeState()
+    }
+
 
     override fun moduleProvider(): ModuleProvider {
         return moduleProvider
@@ -519,6 +590,11 @@ class DefaultRuntimeComposition : RuntimeComposition {
     }
 
     override fun publishRuntimeStarting() {
+        logger().info(
+            LogConfig.MODULE_INIT,
+            "Core runtime starting"
+        )
+
         RuntimeEventBus.publish(
             RuntimeEvent.RuntimeStarting
         )

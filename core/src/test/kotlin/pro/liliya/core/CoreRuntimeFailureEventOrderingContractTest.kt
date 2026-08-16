@@ -27,6 +27,11 @@ class CoreRuntimeFailureEventOrderingContractTest {
         } catch (_: RuntimeException) {
         }
 
+        val runtimeStartingIndex =
+            received.indexOfFirst {
+                it is RuntimeEvent.RuntimeStarting
+            }
+
         val moduleFailedIndex =
             received.indexOfFirst {
                 it is RuntimeEvent.ModuleFailed
@@ -48,8 +53,25 @@ class CoreRuntimeFailureEventOrderingContractTest {
         )
 
         assertTrue(
+            runtimeStartingIndex >= 0,
+            "RuntimeStarting event must exist"
+        )
+
+        assertTrue(
+            runtimeStartingIndex < moduleFailedIndex,
+            "RuntimeStarting must happen before ModuleFailed"
+        )
+
+        assertTrue(
             moduleFailedIndex < runtimeFailedIndex,
             "ModuleFailed must happen before RuntimeFailed"
+        )
+
+        assertTrue(
+            received.none {
+                it is RuntimeEvent.RuntimeReady
+            },
+            "Failed startup must never publish RuntimeReady"
         )
 
         CoreRuntime.resetModuleProvider()
