@@ -35,6 +35,10 @@ import pro.liliya.core.runtime.lifecycle.DefaultRuntimeLifecycleRecorder
 import pro.liliya.core.runtime.lifecycle.RuntimeLifecycleRecorder
 import pro.liliya.core.runtime.lifecycle.RuntimeLifecycleRecorderHolder
 import pro.liliya.core.runtime.lifecycle.RuntimeLifecycleEvent
+import pro.liliya.core.runtime.orchestration.RuntimeLifecycleController
+import pro.liliya.core.runtime.orchestration.DefaultRuntimeLifecycleController
+import pro.liliya.core.runtime.orchestration.RuntimeLifecycleComposition
+
 import pro.liliya.core.runtime.observer.DefaultRuntimeObserverRegistry
 import pro.liliya.core.runtime.observer.RuntimeObserverBridge
 import pro.liliya.core.runtime.policy.DefaultRuntimeActionPolicyEvaluator
@@ -86,7 +90,9 @@ import pro.liliya.core.runtime.RuntimeServiceProviderHolder
 import pro.liliya.core.runtime.CoreRuntimeServiceProvider
 import pro.liliya.core.runtime.RuntimeServiceRegistry
 
-class DefaultRuntimeComposition : RuntimeComposition {
+class DefaultRuntimeComposition :
+    RuntimeComposition,
+    RuntimeLifecycleComposition {
 
     private val diagnosticSource: CoreDiagnosticSource =
         CoreDiagnosticProvider()
@@ -175,6 +181,9 @@ class DefaultRuntimeComposition : RuntimeComposition {
 
     private val lifecycleRecorderHolder =
         RuntimeLifecycleRecorderHolder(lifecycleRecorder)
+
+    private val lifecycleController: RuntimeLifecycleController =
+        DefaultRuntimeLifecycleController(this)
 
     private val runtimeMonitor =
         DefaultRuntimeMonitor(
@@ -380,21 +389,7 @@ class DefaultRuntimeComposition : RuntimeComposition {
     }
 
     override fun startLifecycle() {
-        if (runtimeState() == CoreRuntimeState.RUNNING ||
-            runtimeState() == CoreRuntimeState.STARTING
-        ) {
-            return
-        }
-
-        try {
-            startRuntime()
-            handleRuntimeStartupSuccess()
-            logRuntimeStartupSuccess()
-        } catch (error: Exception) {
-            logRuntimeStartupFailure(error)
-            handleRuntimeStartupFailure(error)
-            throw error
-        }
+        lifecycleController.start()
     }
 
     override fun handleRuntimeStartupSuccess() {
@@ -452,13 +447,7 @@ class DefaultRuntimeComposition : RuntimeComposition {
     }
 
     override fun stopLifecycle() {
-        if (runtimeState() == CoreRuntimeState.STOPPED) {
-            return
-        }
-
-        stopRuntime()
-
-        logRuntimeStopped()
+        lifecycleController.stop()
     }
 
     override fun stopRuntime() {
@@ -651,6 +640,10 @@ class DefaultRuntimeComposition : RuntimeComposition {
 
     override fun capabilityResolver(): RuntimeCapabilityResolver {
         return capabilityResolver
+    }
+
+    override fun lifecycleController(): RuntimeLifecycleController {
+        return lifecycleController
     }
 
     override fun lifecycleRecorder(): RuntimeLifecycleRecorder {
