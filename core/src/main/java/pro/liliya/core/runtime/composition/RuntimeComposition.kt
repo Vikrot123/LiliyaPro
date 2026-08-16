@@ -102,6 +102,10 @@ interface RuntimeComposition {
     fun startRuntime()
     fun stopRuntime()
 
+    fun startLifecycle()
+
+    fun stopLifecycle()
+
     fun handleRuntimeStartupSuccess()
 
     fun handleRuntimeStartupFailure(

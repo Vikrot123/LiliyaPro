@@ -134,25 +134,7 @@ object CoreRuntime {
     }
 
     fun start() {
-        if (runtimeComposition.runtimeState() == CoreRuntimeState.RUNNING ||
-            runtimeComposition.runtimeState() == CoreRuntimeState.STARTING
-        ) {
-            return
-        }
-
-        try {
-            runtimeComposition.startRuntime()
-
-            runtimeComposition.handleRuntimeStartupSuccess()
-
-            runtimeComposition.logRuntimeStartupSuccess()
-        } catch (error: Exception) {
-            runtimeComposition.logRuntimeStartupFailure(error)
-
-            runtimeComposition.handleRuntimeStartupFailure(error)
-
-            throw error
-        }
+        runtimeComposition.startLifecycle()
     }
 
     internal fun setModuleProvider(
@@ -166,13 +148,7 @@ object CoreRuntime {
     }
 
     fun stop() {
-        if (runtimeComposition.runtimeState() == CoreRuntimeState.STOPPED) {
-            return
-        }
-
-        runtimeComposition.stopRuntime()
-
-        runtimeComposition.logRuntimeStopped()
+        runtimeComposition.stopLifecycle()
     }
 
 }

@@ -379,6 +379,24 @@ class DefaultRuntimeComposition : RuntimeComposition {
         }
     }
 
+    override fun startLifecycle() {
+        if (runtimeState() == CoreRuntimeState.RUNNING ||
+            runtimeState() == CoreRuntimeState.STARTING
+        ) {
+            return
+        }
+
+        try {
+            startRuntime()
+            handleRuntimeStartupSuccess()
+            logRuntimeStartupSuccess()
+        } catch (error: Exception) {
+            logRuntimeStartupFailure(error)
+            handleRuntimeStartupFailure(error)
+            throw error
+        }
+    }
+
     override fun handleRuntimeStartupSuccess() {
         recordRuntimeStarted()
         publishRuntimeStartedDiagnostic()
@@ -431,6 +449,16 @@ class DefaultRuntimeComposition : RuntimeComposition {
         publishRuntimeFailed(
             error.message ?: "unknown"
         )
+    }
+
+    override fun stopLifecycle() {
+        if (runtimeState() == CoreRuntimeState.STOPPED) {
+            return
+        }
+
+        stopRuntime()
+
+        logRuntimeStopped()
     }
 
     override fun stopRuntime() {
