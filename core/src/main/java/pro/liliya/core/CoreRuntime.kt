@@ -159,25 +159,7 @@ object CoreRuntime {
                 "Core runtime startup failed: ${error.message}"
             )
 
-            runtimeComposition.moduleManager()?.let {
-                runtimeComposition.setModuleStates(it.getModuleStates())
-            }
-
-            runtimeComposition.clearModuleRuntime()
-
-            runtimeComposition.markRuntimeFailed(
-                error.message ?: "unknown"
-            )
-
-            runtimeComposition.recordRuntimeFailure(
-                runtimeComposition.failureReason()
-            )
-
-            runtimeComposition.publishRuntimeFailedDiagnostic()
-
-            runtimeComposition.publishRuntimeFailed(
-                error.message ?: "unknown"
-            )
+            runtimeComposition.handleRuntimeStartupFailure(error)
 
             throw error
         }

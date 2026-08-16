@@ -102,6 +102,10 @@ interface RuntimeComposition {
     fun startRuntime()
     fun stopRuntime()
 
+    fun handleRuntimeStartupFailure(
+        error: Exception
+    )
+
     fun resetRuntimeState()
 
     fun startModuleRuntime(

@@ -374,6 +374,30 @@ class DefaultRuntimeComposition : RuntimeComposition {
         }
     }
 
+    override fun handleRuntimeStartupFailure(
+        error: Exception
+    ) {
+        moduleManager()?.let {
+            setModuleStates(it.getModuleStates())
+        }
+
+        clearModuleRuntime()
+
+        markRuntimeFailed(
+            error.message ?: "unknown"
+        )
+
+        recordRuntimeFailure(
+            failureReason()
+        )
+
+        publishRuntimeFailedDiagnostic()
+
+        publishRuntimeFailed(
+            error.message ?: "unknown"
+        )
+    }
+
     override fun stopRuntime() {
         stopRuntimeLifecycle()
 
