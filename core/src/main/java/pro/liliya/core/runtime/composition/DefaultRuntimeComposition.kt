@@ -40,6 +40,9 @@ import pro.liliya.core.runtime.orchestration.DefaultRuntimeLifecycleController
 import pro.liliya.core.runtime.orchestration.RuntimeLifecycleComposition
 import pro.liliya.core.runtime.orchestration.RuntimeStartupComposition
 import pro.liliya.core.runtime.orchestration.RuntimeShutdownComposition
+import pro.liliya.core.runtime.orchestration.RuntimeServiceComposition
+import pro.liliya.core.runtime.orchestration.RuntimeServiceController
+import pro.liliya.core.runtime.orchestration.DefaultRuntimeServiceController
 import pro.liliya.core.runtime.orchestration.RuntimeShutdownController
 import pro.liliya.core.runtime.orchestration.DefaultRuntimeShutdownController
 import pro.liliya.core.runtime.orchestration.RuntimeStartupController
@@ -100,7 +103,8 @@ class DefaultRuntimeComposition :
     RuntimeComposition,
     RuntimeLifecycleComposition,
     RuntimeStartupComposition,
-        RuntimeShutdownComposition {
+        RuntimeShutdownComposition,
+        RuntimeServiceComposition {
 
     private val diagnosticSource: CoreDiagnosticSource =
         CoreDiagnosticProvider()
@@ -198,6 +202,9 @@ class DefaultRuntimeComposition :
 
     private val shutdownController: RuntimeShutdownController =
         DefaultRuntimeShutdownController(this)
+
+    private val serviceController: RuntimeServiceController =
+        DefaultRuntimeServiceController(this)
 
     private val runtimeMonitor =
         DefaultRuntimeMonitor(
@@ -319,7 +326,7 @@ class DefaultRuntimeComposition :
         setModuleManager(manager)
 
         startModuleRuntime(manager)
-        startRuntimeServices()
+        serviceController.start()
         registerRuntimeControls()
         registerRuntimeActionHandlers()
 
@@ -338,7 +345,7 @@ class DefaultRuntimeComposition :
     }
 
     override fun stopRuntimeLifecycle() {
-        stopRuntimeServices()
+        serviceController.stop()
 
         moduleManager()?.let {
             setModuleStates(it.getModuleStates())
