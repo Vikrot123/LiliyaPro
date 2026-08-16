@@ -318,7 +318,12 @@ class DefaultRuntimeComposition : RuntimeComposition {
         stopRuntimeServices()
 
         moduleManager()?.let {
-            stopModuleRuntime(it)
+            setModuleStates(it.getModuleStates())
+
+            try {
+                stopModuleRuntime(it)
+            } catch (_: Exception) {
+            }
         }
 
         clearModuleRuntime()
