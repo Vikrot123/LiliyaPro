@@ -374,6 +374,13 @@ class DefaultRuntimeComposition : RuntimeComposition {
         }
     }
 
+    override fun handleRuntimeStartupSuccess() {
+        recordRuntimeStarted()
+        publishRuntimeStartedDiagnostic()
+        markRuntimeRecovered()
+        publishRuntimeReady()
+    }
+
     override fun handleRuntimeStartupFailure(
         error: Exception
     ) {

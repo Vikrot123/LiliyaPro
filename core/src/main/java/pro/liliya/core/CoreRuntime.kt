@@ -144,10 +144,7 @@ object CoreRuntime {
         try {
             runtimeComposition.startRuntime()
 
-            runtimeComposition.recordRuntimeStarted()
-            runtimeComposition.publishRuntimeStartedDiagnostic()
-            runtimeComposition.markRuntimeRecovered()
-            runtimeComposition.publishRuntimeReady()
+            runtimeComposition.handleRuntimeStartupSuccess()
 
             runtimeComposition.logger().info(
                 LogConfig.MODULE_READY,
