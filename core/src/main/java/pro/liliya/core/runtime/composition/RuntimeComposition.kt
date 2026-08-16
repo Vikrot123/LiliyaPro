@@ -122,6 +122,7 @@ interface RuntimeComposition {
     fun observerRegistry(): DefaultRuntimeObserverRegistry
 
     fun observerBridge(): RuntimeObserverBridge
+    fun installRuntimeObserverBridge()
 
     fun actionPolicyEvaluator(): RuntimeActionPolicyEvaluator
 

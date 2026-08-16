@@ -454,6 +454,17 @@ class DefaultRuntimeComposition : RuntimeComposition {
         return observerBridge
     }
 
+    override fun installRuntimeObserverBridge() {
+        if (!isRuntimeObserverBridgeInstalled()) {
+            observerBridge.install()
+            markRuntimeObserverBridgeInstalled()
+        }
+
+        observerRegistry.subscribe(
+            telemetryObserver()
+        )
+    }
+
     override fun actionPolicyEvaluator(): RuntimeActionPolicyEvaluator {
         return actionPolicyEvaluator
     }

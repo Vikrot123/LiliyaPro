@@ -66,17 +66,6 @@ object CoreRuntime {
         runtimeComposition.resetRuntimeServiceConfiguration()
     }
 
-    private fun installRuntimeObserverBridge() {
-        if (!runtimeComposition.isRuntimeObserverBridgeInstalled()) {
-            runtimeComposition.observerBridge().install()
-            runtimeComposition.markRuntimeObserverBridgeInstalled()
-        }
-
-        runtimeComposition.observerRegistry().subscribe(
-            runtimeComposition.telemetryObserver()
-        )
-    }
-
 
 
     fun getRuntimeTelemetrySnapshot(): RuntimeTelemetrySnapshot {
@@ -155,7 +144,7 @@ object CoreRuntime {
         
         runtimeComposition.resetRuntimeHealth()
 
-        installRuntimeObserverBridge()
+        runtimeComposition.installRuntimeObserverBridge()
         runtimeComposition.installModuleEventBridge()
 
         runtimeComposition.publishSystemStart()
