@@ -381,6 +381,29 @@ class DefaultRuntimeComposition : RuntimeComposition {
         publishRuntimeReady()
     }
 
+    override fun logRuntimeStartupSuccess() {
+        logger().info(
+            LogConfig.MODULE_READY,
+            "Core runtime ready"
+        )
+    }
+
+    override fun logRuntimeStartupFailure(
+        error: Exception
+    ) {
+        logger().info(
+            LogConfig.ERROR_CAUGHT,
+            "Core runtime startup failed: ${error.message}"
+        )
+    }
+
+    override fun logRuntimeStopped() {
+        logger().info(
+            LogConfig.SYSTEM_STOP,
+            "Core runtime stopped"
+        )
+    }
+
     override fun handleRuntimeStartupFailure(
         error: Exception
     ) {

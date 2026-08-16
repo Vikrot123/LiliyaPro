@@ -1,6 +1,5 @@
 package pro.liliya.core
 
-import pro.liliya.core.logging.LogConfig
 import pro.liliya.core.runtime.RuntimeService
 import pro.liliya.core.runtime.RuntimeServiceProvider
 import pro.liliya.core.runtime.composition.RuntimeCompositionFactory
@@ -146,15 +145,9 @@ object CoreRuntime {
 
             runtimeComposition.handleRuntimeStartupSuccess()
 
-            runtimeComposition.logger().info(
-                LogConfig.MODULE_READY,
-                "Core runtime ready"
-            )
+            runtimeComposition.logRuntimeStartupSuccess()
         } catch (error: Exception) {
-            runtimeComposition.logger().info(
-                LogConfig.ERROR_CAUGHT,
-                "Core runtime startup failed: ${error.message}"
-            )
+            runtimeComposition.logRuntimeStartupFailure(error)
 
             runtimeComposition.handleRuntimeStartupFailure(error)
 
@@ -179,10 +172,7 @@ object CoreRuntime {
 
         runtimeComposition.stopRuntime()
 
-        runtimeComposition.logger().info(
-            LogConfig.SYSTEM_STOP,
-            "Core runtime stopped"
-        )
+        runtimeComposition.logRuntimeStopped()
     }
 
 }
