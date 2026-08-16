@@ -8,11 +8,9 @@ class CoreRuntimeDiagnosticServiceContractTest {
     @Test
     fun diagnosticServiceReturnsRuntimeSnapshot() {
 
-        val service = CoreRuntimeDiagnosticService()
-
         CoreRuntime.stop()
 
-        val snapshot = service.snapshot()
+        val snapshot = CoreRuntime.diagnostics()
 
         assertEquals(
             CoreRuntimeState.STOPPED,

@@ -7,11 +7,14 @@ import org.junit.jupiter.api.Test
 import pro.liliya.core.runtime.authority.RuntimeAuthorityLevel
 import pro.liliya.core.runtime.capability.RuntimeCapabilityDefinition
 import pro.liliya.core.runtime.capability.RuntimeCapabilityManager
+import pro.liliya.core.runtime.capability.DefaultMutableRuntimeCapabilityRegistry
 import pro.liliya.core.runtime.control.RuntimeCommand
 
 class CoreRuntimeCapabilityManagerTest {
 
-    private val manager = RuntimeCapabilityManager()
+    private val manager = RuntimeCapabilityManager(
+        DefaultMutableRuntimeCapabilityRegistry()
+    )
 
     @Test
     fun `manager registers capability`() {

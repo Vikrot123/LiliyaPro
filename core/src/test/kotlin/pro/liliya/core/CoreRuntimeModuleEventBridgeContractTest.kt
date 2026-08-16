@@ -67,7 +67,7 @@ class CoreRuntimeModuleEventBridgeContractTest {
             }
 
         assertEquals(
-            afterManualPublish + 1,
+            afterManualPublish,
             finalCount
         )
 

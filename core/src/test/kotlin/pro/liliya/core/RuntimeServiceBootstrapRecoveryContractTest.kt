@@ -6,6 +6,7 @@ import kotlin.test.assertTrue
 import pro.liliya.core.runtime.RuntimeService
 import pro.liliya.core.runtime.RuntimeServiceBootstrap
 import pro.liliya.core.runtime.RuntimeServiceProvider
+import pro.liliya.core.runtime.RuntimeServiceRegistry
 import pro.liliya.core.runtime.RuntimeServiceState
 
 class RuntimeServiceBootstrapRecoveryContractTest {
@@ -47,7 +48,10 @@ class RuntimeServiceBootstrapRecoveryContractTest {
             }
         }
 
-        val bootstrap = RuntimeServiceBootstrap(provider)
+        val bootstrap = RuntimeServiceBootstrap(
+        provider,
+        RuntimeServiceRegistry()
+    )
 
         bootstrap.start()
 

@@ -98,6 +98,8 @@ interface RuntimeComposition {
 
     fun stopRuntimeLifecycle()
 
+    fun resetRuntimeState()
+
     fun startModuleRuntime(
         manager: ModuleManager
     )

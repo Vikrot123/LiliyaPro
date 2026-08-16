@@ -20,6 +20,7 @@ import pro.liliya.core.CoreRuntimeDiagnosticsService
 import pro.liliya.core.DefaultCoreRuntimeDiagnosticsService
 import pro.liliya.core.CoreDiagnosticProvider
 import pro.liliya.core.CoreRuntimeContext
+import pro.liliya.core.CoreDiagnosticEventBus
 import pro.liliya.core.module.ModuleProvider
 import pro.liliya.core.module.ModuleExceptionHandler
 import pro.liliya.core.module.ModuleDependencyResolver
@@ -90,8 +91,8 @@ class DefaultRuntimeComposition : RuntimeComposition {
         CoreDiagnosticProvider()
 
 
-    private val logger: Logger =
-        LoggerFactory.create(
+    private val logger: Logger
+        get() = LoggerFactory.create(
             module = "CORE",
             component = "CoreRuntime",
             method = "lifecycle"
@@ -104,16 +105,16 @@ class DefaultRuntimeComposition : RuntimeComposition {
 
 
 
-    private val runtimeDiagnostics: CoreRuntimeDiagnostics =
-        CoreRuntimeDiagnostics(diagnosticSource)
-
     private val diagnosticsService: CoreRuntimeDiagnosticsService =
         DefaultCoreRuntimeDiagnosticsService(
-            runtimeDiagnostics
+            diagnosticSource
         )
 
 
-    private val context = CoreRuntimeContext()
+    private val context = CoreRuntimeContext(
+        diagnosticEventBus = CoreDiagnosticEventBus(),
+        diagnosticService = diagnosticsService
+    )
 
 
     private val moduleProvider: ModuleProvider =
@@ -392,6 +393,10 @@ class DefaultRuntimeComposition : RuntimeComposition {
         runtimeStateHolder.setState(state)
     }
 
+    override fun resetRuntimeState() {
+        runtimeStateHolder.reset()
+    }
+
     override fun failureReason(): String? {
         return runtimeStateHolder.failureReason()
     }
@@ -549,12 +554,10 @@ class DefaultRuntimeComposition : RuntimeComposition {
         }
 
         val moduleListener: (ModuleEvent) -> Unit = { event ->
-            println("MODULE BRIDGE RECEIVED: $event")
 
             if (event is ModuleEvent.Failed) {
                 val failureReason = "${event.moduleName}: ${event.phase}: ${event.reason}"
 
-                println("MODULE BRIDGE PUBLISH FAILED: ${event.moduleName}")
 
                 publishModuleFailed(
                     moduleName = event.moduleName,
@@ -565,7 +568,6 @@ class DefaultRuntimeComposition : RuntimeComposition {
 
         moduleEventBridgeListener = moduleListener
         ModuleEventBus.subscribe(moduleListener)
-        println("MODULE BRIDGE INSTALLED, HAS LISTENERS=${ModuleEventBus.hasListeners()}")
 
         val failureListener: (RuntimeEvent) -> Unit = { event ->
             if (event is RuntimeEvent.ModuleFailed) {
@@ -583,6 +585,7 @@ class DefaultRuntimeComposition : RuntimeComposition {
     }
 
     override fun uninstallModuleEventBridge() {
+
         moduleEventBridgeListener?.let {
             ModuleEventBus.unsubscribe(it)
         }
@@ -595,6 +598,7 @@ class DefaultRuntimeComposition : RuntimeComposition {
         runtimeFailureEventListener = null
 
         resetRuntimeBridgeState()
+
     }
 
     override fun publishRuntimeStartedDiagnostic() {
