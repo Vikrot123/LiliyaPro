@@ -234,6 +234,10 @@ class DefaultRuntimeComposition : RuntimeComposition {
     private val serviceProvider =
         CoreRuntimeServiceProvider()
 
+    private val runtimeServiceRegistry =
+        RuntimeServiceRegistry()
+
+
     private val runtimeServiceProviderHolder =
         RuntimeServiceProviderHolder(
             serviceProvider
@@ -767,6 +771,10 @@ class DefaultRuntimeComposition : RuntimeComposition {
     }
 
 
+    override fun runtimeServiceRegistry(): RuntimeServiceRegistry {
+        return runtimeServiceRegistry
+    }
+
     override fun serviceBootstrap(): RuntimeServiceBootstrap {
         return serviceBootstrap
     }
@@ -820,7 +828,7 @@ class DefaultRuntimeComposition : RuntimeComposition {
     ): RuntimeServiceBootstrap {
         return RuntimeServiceBootstrap(
             provider,
-            RuntimeServiceRegistry()
+            runtimeServiceRegistry
         )
     }
 

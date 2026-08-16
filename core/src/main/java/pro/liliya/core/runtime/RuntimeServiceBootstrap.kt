@@ -2,7 +2,7 @@ package pro.liliya.core.runtime
 
 class RuntimeServiceBootstrap(
     private val provider: RuntimeServiceProvider,
-    private var registry: RuntimeServiceRegistry = RuntimeServiceRegistry()
+    private val registry: RuntimeServiceRegistry
 ) {
 
     private val registeredServices = mutableMapOf<String, RuntimeService>()
@@ -52,7 +52,7 @@ class RuntimeServiceBootstrap(
 
         supervisor.stop()
 
-        registry = RuntimeServiceRegistry()
+        registry.reset()
 
         started = false
     }

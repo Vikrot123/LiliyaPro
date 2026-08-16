@@ -123,6 +123,13 @@ class RuntimeServiceRegistry {
     }
 
 
+    fun reset() {
+        services.clear()
+        failures.clear()
+        serviceFailures.clear()
+        terminated = false
+    }
+
     fun restart(serviceName: String) {
 
         val service = services[serviceName]
