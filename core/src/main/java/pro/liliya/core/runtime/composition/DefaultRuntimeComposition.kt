@@ -50,6 +50,9 @@ import pro.liliya.core.runtime.orchestration.DefaultRuntimeHealthController
 import pro.liliya.core.runtime.orchestration.RuntimeTelemetryComposition
 import pro.liliya.core.runtime.orchestration.RuntimeTelemetryController
 import pro.liliya.core.runtime.orchestration.DefaultRuntimeTelemetryController
+import pro.liliya.core.runtime.orchestration.RuntimeStatusComposition
+import pro.liliya.core.runtime.orchestration.RuntimeStatusController
+import pro.liliya.core.runtime.orchestration.DefaultRuntimeStatusController
 import pro.liliya.core.runtime.orchestration.RuntimeActionController
 import pro.liliya.core.runtime.orchestration.DefaultRuntimeActionController
 import pro.liliya.core.runtime.orchestration.RuntimeBridgeController
@@ -124,7 +127,8 @@ class DefaultRuntimeComposition :
         RuntimeBridgeComposition,
         RuntimeActionComposition,
         RuntimeHealthComposition,
-    RuntimeTelemetryComposition {
+    RuntimeTelemetryComposition,
+    RuntimeStatusComposition {
 
     private val diagnosticSource: CoreDiagnosticSource =
         CoreDiagnosticProvider()
@@ -240,6 +244,9 @@ class DefaultRuntimeComposition :
 
     private val telemetryController: RuntimeTelemetryController =
         DefaultRuntimeTelemetryController(this)
+
+    private val statusController: RuntimeStatusController =
+        DefaultRuntimeStatusController(this)
 
     private val runtimeMonitor =
         DefaultRuntimeMonitor(
@@ -922,13 +929,13 @@ class DefaultRuntimeComposition :
     }
 
     override fun statusProvider(): RuntimeStatusProvider {
-        return statusProvider
+        return statusController.provider()
     }
 
     override fun createRuntimeStatus(
         report: RuntimeHealthReport
     ): RuntimeStatusSnapshot {
-        return telemetryController.createStatus(
+        return statusController.createSnapshot(
             report = report
         )
     }
