@@ -22,6 +22,7 @@ class CoreRuntimeFailureModuleStateSnapshotContractTest {
 
         val snapshot = CoreRuntime.snapshot()
 
+
         assertEquals(
             ModuleState.FAILED,
             snapshot.moduleStates[
