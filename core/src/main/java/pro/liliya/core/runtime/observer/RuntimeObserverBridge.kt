@@ -14,6 +14,7 @@ class RuntimeObserverBridge(
     }
 
     fun install() {
+
         if (installed) {
             return
         }

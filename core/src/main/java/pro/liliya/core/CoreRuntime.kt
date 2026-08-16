@@ -70,17 +70,14 @@ object CoreRuntime {
     }
 
     private fun installRuntimeObserverBridge() {
-        if (runtimeComposition.isRuntimeObserverBridgeInstalled()) {
-            return
+        if (!runtimeComposition.isRuntimeObserverBridgeInstalled()) {
+            runtimeComposition.observerBridge().install()
+            runtimeComposition.markRuntimeObserverBridgeInstalled()
         }
-
-        runtimeComposition.observerBridge().install()
 
         runtimeComposition.observerRegistry().subscribe(
             runtimeComposition.telemetryObserver()
         )
-
-        runtimeComposition.markRuntimeObserverBridgeInstalled()
     }
 
 
@@ -176,7 +173,7 @@ object CoreRuntime {
         var manager: pro.liliya.core.module.ModuleManager? = null
 
         try {
-            manager = runtimeComposition.startRuntimeComponents()
+            manager = runtimeComposition.startRuntimeLifecycle()
 
             runtimeComposition.recordRuntimeStarted()
 
@@ -252,6 +249,7 @@ object CoreRuntime {
         runtimeComposition.publishSystemStop()
 
         runtimeComposition.observerBridge().uninstall()
+        runtimeComposition.resetRuntimeBridgeState()
 
         runtimeComposition.observerRegistry().unsubscribe(
             runtimeComposition.telemetryObserver()

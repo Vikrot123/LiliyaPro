@@ -307,7 +307,6 @@ class DefaultRuntimeComposition : RuntimeComposition {
     override fun startRuntimeLifecycle(): ModuleManager {
         setRuntimeState(CoreRuntimeState.STARTING)
 
-        resetRuntimeHealth()
 
         return startRuntimeComponents().also {
             setRuntimeState(CoreRuntimeState.RUNNING)
