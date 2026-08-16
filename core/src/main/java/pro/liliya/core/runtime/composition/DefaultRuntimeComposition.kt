@@ -42,6 +42,9 @@ import pro.liliya.core.runtime.orchestration.RuntimeStartupComposition
 import pro.liliya.core.runtime.orchestration.RuntimeShutdownComposition
 import pro.liliya.core.runtime.orchestration.RuntimeServiceComposition
 import pro.liliya.core.runtime.orchestration.RuntimeModuleComposition
+import pro.liliya.core.runtime.orchestration.RuntimeBridgeComposition
+import pro.liliya.core.runtime.orchestration.RuntimeBridgeController
+import pro.liliya.core.runtime.orchestration.DefaultRuntimeBridgeController
 import pro.liliya.core.runtime.orchestration.RuntimeModuleController
 import pro.liliya.core.runtime.orchestration.DefaultRuntimeModuleController
 import pro.liliya.core.runtime.orchestration.RuntimeServiceController
@@ -108,7 +111,8 @@ class DefaultRuntimeComposition :
     RuntimeStartupComposition,
         RuntimeShutdownComposition,
         RuntimeServiceComposition,
-        RuntimeModuleComposition {
+        RuntimeModuleComposition,
+        RuntimeBridgeComposition {
 
     private val diagnosticSource: CoreDiagnosticSource =
         CoreDiagnosticProvider()
@@ -212,6 +216,9 @@ class DefaultRuntimeComposition :
 
     private val moduleController: RuntimeModuleController =
         DefaultRuntimeModuleController(this)
+
+    private val bridgeController: RuntimeBridgeController =
+        DefaultRuntimeBridgeController(this)
 
     private val runtimeMonitor =
         DefaultRuntimeMonitor(
@@ -376,8 +383,7 @@ class DefaultRuntimeComposition :
     override fun startRuntime() {
         resetRuntimeHealth()
 
-        installRuntimeObserverBridge()
-        installModuleEventBridge()
+        bridgeController.install()
 
         publishSystemStart()
         publishRuntimeStarting()
