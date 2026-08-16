@@ -41,6 +41,9 @@ import pro.liliya.core.runtime.orchestration.RuntimeLifecycleComposition
 import pro.liliya.core.runtime.orchestration.RuntimeStartupComposition
 import pro.liliya.core.runtime.orchestration.RuntimeShutdownComposition
 import pro.liliya.core.runtime.orchestration.RuntimeServiceComposition
+import pro.liliya.core.runtime.orchestration.RuntimeModuleComposition
+import pro.liliya.core.runtime.orchestration.RuntimeModuleController
+import pro.liliya.core.runtime.orchestration.DefaultRuntimeModuleController
 import pro.liliya.core.runtime.orchestration.RuntimeServiceController
 import pro.liliya.core.runtime.orchestration.DefaultRuntimeServiceController
 import pro.liliya.core.runtime.orchestration.RuntimeShutdownController
@@ -104,7 +107,8 @@ class DefaultRuntimeComposition :
     RuntimeLifecycleComposition,
     RuntimeStartupComposition,
         RuntimeShutdownComposition,
-        RuntimeServiceComposition {
+        RuntimeServiceComposition,
+        RuntimeModuleComposition {
 
     private val diagnosticSource: CoreDiagnosticSource =
         CoreDiagnosticProvider()
@@ -205,6 +209,9 @@ class DefaultRuntimeComposition :
 
     private val serviceController: RuntimeServiceController =
         DefaultRuntimeServiceController(this)
+
+    private val moduleController: RuntimeModuleController =
+        DefaultRuntimeModuleController(this)
 
     private val runtimeMonitor =
         DefaultRuntimeMonitor(
@@ -325,7 +332,7 @@ class DefaultRuntimeComposition :
 
         setModuleManager(manager)
 
-        startModuleRuntime(manager)
+        moduleController.start(manager)
         serviceController.start()
         registerRuntimeControls()
         registerRuntimeActionHandlers()
@@ -351,12 +358,12 @@ class DefaultRuntimeComposition :
             setModuleStates(it.getModuleStates())
 
             try {
-                stopModuleRuntime(it)
+                moduleController.stop(it)
             } catch (_: Exception) {
             }
         }
 
-        clearModuleRuntime()
+        moduleController.clear()
 
         setRuntimeState(CoreRuntimeState.STOPPED)
 
