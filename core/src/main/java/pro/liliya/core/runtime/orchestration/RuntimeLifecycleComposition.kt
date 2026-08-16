@@ -6,6 +6,8 @@ interface RuntimeLifecycleComposition {
 
     fun runtimeState(): CoreRuntimeState
 
+    fun startupController(): RuntimeStartupController
+
     fun startRuntime()
 
     fun stopRuntime()

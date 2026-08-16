@@ -14,7 +14,7 @@ class DefaultRuntimeLifecycleController(
         }
 
         try {
-            composition.startRuntime()
+            composition.startupController().start()
             composition.handleRuntimeStartupSuccess()
             composition.logRuntimeStartupSuccess()
         } catch (error: Exception) {

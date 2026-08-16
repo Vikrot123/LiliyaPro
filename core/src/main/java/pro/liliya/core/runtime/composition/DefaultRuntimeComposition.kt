@@ -38,6 +38,9 @@ import pro.liliya.core.runtime.lifecycle.RuntimeLifecycleEvent
 import pro.liliya.core.runtime.orchestration.RuntimeLifecycleController
 import pro.liliya.core.runtime.orchestration.DefaultRuntimeLifecycleController
 import pro.liliya.core.runtime.orchestration.RuntimeLifecycleComposition
+import pro.liliya.core.runtime.orchestration.RuntimeStartupComposition
+import pro.liliya.core.runtime.orchestration.RuntimeStartupController
+import pro.liliya.core.runtime.orchestration.DefaultRuntimeStartupController
 
 import pro.liliya.core.runtime.observer.DefaultRuntimeObserverRegistry
 import pro.liliya.core.runtime.observer.RuntimeObserverBridge
@@ -92,7 +95,8 @@ import pro.liliya.core.runtime.RuntimeServiceRegistry
 
 class DefaultRuntimeComposition :
     RuntimeComposition,
-    RuntimeLifecycleComposition {
+    RuntimeLifecycleComposition,
+    RuntimeStartupComposition {
 
     private val diagnosticSource: CoreDiagnosticSource =
         CoreDiagnosticProvider()
@@ -184,6 +188,9 @@ class DefaultRuntimeComposition :
 
     private val lifecycleController: RuntimeLifecycleController =
         DefaultRuntimeLifecycleController(this)
+
+    private val startupController: RuntimeStartupController =
+        DefaultRuntimeStartupController(this)
 
     private val runtimeMonitor =
         DefaultRuntimeMonitor(
@@ -644,6 +651,10 @@ class DefaultRuntimeComposition :
 
     override fun lifecycleController(): RuntimeLifecycleController {
         return lifecycleController
+    }
+
+    override fun startupController(): RuntimeStartupController {
+        return startupController
     }
 
     override fun lifecycleRecorder(): RuntimeLifecycleRecorder {
