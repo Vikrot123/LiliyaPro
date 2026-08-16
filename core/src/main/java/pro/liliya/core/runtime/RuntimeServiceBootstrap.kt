@@ -1,9 +1,17 @@
 package pro.liliya.core.runtime
 
 class RuntimeServiceBootstrap(
-    private val provider: RuntimeServiceProvider,
+    private val providerHolder: RuntimeServiceProviderHolder,
     private val registry: RuntimeServiceRegistry
 ) {
+
+    constructor(
+        provider: RuntimeServiceProvider,
+        registry: RuntimeServiceRegistry
+    ) : this(
+        RuntimeServiceProviderHolder(provider),
+        registry
+    )
 
     private val registeredServices = mutableMapOf<String, RuntimeService>()
 
@@ -27,7 +35,8 @@ class RuntimeServiceBootstrap(
             return
         }
 
-        provider
+        providerHolder
+            .get()
             .provideServices()
             .forEach { service ->
                 registeredServices[service.name] = service

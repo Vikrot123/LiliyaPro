@@ -5,11 +5,11 @@ class DefaultRuntimeLifecycleController(
 ) : RuntimeLifecycleController {
 
     override fun start() {
-        composition.startLifecycle()
+        composition.startRuntime()
     }
 
     override fun stop() {
-        composition.stopLifecycle()
+        composition.stopRuntime()
     }
 
 

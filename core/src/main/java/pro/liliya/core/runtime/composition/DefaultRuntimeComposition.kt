@@ -398,11 +398,10 @@ class DefaultRuntimeComposition :
         }
 
         moduleController.clear()
-
+        stopRuntimeServices()
+        clearModuleRuntime()
         setRuntimeState(CoreRuntimeState.STOPPED)
-
         setFailureReason(null)
-
         setModuleStates(emptyMap())
     }
 
@@ -417,6 +416,8 @@ class DefaultRuntimeComposition :
 
         try {
             startRuntimeLifecycle()
+            handleRuntimeStartupSuccess()
+            logRuntimeStartupSuccess()
         } catch (error: Exception) {
             moduleManager()?.let {
                 try {
@@ -431,18 +432,12 @@ class DefaultRuntimeComposition :
 
             clearModuleRuntime()
 
-            markRuntimeFailed(
-                error.message ?: "unknown"
+            handleRuntimeStartupFailure(
+                error
             )
 
-            recordRuntimeFailure(
-                failureReason()
-            )
-
-            publishRuntimeFailedDiagnostic()
-
-            publishRuntimeFailed(
-                error.message ?: "unknown"
+            logRuntimeStartupFailure(
+                error
             )
 
             throw error
@@ -937,19 +932,19 @@ class DefaultRuntimeComposition :
     }
 
     override fun statusProvider(): RuntimeStatusProvider {
-        return statusController.provider()
+        return statusProvider
     }
 
     override fun createRuntimeStatus(
         report: RuntimeHealthReport
     ): RuntimeStatusSnapshot {
-        return statusController.createSnapshot(
+        return statusProvider.createStatus(
             report = report
         )
     }
 
     override fun telemetryObserver(): RuntimeTelemetryObserver {
-        return telemetryController.observer()
+        return telemetryObserver
     }
 
     override fun registerRuntimeControls() {
@@ -1004,7 +999,12 @@ class DefaultRuntimeComposition :
     override fun configureRuntimeServiceProvider(
         provider: RuntimeServiceProvider
     ) {
+        runtimeServiceBootstrapHolder
+            .get()
+            .stop()
+
         setRuntimeServiceProvider(provider)
+
         setRuntimeServiceBootstrap(
             createServiceBootstrap(
                 runtimeServiceProvider()
@@ -1013,7 +1013,12 @@ class DefaultRuntimeComposition :
     }
 
     override fun resetRuntimeServiceConfiguration() {
+        runtimeServiceBootstrapHolder
+            .get()
+            .stop()
+
         resetRuntimeServiceProvider()
+
         setRuntimeServiceBootstrap(
             createServiceBootstrap(
                 runtimeServiceProvider()
@@ -1024,6 +1029,7 @@ class DefaultRuntimeComposition :
 
     override fun prepareRuntime() {
         resetRuntimeServiceConfiguration()
+        resetRuntimeState()
     }
 
 
@@ -1083,7 +1089,7 @@ class DefaultRuntimeComposition :
         provider: RuntimeServiceProvider
     ): RuntimeServiceBootstrap {
         return RuntimeServiceBootstrap(
-            provider,
+            runtimeServiceProviderHolder,
             runtimeServiceRegistry
         )
     }

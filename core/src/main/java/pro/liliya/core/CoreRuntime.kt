@@ -134,6 +134,10 @@ object CoreRuntime {
     }
 
     fun start() {
+        if (state() == CoreRuntimeState.RUNNING) {
+            return
+        }
+
         runtimeComposition.startLifecycle()
     }
 
@@ -148,6 +152,10 @@ object CoreRuntime {
     }
 
     fun stop() {
+        if (state() == CoreRuntimeState.STOPPED) {
+            return
+        }
+
         runtimeComposition.stopLifecycle()
     }
 
