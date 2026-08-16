@@ -158,8 +158,7 @@ object CoreRuntime {
             return
         }
 
-        runtimeComposition.setRuntimeState(CoreRuntimeState.STARTING)
-
+        
         runtimeComposition.resetRuntimeHealth()
 
         installRuntimeObserverBridge()
@@ -178,8 +177,6 @@ object CoreRuntime {
 
         try {
             manager = runtimeComposition.startRuntimeComponents()
-
-            runtimeComposition.setRuntimeState(CoreRuntimeState.RUNNING)
 
             runtimeComposition.recordRuntimeStarted()
 

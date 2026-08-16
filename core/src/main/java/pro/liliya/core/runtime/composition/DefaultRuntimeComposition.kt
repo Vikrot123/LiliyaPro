@@ -288,6 +288,8 @@ class DefaultRuntimeComposition : RuntimeComposition {
     }
 
     override fun startRuntimeComponents(): ModuleManager {
+        setRuntimeState(CoreRuntimeState.STARTING)
+
         val manager = createModuleRuntime()
 
         setModuleManager(manager)
@@ -296,6 +298,8 @@ class DefaultRuntimeComposition : RuntimeComposition {
         startRuntimeServices()
         registerRuntimeControls()
         registerRuntimeActionHandlers()
+
+        setRuntimeState(CoreRuntimeState.RUNNING)
 
         return manager
     }
