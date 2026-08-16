@@ -4,12 +4,10 @@ import pro.liliya.core.runtime.authority.RuntimeAuthorityLevel
 import pro.liliya.core.runtime.control.RuntimeCommand
 
 class RuntimeCapabilityResolver(
-    private val registry: RuntimeCapabilityRegistry =
-        DefaultRuntimeCapabilityRegistry(),
+    private val registry: RuntimeCapabilityRegistry,
 
     private val authorityEvaluator:
-        RuntimeCapabilityAuthorityEvaluator =
-        DefaultRuntimeCapabilityAuthorityEvaluator()
+        RuntimeCapabilityAuthorityEvaluator
 ) {
 
     fun resolve(
