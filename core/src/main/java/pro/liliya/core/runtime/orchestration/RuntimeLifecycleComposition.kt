@@ -1,16 +1,24 @@
 package pro.liliya.core.runtime.orchestration
 
-import pro.liliya.core.CoreRuntimeState
-
 interface RuntimeLifecycleComposition {
 
-    fun runtimeState(): CoreRuntimeState
+    fun startRuntimeComponents(): pro.liliya.core.module.ModuleManager
 
-    fun startupController(): RuntimeStartupController
+    fun startRuntimeLifecycle(): pro.liliya.core.module.ModuleManager
+
+    fun stopRuntimeLifecycle()
 
     fun startRuntime()
 
+    fun startLifecycle()
+
+    fun stopLifecycle()
+
     fun stopRuntime()
+
+    fun start()
+
+    fun stop()
 
     fun handleRuntimeStartupSuccess()
 

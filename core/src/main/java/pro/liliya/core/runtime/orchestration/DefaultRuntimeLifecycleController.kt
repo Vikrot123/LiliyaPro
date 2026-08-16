@@ -1,35 +1,71 @@
 package pro.liliya.core.runtime.orchestration
 
-import pro.liliya.core.CoreRuntimeState
-
 class DefaultRuntimeLifecycleController(
     private val composition: RuntimeLifecycleComposition
 ) : RuntimeLifecycleController {
 
     override fun start() {
-        if (composition.runtimeState() == CoreRuntimeState.RUNNING ||
-            composition.runtimeState() == CoreRuntimeState.STARTING
-        ) {
-            return
-        }
-
-        try {
-            composition.startupController().start()
-            composition.handleRuntimeStartupSuccess()
-            composition.logRuntimeStartupSuccess()
-        } catch (error: Exception) {
-            composition.logRuntimeStartupFailure(error)
-            composition.handleRuntimeStartupFailure(error)
-            throw error
-        }
+        composition.startLifecycle()
     }
 
     override fun stop() {
-        if (composition.runtimeState() == CoreRuntimeState.STOPPED) {
-            return
-        }
+        composition.stopLifecycle()
+    }
 
+
+    override fun startRuntimeComponents(): pro.liliya.core.module.ModuleManager {
+        return composition.startRuntimeComponents()
+    }
+
+    override fun startRuntimeLifecycle(): pro.liliya.core.module.ModuleManager {
+        return composition.startRuntimeLifecycle()
+    }
+
+    override fun stopRuntimeLifecycle() {
+        composition.stopRuntimeLifecycle()
+    }
+
+    override fun startRuntime() {
+        composition.startRuntime()
+    }
+
+    override fun startLifecycle() {
+        composition.startLifecycle()
+    }
+
+    override fun stopLifecycle() {
+        composition.stopLifecycle()
+    }
+
+    override fun stopRuntime() {
         composition.stopRuntime()
+    }
+
+    override fun handleRuntimeStartupSuccess() {
+        composition.handleRuntimeStartupSuccess()
+    }
+
+    override fun handleRuntimeStartupFailure(
+        error: Exception
+    ) {
+        composition.handleRuntimeStartupFailure(
+            error = error
+        )
+    }
+
+    override fun logRuntimeStartupSuccess() {
+        composition.logRuntimeStartupSuccess()
+    }
+
+    override fun logRuntimeStartupFailure(
+        error: Exception
+    ) {
+        composition.logRuntimeStartupFailure(
+            error = error
+        )
+    }
+
+    override fun logRuntimeStopped() {
         composition.logRuntimeStopped()
     }
 }

@@ -2,6 +2,9 @@ package pro.liliya.core.runtime.orchestration
 
 interface RuntimeStartupComposition {
 
+    fun startupController(): RuntimeStartupController
+
+
     fun resetRuntimeHealth()
 
     fun installRuntimeObserverBridge()

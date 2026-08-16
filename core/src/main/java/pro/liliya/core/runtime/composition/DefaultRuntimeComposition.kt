@@ -449,6 +449,14 @@ class DefaultRuntimeComposition :
         }
     }
 
+    override fun start() {
+        startLifecycle()
+    }
+    override fun stop() {
+        stopLifecycle()
+    }
+
+
     override fun startLifecycle() {
         lifecycleController.start()
     }
