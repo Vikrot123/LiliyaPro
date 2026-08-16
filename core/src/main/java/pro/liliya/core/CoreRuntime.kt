@@ -165,11 +165,11 @@ object CoreRuntime {
     internal fun setModuleProvider(
         provider: pro.liliya.core.module.ModuleProvider
     ) {
-        runtimeComposition.setModuleProvider(provider)
+        runtimeComposition.installModuleProvider(provider)
     }
 
     internal fun resetModuleProvider() {
-        runtimeComposition.resetModuleProvider()
+        runtimeComposition.removeModuleProvider()
     }
 
     fun stop() {

@@ -125,6 +125,12 @@ interface RuntimeComposition {
     )
 
     fun resetModuleProvider()
+
+    fun installModuleProvider(
+        provider: ModuleProvider
+    )
+
+    fun removeModuleProvider()
     fun diagnosticsService(): CoreRuntimeDiagnosticsService
 
     fun createDiagnosticSnapshot(): CoreDiagnosticSnapshot
