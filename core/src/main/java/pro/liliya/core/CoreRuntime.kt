@@ -156,7 +156,7 @@ object CoreRuntime {
             return
         }
 
-        runtimeComposition.stopLifecycle()
+        runtimeComposition.stopRuntime()
     }
 
 }
