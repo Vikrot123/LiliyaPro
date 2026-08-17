@@ -7,9 +7,19 @@ class DefaultRuntimeModuleController(
 ) : RuntimeModuleController {
 
     override fun startRuntimeComponents(): ModuleManager {
+
+        val existing = composition.moduleManager()
+
+        if (existing != null) {
+            return existing
+        }
+
         val manager = composition.createModuleRuntime()
+
         composition.setModuleManager(manager)
+
         start(manager)
+
         return manager
     }
 

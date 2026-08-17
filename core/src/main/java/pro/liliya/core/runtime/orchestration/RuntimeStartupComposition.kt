@@ -2,6 +2,8 @@ package pro.liliya.core.runtime.orchestration
 
 interface RuntimeStartupComposition {
 
+    fun runtimeState(): pro.liliya.core.CoreRuntimeState
+
     fun startupController(): RuntimeStartupController
 
 

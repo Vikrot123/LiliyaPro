@@ -16,7 +16,7 @@ class DefaultRuntimeServiceComposition(
     private val serviceProvider =
         CoreRuntimeServiceProvider()
 
-    private val runtimeServiceRegistry =
+    private var runtimeServiceRegistry =
         RuntimeServiceRegistry()
 
     private val runtimeServiceProviderHolder =
@@ -24,15 +24,12 @@ class DefaultRuntimeServiceComposition(
             serviceProvider
         )
 
-    private val serviceBootstrap =
-        createServiceBootstrap(
-            serviceProvider
-        )
-
     private val runtimeServiceBootstrapHolder =
-        RuntimeServiceBootstrapHolder(
-            serviceBootstrap
-        )
+        RuntimeServiceBootstrapHolder {
+            createServiceBootstrap(
+                runtimeServiceProvider()
+            )
+        }
 
     override fun serviceProvider(): RuntimeServiceProvider {
         return serviceProvider
@@ -47,7 +44,7 @@ class DefaultRuntimeServiceComposition(
     }
 
     override fun serviceBootstrap(): RuntimeServiceBootstrap {
-        return serviceBootstrap
+        return runtimeServiceBootstrapHolder.get()
     }
 
     override fun runtimeServiceBootstrapHolder(): RuntimeServiceBootstrapHolder {
@@ -96,16 +93,14 @@ class DefaultRuntimeServiceComposition(
     }
 
     override fun resetRuntimeServiceConfiguration() {
+        val provider = runtimeServiceProvider()
+
         runtimeServiceBootstrapHolder
             .get()
             .stop()
 
-        resetRuntimeServiceProvider()
-
         setRuntimeServiceBootstrap(
-            createServiceBootstrap(
-                runtimeServiceProvider()
-            )
+            createServiceBootstrap(provider)
         )
     }
 
@@ -124,6 +119,7 @@ class DefaultRuntimeServiceComposition(
     override fun createServiceBootstrap(
         provider: RuntimeServiceProvider
     ): RuntimeServiceBootstrap {
+
         return RuntimeServiceBootstrap(
             runtimeServiceProviderHolder,
             runtimeServiceRegistry

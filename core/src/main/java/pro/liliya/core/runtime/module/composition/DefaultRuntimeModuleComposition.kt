@@ -113,7 +113,7 @@ class DefaultRuntimeModuleComposition(
     override fun stopModuleRuntime(
         manager: ModuleManager
     ) {
-        moduleManagerHolder.set(manager)
+        manager.stopModules()
     }
 
     override fun clearModuleRuntime() {

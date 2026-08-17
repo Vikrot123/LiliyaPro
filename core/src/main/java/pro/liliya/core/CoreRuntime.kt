@@ -134,11 +134,13 @@ object CoreRuntime {
     }
 
     fun start() {
+
         if (state() == CoreRuntimeState.RUNNING) {
             return
         }
 
         runtimeComposition.startLifecycle()
+
     }
 
     internal fun setModuleProvider(

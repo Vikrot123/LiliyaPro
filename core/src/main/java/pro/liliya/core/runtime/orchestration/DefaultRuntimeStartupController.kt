@@ -1,10 +1,16 @@
 package pro.liliya.core.runtime.orchestration
 
+import pro.liliya.core.CoreRuntimeState
+
 class DefaultRuntimeStartupController(
     private val composition: RuntimeStartupComposition
 ) : RuntimeStartupController {
 
     override fun start() {
+        if (composition.runtimeState() == CoreRuntimeState.RUNNING) {
+            return
+        }
+
         composition.resetRuntimeHealth()
 
         composition.installRuntimeObserverBridge()

@@ -1,10 +1,11 @@
 package pro.liliya.core.runtime
 
 class RuntimeServiceBootstrapHolder(
-    private val defaultBootstrap: RuntimeServiceBootstrap
+    private val factory: () -> RuntimeServiceBootstrap
 ) {
 
-    private var currentBootstrap: RuntimeServiceBootstrap = defaultBootstrap
+    private var currentBootstrap: RuntimeServiceBootstrap =
+        factory()
 
     fun get(): RuntimeServiceBootstrap {
         return currentBootstrap
@@ -15,6 +16,6 @@ class RuntimeServiceBootstrapHolder(
     }
 
     fun reset() {
-        currentBootstrap = defaultBootstrap
+        currentBootstrap = factory()
     }
 }
