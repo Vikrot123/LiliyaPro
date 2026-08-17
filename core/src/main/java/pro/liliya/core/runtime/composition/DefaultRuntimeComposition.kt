@@ -322,8 +322,11 @@ class DefaultRuntimeComposition :
         return manager
     }
 
-    override fun startRuntimeLifecycle(): ModuleManager {
+    override fun prepareRuntimeStartup() {
         setRuntimeState(CoreRuntimeState.STARTING)
+    }
+
+    override fun startRuntimeLifecycle(): ModuleManager {
 
         val manager = startRuntimeComponents()
 

@@ -97,6 +97,7 @@ interface RuntimeComposition {
 
     fun startRuntimeComponents(): ModuleManager
 
+    fun prepareRuntimeStartup()
     fun startRuntimeLifecycle(): ModuleManager
 
     fun stopRuntimeLifecycle()

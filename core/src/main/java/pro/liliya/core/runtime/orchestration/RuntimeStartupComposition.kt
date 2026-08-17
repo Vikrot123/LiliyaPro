@@ -14,6 +14,7 @@ interface RuntimeStartupComposition {
     fun installModuleEventBridge()
 
     fun publishSystemStart()
+    fun prepareRuntimeStartup()
 
     fun publishRuntimeStarting()
 

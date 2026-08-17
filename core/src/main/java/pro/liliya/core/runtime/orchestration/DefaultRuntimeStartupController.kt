@@ -17,6 +17,7 @@ class DefaultRuntimeStartupController(
         composition.installModuleEventBridge()
 
         composition.publishSystemStart()
+        composition.prepareRuntimeStartup()
         composition.publishRuntimeStarting()
 
         try {
