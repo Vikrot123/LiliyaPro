@@ -44,6 +44,7 @@ import pro.liliya.core.runtime.orchestration.RuntimeServiceComposition
 import pro.liliya.core.runtime.orchestration.RuntimeModuleComposition
 import pro.liliya.core.runtime.orchestration.RuntimeBridgeComposition
 import pro.liliya.core.runtime.orchestration.RuntimeActionComposition
+import pro.liliya.core.runtime.orchestration.RuntimeEventComposition
 import pro.liliya.core.runtime.orchestration.RuntimeHealthComposition
 import pro.liliya.core.runtime.orchestration.RuntimeHealthController
 import pro.liliya.core.runtime.orchestration.DefaultRuntimeHealthController
@@ -54,6 +55,8 @@ import pro.liliya.core.runtime.orchestration.RuntimeStatusComposition
 import pro.liliya.core.runtime.orchestration.RuntimeStatusController
 import pro.liliya.core.runtime.orchestration.DefaultRuntimeStatusController
 import pro.liliya.core.runtime.orchestration.RuntimeActionController
+import pro.liliya.core.runtime.orchestration.RuntimeEventController
+import pro.liliya.core.runtime.orchestration.DefaultRuntimeEventController
 import pro.liliya.core.runtime.orchestration.DefaultRuntimeActionController
 import pro.liliya.core.runtime.orchestration.RuntimeBridgeController
 import pro.liliya.core.runtime.orchestration.DefaultRuntimeBridgeController
@@ -126,6 +129,7 @@ class DefaultRuntimeComposition :
         RuntimeModuleComposition,
         RuntimeBridgeComposition,
         RuntimeActionComposition,
+    RuntimeEventComposition,
         RuntimeHealthComposition,
     RuntimeTelemetryComposition,
     RuntimeStatusComposition {
@@ -239,6 +243,9 @@ class DefaultRuntimeComposition :
     private val actionController: RuntimeActionController =
         DefaultRuntimeActionController(this)
 
+    private val eventController: RuntimeEventController =
+        DefaultRuntimeEventController(this)
+
     private val healthController: RuntimeHealthController =
         DefaultRuntimeHealthController(this)
 
@@ -253,7 +260,7 @@ class DefaultRuntimeComposition :
             this
         )
 
-    private val healthProvider =
+    private val runtimeHealthProvider =
         RuntimeHealthProvider()
 
     private val failureTracker =
@@ -264,7 +271,7 @@ class DefaultRuntimeComposition :
 
     private val healthReportProvider =
         RuntimeHealthReportProvider(
-            healthProvider
+            runtimeHealthProvider
         )
 
     private val statusProvider =
@@ -329,6 +336,10 @@ class DefaultRuntimeComposition :
 
     override fun diagnosticsService(): CoreRuntimeDiagnosticsService {
         return diagnosticsService
+    }
+
+    override fun diagnosticEventBus(): CoreDiagnosticEventBus {
+        return context.diagnosticEventBus
     }
 
     override fun context(): CoreRuntimeContext {
@@ -690,10 +701,24 @@ class DefaultRuntimeComposition :
         )
     }
 
-    override fun publishSystemStart() {
-        RuntimeEventBus.publish(
-            RuntimeEvent.SystemStart
+    override fun recordRuntimeFailure(
+        reason: String,
+        module: String
+    ) {
+        failureTracker.recordFailure(
+            reason = reason,
+            module = module
         )
+
+        lifecycleRecorder().record(
+            RuntimeLifecycleEvent.FAILED,
+            "$module: $reason"
+        )
+    }
+
+
+    override fun publishSystemStart() {
+        eventController.publishSystemStart()
     }
 
     override fun publishRuntimeStarting() {
@@ -702,43 +727,28 @@ class DefaultRuntimeComposition :
             "Core runtime starting"
         )
 
-        RuntimeEventBus.publish(
-            RuntimeEvent.RuntimeStarting
-        )
+        eventController.publishRuntimeStarting()
     }
 
     override fun publishRuntimeReady() {
-        RuntimeEventBus.publish(
-            RuntimeEvent.RuntimeReady
-        )
+        eventController.publishRuntimeReady()
     }
 
     override fun publishRuntimeFailed(reason: String) {
-        RuntimeEventBus.publish(
-            RuntimeEvent.RuntimeFailed(reason)
-        )
+        eventController.publishRuntimeFailed(reason)
     }
 
     override fun publishSystemStop() {
-        RuntimeEventBus.publish(
-            RuntimeEvent.SystemStop
-        )
+        eventController.publishSystemStop()
     }
 
     override fun publishModuleFailed(
         moduleName: String,
         reason: String
     ) {
-        failureTracker.recordFailure(
-            reason = reason,
-            module = moduleName
-        )
-
-        RuntimeEventBus.publish(
-            RuntimeEvent.ModuleFailed(
-                moduleName = moduleName,
-                reason = reason
-            )
+        eventController.publishModuleFailed(
+            moduleName,
+            reason
         )
     }
 
@@ -799,64 +809,15 @@ class DefaultRuntimeComposition :
     }
 
     override fun publishRuntimeStartedDiagnostic() {
-        context().diagnosticEventBus.publish(
-            CoreDiagnosticEvent(
-                type = CoreDiagnosticEventType.RUNTIME_STARTED,
-                snapshot = createDiagnosticSnapshot()
-            )
-        )
+        eventController.publishRuntimeStartedDiagnostic()
     }
 
     override fun publishRuntimeFailedDiagnostic() {
-        context().diagnosticEventBus.publish(
-            CoreDiagnosticEvent(
-                type = CoreDiagnosticEventType.RUNTIME_FAILED,
-                snapshot = createDiagnosticSnapshot()
-            )
-        )
+        eventController.publishRuntimeFailedDiagnostic()
     }
 
     override fun publishRuntimeStoppedDiagnostic() {
-        context().diagnosticEventBus.publish(
-            CoreDiagnosticEvent(
-                type = CoreDiagnosticEventType.RUNTIME_STOPPED,
-                snapshot = createDiagnosticSnapshot()
-            )
-        )
-    }
-
-    override fun healthProvider(): RuntimeHealthProvider {
-        return healthProvider
-    }
-
-    override fun createHealthSnapshot(
-        state: CoreRuntimeState,
-        telemetry: RuntimeTelemetrySnapshot,
-        failureReason: String?
-    ): RuntimeHealthSnapshot {
-        return healthProvider.createSnapshot(
-            state = state,
-            telemetry = telemetry,
-            failureReason = failureReason
-        )
-    }
-
-    override fun failureTracker(): RuntimeFailureTracker {
-        return failureTracker
-    }
-
-    override fun recoveryTracker(): RuntimeRecoveryTracker {
-        return recoveryTracker
-    }
-
-    override fun recordRuntimeFailure(
-        reason: String,
-        module: String
-    ) {
-        failureTracker.recordFailure(
-            reason = reason,
-            module = module
-        )
+        eventController.publishRuntimeStoppedDiagnostic()
     }
 
     override fun resetRuntimeHealth() {
@@ -1052,6 +1013,33 @@ class DefaultRuntimeComposition :
     
     override fun runtimeMonitor(): RuntimeMonitor {
         return runtimeMonitor
+    }
+
+
+
+
+    override fun recoveryTracker(): RuntimeRecoveryTracker {
+        return recoveryTracker
+    }
+
+    override fun failureTracker(): RuntimeFailureTracker {
+        return failureTracker
+    }
+
+    override fun healthProvider(): RuntimeHealthProvider {
+        return runtimeHealthProvider
+    }
+
+    override fun createHealthSnapshot(
+        state: CoreRuntimeState,
+        telemetry: RuntimeTelemetrySnapshot,
+        failureReason: String?
+    ): RuntimeHealthSnapshot {
+        return runtimeHealthProvider.createSnapshot(
+            state = state,
+            telemetry = telemetry,
+            failureReason = failureReason
+        )
     }
 
     override fun runtimeHealthSnapshot(): RuntimeHealthSnapshot {
