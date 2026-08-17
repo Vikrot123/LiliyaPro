@@ -14,6 +14,7 @@ class RuntimeTelemetryObserver : RuntimeObserver {
 
 
     override fun onRuntimeEvent(event: RuntimeEvent) {
+        println("TELEMETRY_RECEIVED=$event")
 
         eventCount++
         lastEvent = event
