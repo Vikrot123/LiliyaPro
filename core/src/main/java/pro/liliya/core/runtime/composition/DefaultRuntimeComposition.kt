@@ -48,7 +48,6 @@ import pro.liliya.core.runtime.orchestration.RuntimeEventComposition
 import pro.liliya.core.runtime.orchestration.RuntimeHealthComposition
 import pro.liliya.core.runtime.orchestration.RuntimeHealthController
 import pro.liliya.core.runtime.orchestration.DefaultRuntimeHealthController
-import pro.liliya.core.runtime.orchestration.RuntimeTelemetryComposition
 import pro.liliya.core.runtime.orchestration.RuntimeTelemetryController
 import pro.liliya.core.runtime.orchestration.DefaultRuntimeTelemetryController
 import pro.liliya.core.runtime.orchestration.RuntimeStatusComposition
@@ -91,6 +90,9 @@ import pro.liliya.core.runtime.status.RuntimeStatusProvider
 import pro.liliya.core.runtime.monitor.DefaultRuntimeMonitor
 import pro.liliya.core.runtime.monitor.RuntimeMonitor
 import pro.liliya.core.runtime.telemetry.RuntimeTelemetryObserver
+import pro.liliya.core.runtime.telemetry.composition.DefaultRuntimeTelemetryProviderComposition
+import pro.liliya.core.runtime.orchestration.RuntimeTelemetryComposition
+import pro.liliya.core.runtime.telemetry.composition.RuntimeTelemetryProviderComposition
 import pro.liliya.core.runtime.control.RuntimeControlRegistry
 import pro.liliya.core.runtime.action.RuntimeActionExecutor
 
@@ -130,8 +132,9 @@ class DefaultRuntimeComposition :
         RuntimeBridgeComposition,
         RuntimeActionComposition,
     RuntimeEventComposition,
-        RuntimeHealthComposition,
     RuntimeTelemetryComposition,
+        RuntimeHealthComposition,
+    RuntimeTelemetryProviderComposition,
     RuntimeStatusComposition {
 
     private val diagnosticSource: CoreDiagnosticSource =
@@ -269,16 +272,17 @@ class DefaultRuntimeComposition :
     private val recoveryTracker =
         RuntimeRecoveryTracker()
 
-    private val healthReportProvider =
-        RuntimeHealthReportProvider(
-            runtimeHealthProvider
+    private val telemetryObserver = RuntimeTelemetryObserver()
+
+    private val telemetryComposition: RuntimeTelemetryProviderComposition =
+        DefaultRuntimeTelemetryProviderComposition(
+            observer = telemetryObserver,
+            health = runtimeHealthProvider,
+            report = RuntimeHealthReportProvider(
+                runtimeHealthProvider
+            ),
+            status = RuntimeStatusProvider()
         )
-
-    private val statusProvider =
-        RuntimeStatusProvider()
-
-    private val telemetryObserver =
-        RuntimeTelemetryObserver()
 
     private val controlRegistry =
         RuntimeControlRegistry()
@@ -821,7 +825,7 @@ class DefaultRuntimeComposition :
     }
 
     override fun resetRuntimeHealth() {
-        telemetryObserver.reset()
+        telemetryComposition.telemetryObserver().reset()
         failureTracker.clear()
     }
 
@@ -830,7 +834,7 @@ class DefaultRuntimeComposition :
     }
 
     override fun healthReportProvider(): RuntimeHealthReportProvider {
-        return healthReportProvider
+        return telemetryComposition.healthReportProvider()
     }
 
     override fun createHealthReport(
@@ -839,7 +843,7 @@ class DefaultRuntimeComposition :
         failure: RuntimeFailureHealthSnapshot,
         recovery: HealthRecoverySnapshot
     ): RuntimeHealthReport {
-        return healthReportProvider.createReport(
+        return telemetryComposition.healthReportProvider().createReport(
             state = state,
             telemetry = telemetry,
             failure = failure,
@@ -848,19 +852,19 @@ class DefaultRuntimeComposition :
     }
 
     override fun statusProvider(): RuntimeStatusProvider {
-        return statusProvider
+        return telemetryComposition.statusProvider()
     }
 
     override fun createRuntimeStatus(
         report: RuntimeHealthReport
     ): RuntimeStatusSnapshot {
-        return statusProvider.createStatus(
+        return telemetryComposition.statusProvider().createStatus(
             report = report
         )
     }
 
     override fun telemetryObserver(): RuntimeTelemetryObserver {
-        return telemetryObserver
+        return telemetryComposition.telemetryObserver()
     }
 
     override fun registerRuntimeControls() {
@@ -1027,7 +1031,7 @@ class DefaultRuntimeComposition :
     }
 
     override fun healthProvider(): RuntimeHealthProvider {
-        return runtimeHealthProvider
+        return telemetryComposition.healthProvider()
     }
 
     override fun createHealthSnapshot(
@@ -1035,7 +1039,7 @@ class DefaultRuntimeComposition :
         telemetry: RuntimeTelemetrySnapshot,
         failureReason: String?
     ): RuntimeHealthSnapshot {
-        return runtimeHealthProvider.createSnapshot(
+        return telemetryComposition.healthProvider().createSnapshot(
             state = state,
             telemetry = telemetry,
             failureReason = failureReason
