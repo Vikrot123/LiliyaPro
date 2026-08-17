@@ -407,41 +407,7 @@ class DefaultRuntimeComposition :
 
 
     override fun startRuntime() {
-        resetRuntimeHealth()
-
-        bridgeController.install()
-
-        publishSystemStart()
-        publishRuntimeStarting()
-
-        try {
-            startRuntimeLifecycle()
-            handleRuntimeStartupSuccess()
-            logRuntimeStartupSuccess()
-        } catch (error: Exception) {
-            moduleManager()?.let {
-                try {
-                    stopModuleRuntime(it)
-                } catch (_: Exception) {
-                }
-            }
-
-            moduleManager()?.let {
-                setModuleStates(it.getModuleStates())
-            }
-
-            clearModuleRuntime()
-
-            handleRuntimeStartupFailure(
-                error
-            )
-
-            logRuntimeStartupFailure(
-                error
-            )
-
-            throw error
-        }
+        startupController.start()
     }
 
     override fun start() {

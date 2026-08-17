@@ -44,4 +44,12 @@ interface RuntimeStartupComposition {
     fun publishRuntimeFailed(
         reason: String
     )
+
+    fun handleRuntimeStartupSuccess()
+
+    fun logRuntimeStartupSuccess()
+
+    fun logRuntimeStartupFailure(
+        error: Exception
+    )
 }

@@ -15,6 +15,8 @@ class DefaultRuntimeStartupController(
 
         try {
             composition.startRuntimeLifecycle()
+            composition.handleRuntimeStartupSuccess()
+            composition.logRuntimeStartupSuccess()
         } catch (error: Exception) {
 
             composition.moduleManager()?.let {
@@ -43,6 +45,8 @@ class DefaultRuntimeStartupController(
             composition.publishRuntimeFailed(
                 error.message ?: "unknown"
             )
+
+            composition.logRuntimeStartupFailure(error)
 
             throw error
         }
