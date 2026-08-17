@@ -11,6 +11,10 @@ import pro.liliya.core.runtime.RuntimeRecoverySnapshot
 
 interface RuntimeServiceController {
 
+    fun startRuntimeServices()
+
+    fun stopRuntimeServices()
+
     fun start()
 
     fun stop()

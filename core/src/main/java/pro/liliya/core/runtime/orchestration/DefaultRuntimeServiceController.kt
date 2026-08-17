@@ -13,6 +13,14 @@ class DefaultRuntimeServiceController(
     private val composition: RuntimeServiceComposition
 ) : RuntimeServiceController {
 
+    override fun startRuntimeServices() {
+        start()
+    }
+
+    override fun stopRuntimeServices() {
+        stop()
+    }
+
     override fun start() {
         composition.serviceBootstrap().start()
     }
