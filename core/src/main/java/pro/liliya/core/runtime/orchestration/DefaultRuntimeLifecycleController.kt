@@ -25,44 +25,12 @@ class DefaultRuntimeLifecycleController(
         composition.stopRuntimeLifecycle()
     }
 
-    override fun startRuntime() {
-        composition.startRuntime()
-    }
-
     override fun startLifecycle() {
         composition.startLifecycle()
     }
 
     override fun stopLifecycle() {
         composition.stopLifecycle()
-    }
-
-    override fun stopRuntime() {
-        composition.stopRuntime()
-    }
-
-    override fun handleRuntimeStartupSuccess() {
-        composition.handleRuntimeStartupSuccess()
-    }
-
-    override fun handleRuntimeStartupFailure(
-        error: Exception
-    ) {
-        composition.handleRuntimeStartupFailure(
-            error = error
-        )
-    }
-
-    override fun logRuntimeStartupSuccess() {
-        composition.logRuntimeStartupSuccess()
-    }
-
-    override fun logRuntimeStartupFailure(
-        error: Exception
-    ) {
-        composition.logRuntimeStartupFailure(
-            error = error
-        )
     }
 
     override fun logRuntimeStopped() {

@@ -10,27 +10,15 @@ interface RuntimeLifecycleComposition {
 
     fun startRuntime()
 
+    fun stopRuntime()
+
     fun startLifecycle()
 
     fun stopLifecycle()
 
-    fun stopRuntime()
-
     fun start()
 
     fun stop()
-
-    fun handleRuntimeStartupSuccess()
-
-    fun handleRuntimeStartupFailure(
-        error: Exception
-    )
-
-    fun logRuntimeStartupSuccess()
-
-    fun logRuntimeStartupFailure(
-        error: Exception
-    )
 
     fun logRuntimeStopped()
 }
