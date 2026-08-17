@@ -572,6 +572,11 @@ class DefaultRuntimeComposition :
         )
     }
 
+
+    override fun uninstallRuntimeObserverBridge() {
+        observerBridge.uninstall()
+    }
+
     override fun actionPolicyEvaluator(): RuntimeActionPolicyEvaluator {
         return actionPolicyEvaluator
     }

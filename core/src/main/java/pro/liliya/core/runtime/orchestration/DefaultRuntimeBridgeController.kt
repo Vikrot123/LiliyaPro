@@ -19,6 +19,7 @@ class DefaultRuntimeBridgeController(
 
     override fun uninstall() {
         composition.uninstallModuleEventBridge()
+        composition.uninstallRuntimeObserverBridge()
     }
 
     override fun stop() {

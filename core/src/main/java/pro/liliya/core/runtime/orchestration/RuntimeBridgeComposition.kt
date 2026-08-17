@@ -7,6 +7,7 @@ interface RuntimeBridgeComposition {
     fun installModuleEventBridge()
 
     fun uninstallModuleEventBridge()
+    fun uninstallRuntimeObserverBridge()
 
     fun stopRuntimeBridges()
 }
