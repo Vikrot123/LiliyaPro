@@ -112,8 +112,6 @@ interface RuntimeComposition {
 
     fun stopLifecycle()
 
-    fun handleRuntimeStartupSuccess()
-
     fun handleRuntimeStartupFailure(
         error: Exception
     )

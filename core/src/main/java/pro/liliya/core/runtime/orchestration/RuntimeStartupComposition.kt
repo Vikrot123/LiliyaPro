@@ -45,7 +45,13 @@ interface RuntimeStartupComposition {
         reason: String
     )
 
-    fun handleRuntimeStartupSuccess()
+    fun recordRuntimeStarted()
+
+    fun publishRuntimeStartedDiagnostic()
+
+    fun markRuntimeRecovered()
+
+    fun publishRuntimeReady()
 
     fun logRuntimeStartupSuccess()
 

@@ -26,7 +26,6 @@ import pro.liliya.core.module.ModuleProvider
 import pro.liliya.core.module.ModuleExceptionHandler
 import pro.liliya.core.module.ModuleDependencyResolver
 import pro.liliya.core.module.ModuleProviderHolder
-import pro.liliya.core.module.CoreModuleProvider
 import pro.liliya.core.module.ModuleRegistry
 import pro.liliya.core.module.ModuleManager
 import pro.liliya.core.module.ModuleManagerHolder
@@ -41,7 +40,9 @@ import pro.liliya.core.runtime.orchestration.RuntimeLifecycleComposition
 import pro.liliya.core.runtime.orchestration.RuntimeStartupComposition
 import pro.liliya.core.runtime.orchestration.RuntimeShutdownComposition
 import pro.liliya.core.runtime.orchestration.RuntimeServiceComposition
+import pro.liliya.core.runtime.service.composition.DefaultRuntimeServiceComposition
 import pro.liliya.core.runtime.orchestration.RuntimeModuleComposition
+import pro.liliya.core.runtime.module.composition.DefaultRuntimeModuleComposition
 import pro.liliya.core.runtime.orchestration.RuntimeBridgeComposition
 import pro.liliya.core.runtime.orchestration.RuntimeActionComposition
 import pro.liliya.core.runtime.orchestration.RuntimeEventComposition
@@ -169,18 +170,6 @@ class DefaultRuntimeComposition :
     )
 
 
-    private val moduleProvider: ModuleProvider =
-        CoreModuleProvider()
-
-
-    private val moduleProviderHolder =
-        ModuleProviderHolder(
-            moduleProvider
-        )
-
-    private val moduleManagerHolder =
-        ModuleManagerHolder()
-
     private val runtimeStateHolder =
         CoreRuntimeStateHolder()
 
@@ -199,13 +188,6 @@ class DefaultRuntimeComposition :
     private val capabilityInfrastructure: RuntimeCapabilityInfrastructure =
         DefaultRuntimeCapabilityInfrastructureProvider()
             .provide()
-
-    private val moduleExceptionHandler =
-        ModuleExceptionHandler()
-
-    private val moduleDependencyResolver =
-        ModuleDependencyResolver()
-
 
     private val capabilityAuthorityEvaluator: RuntimeCapabilityAuthorityEvaluator =
         DefaultRuntimeCapabilityAuthorityEvaluator()
@@ -292,26 +274,14 @@ class DefaultRuntimeComposition :
             actionPolicyEvaluator
         )
 
-    private val serviceProvider =
-        CoreRuntimeServiceProvider()
-
-    private val runtimeServiceRegistry =
-        RuntimeServiceRegistry()
-
-
-    private val runtimeServiceProviderHolder =
-        RuntimeServiceProviderHolder(
-            serviceProvider
+    private val serviceComposition: RuntimeServiceComposition =
+        DefaultRuntimeServiceComposition(
+            this
         )
 
-    private val serviceBootstrap =
-        createServiceBootstrap(
-            serviceProvider
-        )
-
-    private val runtimeServiceBootstrapHolder =
-        RuntimeServiceBootstrapHolder(
-            serviceBootstrap
+    private val moduleComposition: RuntimeModuleComposition =
+        DefaultRuntimeModuleComposition(
+            this
         )
 
     override fun diagnosticsService(): CoreRuntimeDiagnosticsService {
@@ -327,34 +297,25 @@ class DefaultRuntimeComposition :
     }
 
     override fun createModuleRegistry(): ModuleRegistry {
-        return ModuleRegistry(
-            capabilityInfrastructure,
-            moduleExceptionHandler,
-            moduleDependencyResolver
-        )
+        return moduleComposition.createModuleRegistry()
     }
 
     override fun createModuleManager(
         registry: ModuleRegistry,
         provider: ModuleProvider
     ): ModuleManager {
-        return ModuleManager(
-            registry = registry,
-            provider = provider
+        return moduleComposition.createModuleManager(
+            registry,
+            provider
         )
     }
 
     override fun createModuleRuntime(): ModuleManager {
-        return ModuleManager(
-            registry = createModuleRegistry(),
-            provider = moduleProviderHolder.get()
-        )
+        return moduleComposition.createModuleRuntime()
     }
 
     override fun startRuntimeComponents(): ModuleManager {
         setRuntimeState(CoreRuntimeState.STARTING)
-
-        bridgeController.startRuntimeBridges()
 
         val manager = moduleController.startRuntimeComponents()
 
@@ -401,13 +362,6 @@ class DefaultRuntimeComposition :
 
     override fun startLifecycle() {
         lifecycleController.start()
-    }
-
-    override fun handleRuntimeStartupSuccess() {
-        recordRuntimeStarted()
-        publishRuntimeStartedDiagnostic()
-        markRuntimeRecovered()
-        publishRuntimeReady()
     }
 
     override fun logRuntimeStartupSuccess() {
@@ -479,25 +433,25 @@ class DefaultRuntimeComposition :
     }
 
     override fun clearModuleRuntime() {
-        moduleManagerHolder.clear()
+        moduleComposition.clearModuleRuntime()
     }
 
     override fun moduleProviderHolder(): ModuleProviderHolder {
-        return moduleProviderHolder
+        return moduleComposition.moduleProviderHolder()
     }
 
     override fun moduleExceptionHandler(): ModuleExceptionHandler {
-        return moduleExceptionHandler
+        return moduleComposition.moduleExceptionHandler()
     }
 
     override fun moduleDependencyResolver(): ModuleDependencyResolver {
-        return moduleDependencyResolver
+        return moduleComposition.moduleDependencyResolver()
     }
 
     override fun setModuleProvider(
         provider: ModuleProvider
     ) {
-        moduleProviderHolder.set(provider)
+        moduleComposition.moduleProviderHolder().set(provider)
     }
 
     override fun installModuleProvider(
@@ -511,23 +465,23 @@ class DefaultRuntimeComposition :
     }
 
     override fun resetModuleProvider() {
-        moduleProviderHolder.reset()
+        moduleComposition.moduleProviderHolder().reset()
     }
 
     override fun moduleManagerHolder(): ModuleManagerHolder {
-        return moduleManagerHolder
+        return moduleComposition.moduleManagerHolder()
     }
 
     override fun moduleManager(): ModuleManager? {
-        return moduleManagerHolder.get()
+        return moduleComposition.moduleManager()
     }
 
     override fun setModuleManager(manager: ModuleManager) {
-        moduleManagerHolder.set(manager)
+        moduleComposition.setModuleManager(manager)
     }
 
     override fun clearModuleManager() {
-        moduleManagerHolder.clear()
+        moduleComposition.clearModuleRuntime()
     }
 
     override fun runtimeStateHolder(): CoreRuntimeStateHolder {
@@ -600,7 +554,7 @@ class DefaultRuntimeComposition :
 
 
     override fun moduleProvider(): ModuleProvider {
-        return moduleProvider
+        return moduleComposition.moduleProvider()
     }
 
     override fun observerRegistry(): DefaultRuntimeObserverRegistry {
@@ -874,54 +828,33 @@ class DefaultRuntimeComposition :
 
 
     override fun serviceProvider(): RuntimeServiceProvider {
-        return serviceProvider
+        return serviceComposition.serviceProvider()
     }
 
     override fun runtimeServiceProviderHolder(): RuntimeServiceProviderHolder {
-        return runtimeServiceProviderHolder
+        return serviceComposition.runtimeServiceProviderHolder()
     }
 
     override fun setRuntimeServiceProvider(provider: RuntimeServiceProvider) {
-        runtimeServiceProviderHolder.set(provider)
+        serviceComposition.setRuntimeServiceProvider(provider)
     }
 
     override fun runtimeServiceProvider(): RuntimeServiceProvider {
-        return runtimeServiceProviderHolder.get()
-            ?: error("RuntimeServiceProvider is not initialized")
+        return serviceComposition.runtimeServiceProvider()
     }
 
     override fun resetRuntimeServiceProvider() {
-        runtimeServiceProviderHolder.reset()
+        serviceComposition.resetRuntimeServiceProvider()
     }
 
     override fun configureRuntimeServiceProvider(
         provider: RuntimeServiceProvider
     ) {
-        runtimeServiceBootstrapHolder
-            .get()
-            .stop()
-
-        setRuntimeServiceProvider(provider)
-
-        setRuntimeServiceBootstrap(
-            createServiceBootstrap(
-                runtimeServiceProvider()
-            )
-        )
+        serviceComposition.configureRuntimeServiceProvider(provider)
     }
 
     override fun resetRuntimeServiceConfiguration() {
-        runtimeServiceBootstrapHolder
-            .get()
-            .stop()
-
-        resetRuntimeServiceProvider()
-
-        setRuntimeServiceBootstrap(
-            createServiceBootstrap(
-                runtimeServiceProvider()
-            )
-        )
+        serviceComposition.resetRuntimeServiceConfiguration()
     }
 
 
@@ -932,64 +865,60 @@ class DefaultRuntimeComposition :
 
 
     override fun runtimeServiceRegistry(): RuntimeServiceRegistry {
-        return runtimeServiceRegistry
+        return serviceComposition.runtimeServiceRegistry()
     }
 
     override fun serviceBootstrap(): RuntimeServiceBootstrap {
-        return serviceBootstrap
+        return serviceComposition.serviceBootstrap()
     }
 
     override fun runtimeServiceBootstrapHolder(): RuntimeServiceBootstrapHolder {
-        return runtimeServiceBootstrapHolder
+        return serviceComposition.runtimeServiceBootstrapHolder()
     }
 
     override fun setRuntimeServiceBootstrap(bootstrap: RuntimeServiceBootstrap) {
-        runtimeServiceBootstrapHolder.set(bootstrap)
+        serviceComposition.setRuntimeServiceBootstrap(bootstrap)
     }
 
     override fun runtimeServiceBootstrap(): RuntimeServiceBootstrap {
-        return runtimeServiceBootstrapHolder.get()
-            ?: error("RuntimeServiceBootstrap is not initialized")
+        return serviceComposition.runtimeServiceBootstrap()
     }
 
 
     override fun registerRuntimeService(
         service: RuntimeService
     ) {
-        runtimeServiceBootstrapHolder.get().register(service)
+        serviceComposition.runtimeServiceBootstrap().register(service)
     }
 
     override fun runtimeServiceStates(): Map<String, RuntimeServiceState> {
-        return runtimeServiceBootstrapHolder.get().getStates()
+        return serviceComposition.runtimeServiceStates()
     }
 
     override fun runtimeServiceFailures(): List<RuntimeServiceFailure> {
-        return runtimeServiceBootstrapHolder.get().getFailures()
+        return serviceComposition.runtimeServiceFailures()
     }
 
     override fun runtimeServiceHealth(): Map<String, RuntimeServiceHealth> {
-        return runtimeServiceBootstrapHolder.get().getHealth()
+        return serviceComposition.runtimeServiceHealth()
     }
 
     override fun runtimeServiceRecoverySnapshot(): RuntimeRecoverySnapshot? {
-        return runtimeServiceBootstrapHolder.get().getRecoverySnapshot()
+        return serviceComposition.runtimeServiceRecoverySnapshot()
     }
 
     override fun startRuntimeServices() {
-        runtimeServiceBootstrapHolder.get().start()
+        serviceComposition.runtimeServiceBootstrap().start()
     }
 
     override fun stopRuntimeServices() {
-        runtimeServiceBootstrapHolder.get().stop()
+        serviceComposition.runtimeServiceBootstrap().stop()
     }
 
     override fun createServiceBootstrap(
         provider: RuntimeServiceProvider
     ): RuntimeServiceBootstrap {
-        return RuntimeServiceBootstrap(
-            runtimeServiceProviderHolder,
-            runtimeServiceRegistry
-        )
+        return serviceComposition.createServiceBootstrap(provider)
     }
 
     
