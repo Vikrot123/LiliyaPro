@@ -25,7 +25,19 @@ class CoreRuntimeTelemetryRestartContractTest {
             assertNotNull(second.startedAt)
 
             assertTrue(
+                second.startedAt!! >= first.startedAt!!
+            )
+
+            assertTrue(
+                first.eventCount > 0
+            )
+
+            assertTrue(
                 second.eventCount > 0
+            )
+
+            assertTrue(
+                second.eventCount <= first.eventCount + 3
             )
 
             assertEquals(
