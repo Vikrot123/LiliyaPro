@@ -429,7 +429,7 @@ class DefaultRuntimeComposition :
     override fun stopModuleRuntime(
         manager: ModuleManager
     ) {
-        manager.stopModules()
+        moduleComposition.stopModuleRuntime(manager)
     }
 
     override fun clearModuleRuntime() {
@@ -451,7 +451,7 @@ class DefaultRuntimeComposition :
     override fun setModuleProvider(
         provider: ModuleProvider
     ) {
-        moduleComposition.moduleProviderHolder().set(provider)
+        moduleComposition.setModuleProvider(provider)
     }
 
     override fun installModuleProvider(
@@ -465,7 +465,7 @@ class DefaultRuntimeComposition :
     }
 
     override fun resetModuleProvider() {
-        moduleComposition.moduleProviderHolder().reset()
+        moduleComposition.resetModuleProvider()
     }
 
     override fun moduleManagerHolder(): ModuleManagerHolder {
