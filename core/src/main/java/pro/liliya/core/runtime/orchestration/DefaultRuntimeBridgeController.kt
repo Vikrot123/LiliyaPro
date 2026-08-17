@@ -4,6 +4,14 @@ class DefaultRuntimeBridgeController(
     private val composition: RuntimeBridgeComposition
 ) : RuntimeBridgeController {
 
+    override fun startRuntimeBridges() {
+        install()
+    }
+
+    override fun stopRuntimeBridges() {
+        stop()
+    }
+
     override fun install() {
         composition.installRuntimeObserverBridge()
         composition.installModuleEventBridge()

@@ -363,6 +363,8 @@ class DefaultRuntimeComposition :
     override fun startRuntimeComponents(): ModuleManager {
         setRuntimeState(CoreRuntimeState.STARTING)
 
+        bridgeController.startRuntimeBridges()
+
         val manager = moduleController.startRuntimeComponents()
 
         serviceController.startRuntimeServices()
@@ -595,13 +597,12 @@ class DefaultRuntimeComposition :
     }
 
     override fun stopRuntimeBridges() {
-        observerBridge.uninstall()
+        bridgeController.uninstall()
 
         observerRegistry.unsubscribe(
             telemetryObserver()
         )
 
-        uninstallModuleEventBridge()
 
         resetRuntimeBridgeState()
     }
