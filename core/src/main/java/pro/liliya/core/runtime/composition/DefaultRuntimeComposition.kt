@@ -366,7 +366,7 @@ class DefaultRuntimeComposition :
         val manager = moduleController.startRuntimeComponents()
 
         serviceController.startRuntimeServices()
-        actionController.register()
+        actionController.startRuntimeActions()
 
         setRuntimeState(CoreRuntimeState.RUNNING)
 
