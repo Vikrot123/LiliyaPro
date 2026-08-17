@@ -4,6 +4,7 @@ import pro.liliya.core.runtime.RuntimeServiceProvider
 import pro.liliya.core.runtime.RuntimeServiceProviderHolder
 import pro.liliya.core.runtime.RuntimeServiceRegistry
 import pro.liliya.core.runtime.RuntimeServiceBootstrap
+import pro.liliya.core.runtime.RuntimeServiceBootstrapHolder
 import pro.liliya.core.runtime.RuntimeServiceState
 import pro.liliya.core.runtime.RuntimeServiceHealth
 import pro.liliya.core.runtime.RuntimeServiceFailure
@@ -15,9 +16,25 @@ interface RuntimeServiceComposition {
 
     fun runtimeServiceProviderHolder(): RuntimeServiceProviderHolder
 
+    fun runtimeServiceProvider(): RuntimeServiceProvider
+
+    fun setRuntimeServiceProvider(
+        provider: RuntimeServiceProvider
+    )
+
+    fun resetRuntimeServiceProvider()
+
     fun runtimeServiceRegistry(): RuntimeServiceRegistry
 
     fun serviceBootstrap(): RuntimeServiceBootstrap
+
+    fun runtimeServiceBootstrapHolder(): RuntimeServiceBootstrapHolder
+
+    fun runtimeServiceBootstrap(): RuntimeServiceBootstrap
+
+    fun setRuntimeServiceBootstrap(
+        bootstrap: RuntimeServiceBootstrap
+    )
 
     fun runtimeServiceStates(): Map<String, RuntimeServiceState>
 
@@ -26,6 +43,12 @@ interface RuntimeServiceComposition {
     fun runtimeServiceHealth(): Map<String, RuntimeServiceHealth>
 
     fun runtimeServiceRecoverySnapshot(): RuntimeRecoverySnapshot?
+
+    fun configureRuntimeServiceProvider(
+        provider: RuntimeServiceProvider
+    )
+
+    fun resetRuntimeServiceConfiguration()
 
     fun createServiceBootstrap(
         provider: RuntimeServiceProvider
