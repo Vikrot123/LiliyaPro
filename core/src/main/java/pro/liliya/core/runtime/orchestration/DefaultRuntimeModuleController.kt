@@ -6,10 +6,30 @@ class DefaultRuntimeModuleController(
     private val composition: RuntimeModuleComposition
 ) : RuntimeModuleController {
 
+    override fun startRuntimeComponents(): ModuleManager {
+        val manager = composition.createModuleRuntime()
+        composition.setModuleManager(manager)
+        start(manager)
+        return manager
+    }
+
     override fun start(
         manager: ModuleManager
     ) {
         composition.startModuleRuntime(manager)
+    }
+
+    override fun stopRuntimeModules() {
+        composition.moduleManager()?.let {
+            composition.setModuleStates(it.getModuleStates())
+
+            try {
+                stop(it)
+            } catch (_: Exception) {
+            }
+        }
+
+        clear()
     }
 
     override fun stop(

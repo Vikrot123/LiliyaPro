@@ -363,11 +363,8 @@ class DefaultRuntimeComposition :
     override fun startRuntimeComponents(): ModuleManager {
         setRuntimeState(CoreRuntimeState.STARTING)
 
-        val manager = createModuleRuntime()
+        val manager = moduleController.startRuntimeComponents()
 
-        setModuleManager(manager)
-
-        moduleController.start(manager)
         serviceController.start()
         actionController.register()
 
@@ -388,16 +385,7 @@ class DefaultRuntimeComposition :
     override fun stopRuntimeLifecycle() {
         serviceController.stop()
 
-        moduleManager()?.let {
-            setModuleStates(it.getModuleStates())
-
-            try {
-                moduleController.stop(it)
-            } catch (_: Exception) {
-            }
-        }
-
-        moduleController.clear()
+        moduleController.stopRuntimeModules()
         stopRuntimeServices()
         clearModuleRuntime()
         setRuntimeState(CoreRuntimeState.STOPPED)
