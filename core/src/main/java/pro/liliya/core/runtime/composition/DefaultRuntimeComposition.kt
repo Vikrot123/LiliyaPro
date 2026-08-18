@@ -60,8 +60,6 @@ import pro.liliya.core.runtime.orchestration.RuntimeBridgeController
 import pro.liliya.core.runtime.orchestration.DefaultRuntimeBridgeController
 import pro.liliya.core.runtime.orchestration.RuntimeModuleController
 import pro.liliya.core.runtime.orchestration.DefaultRuntimeModuleController
-import pro.liliya.core.runtime.orchestration.RuntimeServiceController
-import pro.liliya.core.runtime.orchestration.DefaultRuntimeServiceController
 import pro.liliya.core.runtime.orchestration.RuntimeShutdownController
 import pro.liliya.core.runtime.orchestration.DefaultRuntimeShutdownController
 import pro.liliya.core.runtime.orchestration.RuntimeStartupController
@@ -221,8 +219,6 @@ class DefaultRuntimeComposition :
     private val shutdownController: RuntimeShutdownController =
         DefaultRuntimeShutdownController(this)
 
-    private val serviceController: RuntimeServiceController =
-        DefaultRuntimeServiceController(this)
 
     private val moduleController: RuntimeModuleController =
         DefaultRuntimeModuleController(this)
@@ -322,7 +318,7 @@ class DefaultRuntimeComposition :
     override fun startRuntimeComponents(): ModuleManager {
         val manager = moduleController.startRuntimeComponents()
 
-        serviceController.startRuntimeServices()
+        serviceBootstrap().start()
         actionController.startRuntimeActions()
 
         return manager
@@ -342,7 +338,7 @@ class DefaultRuntimeComposition :
     }
 
     override fun stopRuntimeLifecycle() {
-        serviceController.stopRuntimeServices()
+        serviceBootstrap().stop()
 
         moduleController.stopRuntimeModules()
         clearModuleRuntime()
@@ -862,7 +858,7 @@ class DefaultRuntimeComposition :
     override fun registerRuntimeService(
         service: RuntimeService
     ) {
-        serviceController.register(service)
+        serviceBootstrap().register(service)
     }
 
     override fun runtimeServiceStates(): Map<String, RuntimeServiceState> {
