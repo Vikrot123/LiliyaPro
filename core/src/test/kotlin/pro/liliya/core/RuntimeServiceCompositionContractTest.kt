@@ -16,7 +16,7 @@ class RuntimeServiceCompositionContractTest {
         val runtimeComposition = DefaultRuntimeComposition()
 
         val serviceComposition =
-            DefaultRuntimeServiceComposition(runtimeComposition)
+            DefaultRuntimeServiceComposition()
 
         val bootstrap = serviceComposition.serviceBootstrap()
 

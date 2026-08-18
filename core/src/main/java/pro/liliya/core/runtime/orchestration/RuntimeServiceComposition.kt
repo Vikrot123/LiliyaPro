@@ -20,12 +20,6 @@ interface RuntimeServiceComposition {
 
     fun runtimeServiceProvider(): RuntimeServiceProvider
 
-    fun setRuntimeServiceProvider(
-        provider: RuntimeServiceProvider
-    )
-
-    fun resetRuntimeServiceProvider()
-
     fun runtimeServiceRegistry(): RuntimeServiceRegistry
 
     fun runtimeSupervisor(): RuntimeSupervisor
@@ -38,10 +32,6 @@ interface RuntimeServiceComposition {
 
     fun runtimeServiceBootstrap(): RuntimeServiceBootstrap
 
-    fun replaceRuntimeServiceBootstrap(
-        bootstrap: RuntimeServiceBootstrap
-    )
-
     fun runtimeServiceStates(): Map<String, RuntimeServiceState>
 
     fun runtimeServiceFailures(): List<RuntimeServiceFailure>
@@ -49,12 +39,6 @@ interface RuntimeServiceComposition {
     fun runtimeServiceHealth(): Map<String, RuntimeServiceHealth>
 
     fun runtimeServiceRecoverySnapshot(): RuntimeRecoverySnapshot?
-
-    fun configureRuntimeServiceProvider(
-        provider: RuntimeServiceProvider
-    )
-
-    fun resetRuntimeServiceConfiguration()
 
     fun createServiceBootstrap(
         provider: RuntimeServiceProvider

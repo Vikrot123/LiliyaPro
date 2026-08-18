@@ -2,7 +2,7 @@ package pro.liliya.core.runtime.composition
 
 object RuntimeCompositionFactory {
 
-    fun create(): RuntimeComposition {
+    fun create(): DefaultRuntimeComposition {
         return DefaultRuntimeComposition()
     }
 }

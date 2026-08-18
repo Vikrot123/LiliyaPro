@@ -40,6 +40,7 @@ import pro.liliya.core.runtime.orchestration.RuntimeLifecycleComposition
 import pro.liliya.core.runtime.orchestration.RuntimeStartupComposition
 import pro.liliya.core.runtime.orchestration.RuntimeShutdownComposition
 import pro.liliya.core.runtime.orchestration.RuntimeServiceComposition
+import pro.liliya.core.runtime.orchestration.RuntimeServiceCompositionController
 import pro.liliya.core.runtime.service.composition.DefaultRuntimeServiceComposition
 import pro.liliya.core.runtime.orchestration.RuntimeModuleComposition
 import pro.liliya.core.runtime.module.composition.DefaultRuntimeModuleComposition
@@ -130,6 +131,7 @@ import pro.liliya.core.runtime.RuntimeServiceRegistry
 
 class DefaultRuntimeComposition :
     RuntimeComposition,
+    RuntimeServiceCompositionController,
     RuntimeLifecycleComposition,
     RuntimeStartupComposition,
         RuntimeShutdownComposition,
@@ -282,9 +284,11 @@ class DefaultRuntimeComposition :
         )
 
     private val serviceComposition: RuntimeServiceComposition =
-        DefaultRuntimeServiceComposition(
-            this
-        )
+        DefaultRuntimeServiceComposition()
+
+    private val serviceCompositionController:
+        RuntimeServiceCompositionController =
+        serviceComposition as RuntimeServiceCompositionController
 
     private val moduleComposition: RuntimeModuleComposition =
         DefaultRuntimeModuleComposition(
@@ -809,7 +813,7 @@ class DefaultRuntimeComposition :
     }
 
     override fun setRuntimeServiceProvider(provider: RuntimeServiceProvider) {
-        serviceComposition.setRuntimeServiceProvider(provider)
+        serviceCompositionController.setRuntimeServiceProvider(provider)
     }
 
     override fun runtimeServiceProvider(): RuntimeServiceProvider {
@@ -817,17 +821,17 @@ class DefaultRuntimeComposition :
     }
 
     override fun resetRuntimeServiceProvider() {
-        serviceComposition.resetRuntimeServiceProvider()
+        serviceCompositionController.resetRuntimeServiceProvider()
     }
 
     override fun configureRuntimeServiceProvider(
         provider: RuntimeServiceProvider
     ) {
-        serviceComposition.configureRuntimeServiceProvider(provider)
+        serviceCompositionController.configureRuntimeServiceProvider(provider)
     }
 
     override fun resetRuntimeServiceConfiguration() {
-        serviceComposition.resetRuntimeServiceConfiguration()
+        serviceCompositionController.resetRuntimeServiceConfiguration()
     }
 
 
@@ -850,7 +854,7 @@ class DefaultRuntimeComposition :
     }
 
     override fun replaceRuntimeServiceBootstrap(bootstrap: RuntimeServiceBootstrap) {
-        serviceComposition.replaceRuntimeServiceBootstrap(bootstrap)
+        serviceCompositionController.replaceRuntimeServiceBootstrap(bootstrap)
     }
 
     override fun runtimeServiceBootstrap(): RuntimeServiceBootstrap {

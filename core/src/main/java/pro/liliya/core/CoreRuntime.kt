@@ -3,6 +3,7 @@ package pro.liliya.core
 import pro.liliya.core.runtime.RuntimeService
 import pro.liliya.core.runtime.RuntimeServiceProvider
 import pro.liliya.core.runtime.composition.RuntimeCompositionFactory
+import pro.liliya.core.runtime.orchestration.RuntimeServiceCompositionController
 import pro.liliya.core.runtime.observer.RuntimeObserver
 import pro.liliya.core.runtime.health.RuntimeHealthSnapshot
 import pro.liliya.core.runtime.health.RuntimeRecoverySnapshot
@@ -22,6 +23,9 @@ object CoreRuntime {
 
     private val runtimeComposition =
         RuntimeCompositionFactory.create()
+
+    private val runtimeCompositionController:
+        RuntimeServiceCompositionController = runtimeComposition
 
 
 
@@ -58,7 +62,7 @@ object CoreRuntime {
     internal fun setRuntimeServiceProvider(
         provider: RuntimeServiceProvider
     ) {
-        runtimeComposition.configureRuntimeServiceProvider(provider)
+        runtimeCompositionController.configureRuntimeServiceProvider(provider)
     }
 
     internal fun resetRuntimeServiceProvider() {
