@@ -8,7 +8,7 @@ class DefaultRuntimeActionController(
         register()
     }
 
-    override fun register() {
+    private fun register() {
         composition.registerRuntimeControls()
         composition.registerRuntimeActionHandlers()
     }
