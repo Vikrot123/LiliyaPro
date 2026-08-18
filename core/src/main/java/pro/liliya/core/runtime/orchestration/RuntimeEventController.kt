@@ -11,15 +11,4 @@ interface RuntimeEventController {
     fun publishRuntimeFailed(reason: String)
 
     fun publishSystemStop()
-
-    fun publishModuleFailed(
-        moduleName: String,
-        reason: String
-    )
-
-    fun publishRuntimeStartedDiagnostic()
-
-    fun publishRuntimeFailedDiagnostic()
-
-    fun publishRuntimeStoppedDiagnostic()
 }

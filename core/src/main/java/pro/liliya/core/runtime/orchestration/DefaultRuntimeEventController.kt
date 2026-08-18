@@ -39,7 +39,7 @@ class DefaultRuntimeEventController(
         )
     }
 
-    override fun publishModuleFailed(
+    private fun publishModuleFailed(
         moduleName: String,
         reason: String
     ) {
@@ -56,7 +56,7 @@ class DefaultRuntimeEventController(
         )
     }
 
-    override fun publishRuntimeStartedDiagnostic() {
+    private fun publishRuntimeStartedDiagnostic() {
         composition.diagnosticEventBus().publish(
             CoreDiagnosticEvent(
                 type = CoreDiagnosticEventType.RUNTIME_STARTED,
@@ -65,7 +65,7 @@ class DefaultRuntimeEventController(
         )
     }
 
-    override fun publishRuntimeFailedDiagnostic() {
+    private fun publishRuntimeFailedDiagnostic() {
         composition.diagnosticEventBus().publish(
             CoreDiagnosticEvent(
                 type = CoreDiagnosticEventType.RUNTIME_FAILED,
@@ -74,7 +74,7 @@ class DefaultRuntimeEventController(
         )
     }
 
-    override fun publishRuntimeStoppedDiagnostic() {
+    private fun publishRuntimeStoppedDiagnostic() {
         composition.diagnosticEventBus().publish(
             CoreDiagnosticEvent(
                 type = CoreDiagnosticEventType.RUNTIME_STOPPED,

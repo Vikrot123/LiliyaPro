@@ -678,9 +678,21 @@ class DefaultRuntimeComposition :
         moduleName: String,
         reason: String
     ) {
-        eventController.publishModuleFailed(
-            moduleName,
-            reason
+        failureTracker.recordFailure(
+            reason = reason,
+            module = moduleName
+        )
+
+        lifecycleRecorder().record(
+            RuntimeLifecycleEvent.FAILED,
+            "$moduleName: $reason"
+        )
+
+        RuntimeEventBus.publish(
+            RuntimeEvent.ModuleFailed(
+                moduleName = moduleName,
+                reason = reason
+            )
         )
     }
 
@@ -697,15 +709,30 @@ class DefaultRuntimeComposition :
     }
 
     override fun publishRuntimeStartedDiagnostic() {
-        eventController.publishRuntimeStartedDiagnostic()
+        diagnosticEventBus().publish(
+            CoreDiagnosticEvent(
+                type = CoreDiagnosticEventType.RUNTIME_STARTED,
+                snapshot = createDiagnosticSnapshot()
+            )
+        )
     }
 
     override fun publishRuntimeFailedDiagnostic() {
-        eventController.publishRuntimeFailedDiagnostic()
+        diagnosticEventBus().publish(
+            CoreDiagnosticEvent(
+                type = CoreDiagnosticEventType.RUNTIME_FAILED,
+                snapshot = createDiagnosticSnapshot()
+            )
+        )
     }
 
     override fun publishRuntimeStoppedDiagnostic() {
-        eventController.publishRuntimeStoppedDiagnostic()
+        diagnosticEventBus().publish(
+            CoreDiagnosticEvent(
+                type = CoreDiagnosticEventType.RUNTIME_STOPPED,
+                snapshot = createDiagnosticSnapshot()
+            )
+        )
     }
 
     override fun resetRuntimeHealth() {
