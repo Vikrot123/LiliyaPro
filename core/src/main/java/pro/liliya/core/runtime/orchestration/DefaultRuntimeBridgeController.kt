@@ -4,14 +4,6 @@ class DefaultRuntimeBridgeController(
     private val composition: RuntimeBridgeComposition
 ) : RuntimeBridgeController {
 
-    override fun startRuntimeBridges() {
-        install()
-    }
-
-    override fun stopRuntimeBridges() {
-        stop()
-    }
-
     override fun install() {
         composition.installRuntimeObserverBridge()
         composition.installModuleEventBridge()
@@ -20,9 +12,5 @@ class DefaultRuntimeBridgeController(
     override fun uninstall() {
         composition.uninstallModuleEventBridge()
         composition.uninstallRuntimeObserverBridge()
-    }
-
-    override fun stop() {
-        composition.stopRuntimeBridges()
     }
 }
