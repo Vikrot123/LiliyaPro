@@ -283,12 +283,15 @@ class DefaultRuntimeComposition :
             actionPolicyEvaluator
         )
 
-    private val serviceComposition: RuntimeServiceComposition =
+    private val defaultServiceComposition =
         DefaultRuntimeServiceComposition()
+
+    private val serviceComposition: RuntimeServiceComposition =
+        defaultServiceComposition
 
     private val serviceCompositionController:
         RuntimeServiceCompositionController =
-        serviceComposition as RuntimeServiceCompositionController
+        defaultServiceComposition
 
     private val moduleComposition: RuntimeModuleComposition =
         DefaultRuntimeModuleComposition(
