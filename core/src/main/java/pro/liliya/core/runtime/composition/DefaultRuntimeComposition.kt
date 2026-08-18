@@ -36,7 +36,6 @@ import pro.liliya.core.runtime.lifecycle.RuntimeLifecycleRecorderHolder
 import pro.liliya.core.runtime.lifecycle.RuntimeLifecycleEvent
 import pro.liliya.core.runtime.orchestration.RuntimeServiceComposition
 import pro.liliya.core.runtime.service.composition.DefaultRuntimeServiceComposition
-import pro.liliya.core.runtime.orchestration.RuntimeModuleComposition
 import pro.liliya.core.runtime.module.composition.DefaultRuntimeModuleComposition
 
 import pro.liliya.core.runtime.observer.DefaultRuntimeObserverRegistry
@@ -100,7 +99,6 @@ import pro.liliya.core.runtime.RuntimeServiceRegistry
 class DefaultRuntimeComposition :
     RuntimeComposition,
         RuntimeServiceComposition,
-        RuntimeModuleComposition,
                 RuntimeTelemetryProviderComposition {
 
     private val diagnosticSource: CoreDiagnosticSource =
@@ -225,7 +223,7 @@ class DefaultRuntimeComposition :
         defaultServiceComposition
 
 
-    private val moduleComposition: RuntimeModuleComposition =
+    private val moduleComposition: DefaultRuntimeModuleComposition =
         DefaultRuntimeModuleComposition(
             this
         )
