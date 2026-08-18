@@ -43,7 +43,6 @@ import pro.liliya.core.runtime.orchestration.RuntimeModuleComposition
 import pro.liliya.core.runtime.module.composition.DefaultRuntimeModuleComposition
 import pro.liliya.core.runtime.orchestration.RuntimeBridgeComposition
 import pro.liliya.core.runtime.orchestration.RuntimeActionComposition
-import pro.liliya.core.runtime.orchestration.RuntimeEventComposition
 import pro.liliya.core.runtime.orchestration.RuntimeHealthComposition
 
 import pro.liliya.core.runtime.observer.DefaultRuntimeObserverRegistry
@@ -113,7 +112,6 @@ class DefaultRuntimeComposition :
         RuntimeModuleComposition,
         RuntimeBridgeComposition,
         RuntimeActionComposition,
-    RuntimeEventComposition,
         RuntimeHealthComposition,
     RuntimeTelemetryProviderComposition {
 
@@ -248,7 +246,7 @@ class DefaultRuntimeComposition :
         return diagnosticsService
     }
 
-    override fun diagnosticEventBus(): CoreDiagnosticEventBus {
+    fun diagnosticEventBus(): CoreDiagnosticEventBus {
         return context.diagnosticEventBus
     }
 
