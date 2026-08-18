@@ -566,6 +566,10 @@ class DefaultRuntimeComposition :
         return observerRegistry
     }
 
+    override fun runtimeBridgeController(): RuntimeBridgeController {
+        return bridgeController
+    }
+
     override fun observerBridge(): RuntimeObserverBridge {
         return observerBridge
     }

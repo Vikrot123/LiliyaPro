@@ -18,6 +18,7 @@ import pro.liliya.core.module.ModuleManagerHolder
 import pro.liliya.core.module.ModuleState
 import pro.liliya.core.runtime.lifecycle.RuntimeLifecycleRecorder
 import pro.liliya.core.runtime.orchestration.RuntimeLifecycleController
+import pro.liliya.core.runtime.orchestration.RuntimeBridgeController
 import pro.liliya.core.runtime.orchestration.RuntimeShutdownController
 import pro.liliya.core.runtime.lifecycle.RuntimeLifecycleRecorderHolder
 import pro.liliya.core.runtime.observer.RuntimeObserverBridge
@@ -86,6 +87,8 @@ interface RuntimeComposition {
     fun isRuntimeObserverBridgeInstalled(): Boolean
     fun markRuntimeObserverBridgeInstalled()
     fun resetRuntimeBridgeState()
+    fun runtimeBridgeController(): RuntimeBridgeController
+
     fun stopRuntimeBridges()
 
 
