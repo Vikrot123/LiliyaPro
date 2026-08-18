@@ -88,10 +88,10 @@ class DefaultRuntimeServiceComposition(
         return runtimeServiceBootstrapHolder.get()
     }
 
-    override fun setRuntimeServiceBootstrap(
+    override fun replaceRuntimeServiceBootstrap(
         bootstrap: RuntimeServiceBootstrap
     ) {
-        runtimeServiceBootstrapHolder.set(bootstrap)
+        runtimeServiceBootstrapHolder.replace(bootstrap)
     }
 
     override fun configureRuntimeServiceProvider(
@@ -103,7 +103,7 @@ class DefaultRuntimeServiceComposition(
 
         setRuntimeServiceProvider(provider)
 
-        setRuntimeServiceBootstrap(
+        replaceRuntimeServiceBootstrap(
             createServiceBootstrap(
                 runtimeServiceProvider()
             )
@@ -117,7 +117,7 @@ class DefaultRuntimeServiceComposition(
             .get()
             .stop()
 
-        setRuntimeServiceBootstrap(
+        replaceRuntimeServiceBootstrap(
             createServiceBootstrap(provider)
         )
     }

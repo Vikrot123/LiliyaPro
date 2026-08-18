@@ -38,7 +38,7 @@ interface RuntimeServiceComposition {
 
     fun runtimeServiceBootstrap(): RuntimeServiceBootstrap
 
-    fun setRuntimeServiceBootstrap(
+    fun replaceRuntimeServiceBootstrap(
         bootstrap: RuntimeServiceBootstrap
     )
 

@@ -11,11 +11,15 @@ class RuntimeServiceBootstrapHolder(
         return currentBootstrap
     }
 
-    fun set(bootstrap: RuntimeServiceBootstrap) {
+    fun replace(
+        bootstrap: RuntimeServiceBootstrap
+    ) {
+        currentBootstrap.stop()
         currentBootstrap = bootstrap
     }
 
     fun reset() {
+        currentBootstrap.stop()
         currentBootstrap = factory()
     }
 }
