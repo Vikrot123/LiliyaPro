@@ -2,26 +2,65 @@ package pro.liliya.core.runtime
 
 class RuntimeServiceBootstrap(
     private val providerHolder: RuntimeServiceProviderHolder,
-    private val registry: RuntimeServiceRegistry
+    private val registry: RuntimeServiceRegistry,
+    private val supervisor: RuntimeSupervisor,
+    private val recoveryManager: RuntimeRecoveryManager
 ) {
+
+    constructor(
+        provider: RuntimeServiceProvider,
+        registry: RuntimeServiceRegistry,
+        supervisor: RuntimeSupervisor,
+        recoveryManager: RuntimeRecoveryManager
+    ) : this(
+        RuntimeServiceProviderHolder(provider),
+        registry,
+        supervisor,
+        recoveryManager
+    )
 
     constructor(
         provider: RuntimeServiceProvider,
         registry: RuntimeServiceRegistry
     ) : this(
-        RuntimeServiceProviderHolder(provider),
-        registry
+        createLegacyDependencies(provider, registry)
     )
+
+    private constructor(
+        dependencies: LegacyDependencies
+    ) : this(
+        dependencies.providerHolder,
+        dependencies.registry,
+        dependencies.supervisor,
+        dependencies.recoveryManager
+    )
+
+    private data class LegacyDependencies(
+        val providerHolder: RuntimeServiceProviderHolder,
+        val registry: RuntimeServiceRegistry,
+        val supervisor: RuntimeSupervisor,
+        val recoveryManager: RuntimeRecoveryManager
+    )
+
+    private companion object {
+        private fun createLegacyDependencies(
+            provider: RuntimeServiceProvider,
+            registry: RuntimeServiceRegistry
+        ): LegacyDependencies {
+            val supervisor = RuntimeSupervisor(
+                registryProvider = { registry }
+            )
+
+            return LegacyDependencies(
+                providerHolder = RuntimeServiceProviderHolder(provider),
+                registry = registry,
+                supervisor = supervisor,
+                recoveryManager = RuntimeRecoveryManager(supervisor)
+            )
+        }
+    }
 
     private val registeredServices = mutableMapOf<String, RuntimeService>()
-
-    private val supervisor =
-        RuntimeSupervisor(
-        registryProvider = { registry }
-    )
-
-    private val recoveryManager =
-        RuntimeRecoveryManager(supervisor)
 
     private var started = false
 

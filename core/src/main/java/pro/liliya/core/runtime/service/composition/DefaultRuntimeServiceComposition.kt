@@ -140,7 +140,9 @@ class DefaultRuntimeServiceComposition(
 
         return RuntimeServiceBootstrap(
             runtimeServiceProviderHolder,
-            runtimeServiceRegistry
+            runtimeServiceRegistry,
+            runtimeSupervisor,
+            runtimeRecoveryManager
         )
     }
 }
