@@ -30,7 +30,6 @@ interface RuntimeServiceComposition {
 
     fun runtimeServiceBootstrapHolder(): RuntimeServiceBootstrapHolder
 
-    fun runtimeServiceBootstrap(): RuntimeServiceBootstrap
 
     fun runtimeServiceStates(): Map<String, RuntimeServiceState>
 

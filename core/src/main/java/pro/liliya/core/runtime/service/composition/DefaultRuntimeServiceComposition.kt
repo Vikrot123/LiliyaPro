@@ -84,10 +84,6 @@ class DefaultRuntimeServiceComposition :
         runtimeServiceProviderHolder.reset()
     }
 
-    override fun runtimeServiceBootstrap(): RuntimeServiceBootstrap {
-        return runtimeServiceBootstrapHolder.get()
-    }
-
     override fun replaceRuntimeServiceBootstrap(
         bootstrap: RuntimeServiceBootstrap
     ) {

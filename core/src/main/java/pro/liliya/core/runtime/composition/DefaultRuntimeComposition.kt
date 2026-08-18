@@ -856,10 +856,6 @@ class DefaultRuntimeComposition :
         serviceCompositionController.replaceRuntimeServiceBootstrap(bootstrap)
     }
 
-    override fun runtimeServiceBootstrap(): RuntimeServiceBootstrap {
-        return serviceComposition.runtimeServiceBootstrap()
-    }
-
     override fun runtimeSupervisor(): RuntimeSupervisor {
         return serviceComposition.runtimeSupervisor()
     }

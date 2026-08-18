@@ -270,7 +270,6 @@ interface RuntimeComposition {
     fun runtimeServiceRegistry(): RuntimeServiceRegistry
     fun serviceBootstrap(): RuntimeServiceBootstrap
     fun runtimeServiceBootstrapHolder(): RuntimeServiceBootstrapHolder
-    fun runtimeServiceBootstrap(): RuntimeServiceBootstrap
 
 
     fun registerRuntimeService(
