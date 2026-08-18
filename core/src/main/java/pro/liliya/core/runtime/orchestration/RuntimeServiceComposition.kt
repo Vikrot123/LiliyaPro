@@ -20,6 +20,22 @@ interface RuntimeServiceComposition {
 
     fun runtimeServiceProvider(): RuntimeServiceProvider
 
+    fun setRuntimeServiceProvider(
+        provider: RuntimeServiceProvider
+    )
+
+    fun resetRuntimeServiceProvider()
+
+    fun replaceRuntimeServiceBootstrap(
+        bootstrap: RuntimeServiceBootstrap
+    )
+
+    fun configureRuntimeServiceProvider(
+        provider: RuntimeServiceProvider
+    )
+
+    fun resetRuntimeServiceConfiguration()
+
     fun runtimeServiceRegistry(): RuntimeServiceRegistry
 
     fun runtimeSupervisor(): RuntimeSupervisor

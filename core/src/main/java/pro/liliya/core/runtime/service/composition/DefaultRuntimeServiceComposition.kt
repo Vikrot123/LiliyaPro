@@ -9,11 +9,9 @@ import pro.liliya.core.runtime.RuntimeServiceRegistry
 import pro.liliya.core.runtime.RuntimeSupervisor
 import pro.liliya.core.runtime.RuntimeRecoveryManager
 import pro.liliya.core.runtime.orchestration.RuntimeServiceComposition
-import pro.liliya.core.runtime.orchestration.RuntimeServiceCompositionController
 
 class DefaultRuntimeServiceComposition :
-    RuntimeServiceComposition,
-    RuntimeServiceCompositionController {
+    RuntimeServiceComposition {
 
     private val serviceProvider =
         CoreRuntimeServiceProvider()
