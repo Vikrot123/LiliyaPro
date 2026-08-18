@@ -71,7 +71,6 @@ import pro.liliya.core.runtime.monitor.DefaultRuntimeMonitor
 import pro.liliya.core.runtime.monitor.RuntimeMonitor
 import pro.liliya.core.runtime.telemetry.RuntimeTelemetryObserver
 import pro.liliya.core.runtime.telemetry.composition.DefaultRuntimeTelemetryProviderComposition
-import pro.liliya.core.runtime.orchestration.RuntimeTelemetryComposition
 import pro.liliya.core.runtime.telemetry.composition.RuntimeTelemetryProviderComposition
 import pro.liliya.core.runtime.control.RuntimeControlRegistry
 import pro.liliya.core.runtime.control.composition.RuntimeControlComposition
@@ -116,7 +115,6 @@ class DefaultRuntimeComposition :
         RuntimeBridgeComposition,
         RuntimeActionComposition,
     RuntimeEventComposition,
-    RuntimeTelemetryComposition,
         RuntimeHealthComposition,
     RuntimeTelemetryProviderComposition,
     RuntimeStatusComposition {
