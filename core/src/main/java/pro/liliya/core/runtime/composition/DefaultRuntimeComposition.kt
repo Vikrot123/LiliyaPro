@@ -865,6 +865,12 @@ class DefaultRuntimeComposition :
         return serviceComposition.runtimeSupervisor()
     }
 
+    override fun createServiceBootstrap(
+        provider: RuntimeServiceProvider
+    ): RuntimeServiceBootstrap {
+        return serviceComposition.createServiceBootstrap(provider)
+    }
+
     override fun runtimeRecoveryManager(): RuntimeRecoveryManager {
         return serviceComposition.runtimeRecoveryManager()
     }
@@ -900,11 +906,6 @@ class DefaultRuntimeComposition :
         serviceComposition.runtimeServiceBootstrap().stop()
     }
 
-    override fun createServiceBootstrap(
-        provider: RuntimeServiceProvider
-    ): RuntimeServiceBootstrap {
-        return serviceComposition.createServiceBootstrap(provider)
-    }
 
     
     override fun runtimeMonitor(): RuntimeMonitor {

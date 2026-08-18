@@ -285,7 +285,4 @@ interface RuntimeComposition {
     fun startRuntimeServices()
     fun stopRuntimeServices()
 
-    fun createServiceBootstrap(
-        provider: RuntimeServiceProvider
-    ): RuntimeServiceBootstrap
 }
