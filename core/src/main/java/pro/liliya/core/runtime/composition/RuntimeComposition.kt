@@ -83,7 +83,6 @@ interface RuntimeComposition {
     fun runtimeBridgeStateHolder(): RuntimeBridgeStateHolder
     fun isRuntimeObserverBridgeInstalled(): Boolean
     fun markRuntimeObserverBridgeInstalled()
-    fun markModuleEventBridgeInstalled()
     fun resetRuntimeBridgeState()
     fun stopRuntimeBridges()
 

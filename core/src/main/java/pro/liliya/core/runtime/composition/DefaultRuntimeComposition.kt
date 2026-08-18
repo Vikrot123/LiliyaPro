@@ -534,10 +534,6 @@ class DefaultRuntimeComposition :
         runtimeBridgeStateHolder.markRuntimeObserverBridgeInstalled()
     }
 
-    override fun markModuleEventBridgeInstalled() {
-        runtimeBridgeStateHolder.markModuleEventBridgeInstalled()
-    }
-
     override fun resetRuntimeBridgeState() {
         runtimeBridgeStateHolder.reset()
     }
