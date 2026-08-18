@@ -71,6 +71,7 @@ import pro.liliya.core.runtime.orchestration.DefaultRuntimeStartupController
 
 import pro.liliya.core.runtime.observer.DefaultRuntimeObserverRegistry
 import pro.liliya.core.runtime.observer.RuntimeObserverBridge
+import pro.liliya.core.runtime.module.ModuleEventBridge
 import pro.liliya.core.runtime.policy.DefaultRuntimeActionPolicyEvaluator
 import pro.liliya.core.runtime.capability.RuntimeCapabilityRegistry
 import pro.liliya.core.runtime.capability.RuntimeCapabilityInfrastructure
@@ -151,8 +152,6 @@ class DefaultRuntimeComposition :
         )
 
 
-    private var moduleEventBridgeListener: ((ModuleEvent) -> Unit)? = null
-    private var runtimeFailureEventListener: ((RuntimeEvent) -> Unit)? = null
 
 
 
@@ -180,6 +179,9 @@ class DefaultRuntimeComposition :
 
     private val observerBridge =
         RuntimeObserverBridge(observerRegistry)
+
+    private val moduleEventBridge =
+        ModuleEventBridge(this)
 
     private val capabilityRegistry: RuntimeCapabilityRegistry =
         DefaultRuntimeCapabilityRegistry()
@@ -691,59 +693,11 @@ class DefaultRuntimeComposition :
     }
 
     override fun installModuleEventBridge() {
-        if (runtimeBridgeStateHolder.isModuleEventBridgeInstalled()
-            && moduleEventBridgeListener != null
-            && runtimeFailureEventListener != null
-        ) {
-            return
-        }
-
-        val moduleListener: (ModuleEvent) -> Unit = { event ->
-
-            if (event is ModuleEvent.Failed) {
-                val failureReason = "${event.moduleName}: ${event.phase}: ${event.reason}"
-
-
-                publishModuleFailed(
-                    moduleName = event.moduleName,
-                    reason = failureReason
-                )
-            }
-        }
-
-        moduleEventBridgeListener = moduleListener
-        ModuleEventBus.subscribe(moduleListener)
-
-        val failureListener: (RuntimeEvent) -> Unit = { event ->
-            if (event is RuntimeEvent.ModuleFailed) {
-                failureTracker.recordFailure(
-                    reason = event.reason,
-                    module = event.moduleName
-                )
-            }
-        }
-
-        runtimeFailureEventListener = failureListener
-        RuntimeEventBus.subscribe(failureListener)
-
-        markModuleEventBridgeInstalled()
+        moduleEventBridge.install()
     }
 
     override fun uninstallModuleEventBridge() {
-
-        moduleEventBridgeListener?.let {
-            ModuleEventBus.unsubscribe(it)
-        }
-
-        runtimeFailureEventListener?.let {
-            RuntimeEventBus.unsubscribe(it)
-        }
-
-        moduleEventBridgeListener = null
-        runtimeFailureEventListener = null
-
-        resetRuntimeBridgeState()
-
+        moduleEventBridge.uninstall()
     }
 
     override fun publishRuntimeStartedDiagnostic() {
