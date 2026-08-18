@@ -34,8 +34,6 @@ import pro.liliya.core.runtime.lifecycle.DefaultRuntimeLifecycleRecorder
 import pro.liliya.core.runtime.lifecycle.RuntimeLifecycleRecorder
 import pro.liliya.core.runtime.lifecycle.RuntimeLifecycleRecorderHolder
 import pro.liliya.core.runtime.lifecycle.RuntimeLifecycleEvent
-import pro.liliya.core.runtime.orchestration.RuntimeLifecycleController
-import pro.liliya.core.runtime.orchestration.DefaultRuntimeLifecycleController
 import pro.liliya.core.runtime.orchestration.RuntimeLifecycleComposition
 import pro.liliya.core.runtime.orchestration.RuntimeStartupComposition
 import pro.liliya.core.runtime.orchestration.RuntimeShutdownComposition
@@ -218,8 +216,6 @@ class DefaultRuntimeComposition :
     private val lifecycleRecorderHolder =
         RuntimeLifecycleRecorderHolder(lifecycleRecorder)
 
-    private val lifecycleController: RuntimeLifecycleController =
-        DefaultRuntimeLifecycleController(this)
 
     private val startupController: RuntimeStartupController =
         DefaultRuntimeStartupController(this)
@@ -374,7 +370,7 @@ class DefaultRuntimeComposition :
 
 
     override fun startLifecycle() {
-        lifecycleController.start()
+        startRuntime()
     }
 
     override fun logRuntimeStartupSuccess() {
@@ -425,7 +421,7 @@ class DefaultRuntimeComposition :
     }
 
     override fun stopLifecycle() {
-        lifecycleController.stop()
+        stopRuntime()
     }
 
     override fun stopRuntime() {
