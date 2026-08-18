@@ -47,8 +47,6 @@ import pro.liliya.core.runtime.orchestration.RuntimeEventComposition
 import pro.liliya.core.runtime.orchestration.RuntimeHealthComposition
 import pro.liliya.core.runtime.orchestration.RuntimeHealthController
 import pro.liliya.core.runtime.orchestration.DefaultRuntimeHealthController
-import pro.liliya.core.runtime.orchestration.RuntimeTelemetryController
-import pro.liliya.core.runtime.orchestration.DefaultRuntimeTelemetryController
 import pro.liliya.core.runtime.orchestration.RuntimeStatusComposition
 import pro.liliya.core.runtime.orchestration.RuntimeActionController
 import pro.liliya.core.runtime.orchestration.RuntimeEventController
@@ -229,8 +227,6 @@ class DefaultRuntimeComposition :
     private val healthController: RuntimeHealthController =
         DefaultRuntimeHealthController(this)
 
-    private val telemetryController: RuntimeTelemetryController =
-        DefaultRuntimeTelemetryController(this)
 
     private val runtimeMonitor =
         DefaultRuntimeMonitor(
