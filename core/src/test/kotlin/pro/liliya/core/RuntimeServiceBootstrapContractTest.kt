@@ -81,6 +81,48 @@ class RuntimeServiceBootstrapContractTest {
     }
 
 
+
+    @Test
+    fun bootstrap_restartLifecycle_restoresSingleRecoveryListener() {
+        RuntimeEventBus.clear()
+
+        val service = TestRuntimeService()
+
+        val provider = object : RuntimeServiceProvider {
+            override fun provideServices(): List<RuntimeService> {
+                return listOf(service)
+            }
+        }
+
+        val registry = RuntimeServiceRegistry()
+
+        val bootstrap = RuntimeServiceBootstrap(
+            provider,
+            registry
+        )
+
+        bootstrap.start()
+        bootstrap.stop()
+
+        bootstrap.start()
+
+        RuntimeEventBus.publish(
+            RuntimeEvent.RuntimeServiceFailed(
+                serviceName = service.name,
+                reason = "restart lifecycle"
+            )
+        )
+
+        assertEquals(
+            1,
+            bootstrap.getRestartCount(service.name)
+        )
+
+        bootstrap.stop()
+
+        RuntimeEventBus.clear()
+    }
+
     private class TestRuntimeService : RuntimeService {
 
         override val name = "BOOTSTRAP_TEST_SERVICE"
