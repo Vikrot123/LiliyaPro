@@ -46,10 +46,8 @@ import pro.liliya.core.runtime.orchestration.RuntimeActionComposition
 import pro.liliya.core.runtime.orchestration.RuntimeEventComposition
 import pro.liliya.core.runtime.orchestration.RuntimeHealthComposition
 import pro.liliya.core.runtime.orchestration.RuntimeStatusComposition
-import pro.liliya.core.runtime.orchestration.RuntimeActionController
 import pro.liliya.core.runtime.orchestration.RuntimeEventController
 import pro.liliya.core.runtime.orchestration.DefaultRuntimeEventController
-import pro.liliya.core.runtime.orchestration.DefaultRuntimeActionController
 import pro.liliya.core.runtime.orchestration.RuntimeModuleController
 import pro.liliya.core.runtime.orchestration.DefaultRuntimeModuleController
 import pro.liliya.core.runtime.orchestration.RuntimeShutdownController
@@ -216,8 +214,6 @@ class DefaultRuntimeComposition :
         DefaultRuntimeModuleController(this)
 
 
-    private val actionController: RuntimeActionController =
-        DefaultRuntimeActionController(this)
 
     private val eventController: RuntimeEventController =
         DefaultRuntimeEventController(this)
@@ -302,7 +298,8 @@ class DefaultRuntimeComposition :
         val manager = moduleController.startRuntimeComponents()
 
         serviceBootstrap().start()
-        actionController.startRuntimeActions()
+        registerRuntimeControls()
+        registerRuntimeActionHandlers()
 
         return manager
     }
