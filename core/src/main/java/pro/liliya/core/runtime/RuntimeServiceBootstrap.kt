@@ -59,6 +59,8 @@ class RuntimeServiceBootstrap(
             return
         }
 
+        recoveryManager.uninstall()
+
         supervisor.stop()
 
         registry.reset()
