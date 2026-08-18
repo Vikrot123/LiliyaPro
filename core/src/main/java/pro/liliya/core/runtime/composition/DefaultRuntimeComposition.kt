@@ -619,17 +619,11 @@ class DefaultRuntimeComposition :
         return capabilityResolver
     }
 
-    override fun lifecycleController(): RuntimeLifecycleController {
-        return lifecycleController
-    }
 
     override fun startupController(): RuntimeStartupController {
         return startupController
     }
 
-    override fun shutdownController(): RuntimeShutdownController {
-        return shutdownController
-    }
 
     override fun lifecycleRecorder(): RuntimeLifecycleRecorder {
         return lifecycleRecorderHolder.get()

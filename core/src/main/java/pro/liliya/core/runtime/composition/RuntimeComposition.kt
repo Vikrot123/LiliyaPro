@@ -106,9 +106,7 @@ interface RuntimeComposition {
 
     fun stopRuntimeLifecycle()
 
-    fun lifecycleController(): RuntimeLifecycleController
 
-    fun shutdownController(): RuntimeShutdownController
 
     fun startRuntime()
     fun stopRuntime()
