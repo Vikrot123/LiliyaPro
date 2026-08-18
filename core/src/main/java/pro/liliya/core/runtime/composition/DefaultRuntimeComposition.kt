@@ -113,6 +113,7 @@ import pro.liliya.core.runtime.dispatcher.RuntimeActionDispatcher
 import pro.liliya.core.runtime.RuntimeServiceBootstrap
 import pro.liliya.core.runtime.RuntimeServiceBootstrapHolder
 import pro.liliya.core.runtime.RuntimeBridgeStateHolder
+import pro.liliya.core.runtime.RuntimeModuleBridgeStateHolder
 import pro.liliya.core.runtime.RuntimeServiceProvider
 import pro.liliya.core.runtime.RuntimeService
 import pro.liliya.core.runtime.RuntimeServiceState
@@ -173,6 +174,9 @@ class DefaultRuntimeComposition :
 
     private val runtimeBridgeStateHolder =
         RuntimeBridgeStateHolder()
+
+    private val runtimeModuleBridgeStateHolder =
+        RuntimeModuleBridgeStateHolder()
 
     private val observerRegistry =
         DefaultRuntimeObserverRegistry()
@@ -526,6 +530,10 @@ class DefaultRuntimeComposition :
         return runtimeBridgeStateHolder
     }
 
+    override fun runtimeModuleBridgeStateHolder(): RuntimeModuleBridgeStateHolder {
+        return runtimeModuleBridgeStateHolder
+    }
+
     override fun isRuntimeObserverBridgeInstalled(): Boolean {
         return runtimeBridgeStateHolder.isRuntimeObserverBridgeInstalled()
     }
@@ -690,11 +698,15 @@ class DefaultRuntimeComposition :
     }
 
     override fun installModuleEventBridge() {
-        moduleEventBridge.install()
+        if (!runtimeModuleBridgeStateHolder.isModuleEventBridgeInstalled()) {
+            moduleEventBridge.install()
+            runtimeModuleBridgeStateHolder.markModuleEventBridgeInstalled()
+        }
     }
 
     override fun uninstallModuleEventBridge() {
         moduleEventBridge.uninstall()
+        runtimeModuleBridgeStateHolder.reset()
     }
 
     override fun publishRuntimeStartedDiagnostic() {

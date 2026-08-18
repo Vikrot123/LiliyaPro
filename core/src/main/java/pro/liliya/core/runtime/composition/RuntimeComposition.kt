@@ -42,6 +42,7 @@ import pro.liliya.core.runtime.history.RuntimeCommandHistoryProvider
 import pro.liliya.core.runtime.audit.RuntimeActionAuditProvider
 import pro.liliya.core.runtime.dispatcher.RuntimeActionDispatcher
 import pro.liliya.core.runtime.RuntimeBridgeStateHolder
+import pro.liliya.core.runtime.RuntimeModuleBridgeStateHolder
 import pro.liliya.core.runtime.RuntimeServiceBootstrap
 import pro.liliya.core.runtime.RuntimeServiceRegistry
 import pro.liliya.core.runtime.RuntimeServiceBootstrapHolder
@@ -81,6 +82,7 @@ interface RuntimeComposition {
     fun setModuleStates(states: Map<String, ModuleState>)
 
     fun runtimeBridgeStateHolder(): RuntimeBridgeStateHolder
+    fun runtimeModuleBridgeStateHolder(): RuntimeModuleBridgeStateHolder
     fun isRuntimeObserverBridgeInstalled(): Boolean
     fun markRuntimeObserverBridgeInstalled()
     fun resetRuntimeBridgeState()
