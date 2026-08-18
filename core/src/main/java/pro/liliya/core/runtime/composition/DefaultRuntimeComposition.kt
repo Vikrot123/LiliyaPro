@@ -41,7 +41,6 @@ import pro.liliya.core.runtime.orchestration.RuntimeServiceComposition
 import pro.liliya.core.runtime.service.composition.DefaultRuntimeServiceComposition
 import pro.liliya.core.runtime.orchestration.RuntimeModuleComposition
 import pro.liliya.core.runtime.module.composition.DefaultRuntimeModuleComposition
-import pro.liliya.core.runtime.orchestration.RuntimeBridgeComposition
 
 import pro.liliya.core.runtime.observer.DefaultRuntimeObserverRegistry
 import pro.liliya.core.runtime.observer.RuntimeObserverBridge
@@ -108,8 +107,7 @@ class DefaultRuntimeComposition :
         RuntimeShutdownComposition,
         RuntimeServiceComposition,
         RuntimeModuleComposition,
-        RuntimeBridgeComposition,
-            RuntimeTelemetryProviderComposition {
+                RuntimeTelemetryProviderComposition {
 
     private val diagnosticSource: CoreDiagnosticSource =
         CoreDiagnosticProvider()
@@ -607,7 +605,7 @@ class DefaultRuntimeComposition :
     }
 
 
-    override fun uninstallRuntimeObserverBridge() {
+    fun uninstallRuntimeObserverBridge() {
         observerBridge.uninstall()
         resetRuntimeBridgeState()
     }
