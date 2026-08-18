@@ -48,4 +48,8 @@ class RuntimeSupervisor(
     fun getRestartCounts(): Map<String, Int> {
         return restartCounters.toMap()
     }
+
+    fun reset() {
+        restartCounters.clear()
+    }
 }

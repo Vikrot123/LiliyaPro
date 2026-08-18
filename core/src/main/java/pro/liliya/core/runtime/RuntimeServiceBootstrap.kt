@@ -101,6 +101,7 @@ class RuntimeServiceBootstrap(
         recoveryManager.uninstall()
 
         supervisor.stop()
+        supervisor.reset()
 
         registry.reset()
         registeredServices.clear()
