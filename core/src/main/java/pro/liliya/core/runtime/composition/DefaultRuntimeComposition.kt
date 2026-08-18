@@ -351,7 +351,6 @@ class DefaultRuntimeComposition :
         serviceController.stopRuntimeServices()
 
         moduleController.stopRuntimeModules()
-        stopRuntimeServices()
         clearModuleRuntime()
         setRuntimeState(CoreRuntimeState.STOPPED)
         setFailureReason(null)
@@ -879,7 +878,7 @@ class DefaultRuntimeComposition :
     override fun registerRuntimeService(
         service: RuntimeService
     ) {
-        serviceComposition.runtimeServiceBootstrap().register(service)
+        serviceController.register(service)
     }
 
     override fun runtimeServiceStates(): Map<String, RuntimeServiceState> {
@@ -897,15 +896,6 @@ class DefaultRuntimeComposition :
     override fun runtimeServiceRecoverySnapshot(): RuntimeRecoverySnapshot? {
         return serviceComposition.runtimeServiceRecoverySnapshot()
     }
-
-    override fun startRuntimeServices() {
-        serviceComposition.runtimeServiceBootstrap().start()
-    }
-
-    override fun stopRuntimeServices() {
-        serviceComposition.runtimeServiceBootstrap().stop()
-    }
-
 
     
     override fun runtimeMonitor(): RuntimeMonitor {

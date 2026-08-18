@@ -1,5 +1,6 @@
 package pro.liliya.core.runtime.orchestration
 
+import pro.liliya.core.runtime.RuntimeService
 import pro.liliya.core.runtime.RuntimeServiceBootstrap
 import pro.liliya.core.runtime.RuntimeServiceProvider
 import pro.liliya.core.runtime.RuntimeServiceProviderHolder
@@ -27,6 +28,10 @@ class DefaultRuntimeServiceController(
 
     override fun stop() {
         composition.serviceBootstrap().stop()
+    }
+
+    override fun register(service: RuntimeService) {
+        composition.serviceBootstrap().register(service)
     }
 
     override fun provider(): RuntimeServiceProvider {

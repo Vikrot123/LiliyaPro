@@ -1,5 +1,6 @@
 package pro.liliya.core.runtime.orchestration
 
+import pro.liliya.core.runtime.RuntimeService
 import pro.liliya.core.runtime.RuntimeServiceBootstrap
 import pro.liliya.core.runtime.RuntimeServiceProvider
 import pro.liliya.core.runtime.RuntimeServiceProviderHolder
@@ -18,6 +19,8 @@ interface RuntimeServiceController {
     fun start()
 
     fun stop()
+
+    fun register(service: RuntimeService)
 
     fun provider(): RuntimeServiceProvider
 

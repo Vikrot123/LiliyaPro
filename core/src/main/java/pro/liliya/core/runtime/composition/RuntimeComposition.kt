@@ -282,7 +282,5 @@ interface RuntimeComposition {
     fun runtimeServiceHealth(): Map<String, RuntimeServiceHealth>
     fun runtimeServiceRecoverySnapshot(): RuntimeRecoverySnapshot?
 
-    fun startRuntimeServices()
-    fun stopRuntimeServices()
 
 }
