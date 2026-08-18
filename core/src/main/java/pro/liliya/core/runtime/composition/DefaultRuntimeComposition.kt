@@ -43,7 +43,6 @@ import pro.liliya.core.runtime.orchestration.RuntimeModuleComposition
 import pro.liliya.core.runtime.module.composition.DefaultRuntimeModuleComposition
 import pro.liliya.core.runtime.orchestration.RuntimeBridgeComposition
 import pro.liliya.core.runtime.orchestration.RuntimeActionComposition
-import pro.liliya.core.runtime.orchestration.RuntimeHealthComposition
 
 import pro.liliya.core.runtime.observer.DefaultRuntimeObserverRegistry
 import pro.liliya.core.runtime.observer.RuntimeObserverBridge
@@ -112,8 +111,7 @@ class DefaultRuntimeComposition :
         RuntimeModuleComposition,
         RuntimeBridgeComposition,
         RuntimeActionComposition,
-        RuntimeHealthComposition,
-    RuntimeTelemetryProviderComposition {
+        RuntimeTelemetryProviderComposition {
 
     private val diagnosticSource: CoreDiagnosticSource =
         CoreDiagnosticProvider()
