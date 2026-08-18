@@ -61,8 +61,6 @@ import pro.liliya.core.runtime.monitor.DefaultRuntimeMonitor
 import pro.liliya.core.runtime.monitor.RuntimeMonitor
 import pro.liliya.core.runtime.telemetry.RuntimeTelemetryObserver
 import pro.liliya.core.runtime.control.RuntimeControlRegistry
-import pro.liliya.core.runtime.control.composition.RuntimeControlComposition
-import pro.liliya.core.runtime.control.composition.DefaultRuntimeControlComposition
 import pro.liliya.core.runtime.action.RuntimeActionExecutor
 
 import pro.liliya.core.runtime.dispatcher.HealthRuntimeActionHandler
@@ -163,6 +161,30 @@ class DefaultRuntimeComposition :
             capabilityResolver
         )
 
+    private val controlRegistry = RuntimeControlRegistry()
+
+    private val commandHistoryProvider = RuntimeCommandHistoryProvider()
+
+    private val actionAuditProvider = RuntimeActionAuditProvider()
+
+    private val actionHandlerRegistry = RuntimeActionHandlerRegistry()
+
+    private val defaultRuntimeControl =
+        DefaultRuntimeControl(this)
+
+    private val actionDispatcher =
+        RuntimeActionDispatcher(
+            actionHandlerRegistry,
+            actionAuditProvider,
+            actionPolicyEvaluator,
+            this
+        )
+
+    private val healthRuntimeActionHandler =
+        HealthRuntimeActionHandler(
+            RuntimeActionExecutor(defaultRuntimeControl)
+        )
+
     private val lifecycleRecorder: RuntimeLifecycleRecorder =
         DefaultRuntimeLifecycleRecorder()
 
@@ -201,11 +223,7 @@ class DefaultRuntimeComposition :
 
     private val statusProvider = RuntimeStatusProvider()
 
-    private val controlComposition: RuntimeControlComposition =
-        DefaultRuntimeControlComposition(
-            this,
-            actionPolicyEvaluator
-        )
+
 
     private val defaultServiceComposition =
         DefaultRuntimeServiceComposition()
@@ -798,31 +816,31 @@ class DefaultRuntimeComposition :
     }
 
     override fun registerRuntimeControls() {
-        controlComposition.controlRegistry()
-            .register(controlComposition.defaultRuntimeControl())
+        controlRegistry
+            .register(defaultRuntimeControl)
     }
 
     override fun commandHistoryProvider(): RuntimeCommandHistoryProvider {
-        return controlComposition.commandHistoryProvider()
+        return commandHistoryProvider
     }
 
     override fun actionAuditProvider(): RuntimeActionAuditProvider {
-        return controlComposition.actionAuditProvider()
+        return actionAuditProvider
     }
 
     override fun registerRuntimeActionHandlers() {
-        controlComposition.actionHandlerRegistry()
-            .register(controlComposition.healthRuntimeActionHandler())
+        actionHandlerRegistry
+            .register(healthRuntimeActionHandler)
     }
 
 
 
     override fun actionDispatcher(): RuntimeActionDispatcher {
-        return controlComposition.actionDispatcher()
+        return actionDispatcher
     }
 
     override fun defaultRuntimeControl(): RuntimeControl {
-        return controlComposition.defaultRuntimeControl()
+        return defaultRuntimeControl
     }
 
 
@@ -917,7 +935,7 @@ class DefaultRuntimeComposition :
         return serviceComposition.runtimeServiceRecoverySnapshot()
     }
 
-    
+
     override fun runtimeMonitor(): RuntimeMonitor {
         return runtimeMonitor
     }
