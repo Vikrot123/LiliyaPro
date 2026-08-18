@@ -103,6 +103,7 @@ class RuntimeServiceBootstrap(
         supervisor.stop()
 
         registry.reset()
+        registeredServices.clear()
 
         started = false
     }
