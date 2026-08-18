@@ -23,7 +23,7 @@ class DefaultRuntimeModuleController(
         return manager
     }
 
-    override fun start(
+    private fun start(
         manager: ModuleManager
     ) {
         composition.startModuleRuntime(manager)
@@ -42,13 +42,13 @@ class DefaultRuntimeModuleController(
         clear()
     }
 
-    override fun stop(
+    private fun stop(
         manager: ModuleManager
     ) {
         composition.stopModuleRuntime(manager)
     }
 
-    override fun clear() {
+    private fun clear() {
         composition.clearModuleRuntime()
     }
 }
