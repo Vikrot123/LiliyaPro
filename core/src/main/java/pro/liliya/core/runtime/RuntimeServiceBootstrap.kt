@@ -98,7 +98,7 @@ class RuntimeServiceBootstrap(
             return
         }
 
-        recoveryManager.uninstall()
+        recoveryManager.reset()
 
         supervisor.stop()
         supervisor.reset()
