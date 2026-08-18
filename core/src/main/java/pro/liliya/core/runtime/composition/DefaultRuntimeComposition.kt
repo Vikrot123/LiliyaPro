@@ -34,7 +34,6 @@ import pro.liliya.core.runtime.lifecycle.DefaultRuntimeLifecycleRecorder
 import pro.liliya.core.runtime.lifecycle.RuntimeLifecycleRecorder
 import pro.liliya.core.runtime.lifecycle.RuntimeLifecycleRecorderHolder
 import pro.liliya.core.runtime.lifecycle.RuntimeLifecycleEvent
-import pro.liliya.core.runtime.orchestration.RuntimeServiceComposition
 import pro.liliya.core.runtime.service.composition.DefaultRuntimeServiceComposition
 import pro.liliya.core.runtime.module.composition.DefaultRuntimeModuleComposition
 
@@ -98,7 +97,6 @@ import pro.liliya.core.runtime.RuntimeServiceRegistry
 
 class DefaultRuntimeComposition :
     RuntimeComposition,
-        RuntimeServiceComposition,
                 RuntimeTelemetryProviderComposition {
 
     private val diagnosticSource: CoreDiagnosticSource =
@@ -219,7 +217,7 @@ class DefaultRuntimeComposition :
     private val defaultServiceComposition =
         DefaultRuntimeServiceComposition()
 
-    private val serviceComposition: RuntimeServiceComposition =
+    private val serviceComposition: DefaultRuntimeServiceComposition =
         defaultServiceComposition
 
 
@@ -889,17 +887,17 @@ class DefaultRuntimeComposition :
         serviceComposition.replaceRuntimeServiceBootstrap(bootstrap)
     }
 
-    override fun runtimeSupervisor(): RuntimeSupervisor {
+    fun runtimeSupervisor(): RuntimeSupervisor {
         return serviceComposition.runtimeSupervisor()
     }
 
-    override fun createServiceBootstrap(
+    fun createServiceBootstrap(
         provider: RuntimeServiceProvider
     ): RuntimeServiceBootstrap {
         return serviceComposition.createServiceBootstrap(provider)
     }
 
-    override fun runtimeRecoveryManager(): RuntimeRecoveryManager {
+    fun runtimeRecoveryManager(): RuntimeRecoveryManager {
         return serviceComposition.runtimeRecoveryManager()
     }
 
