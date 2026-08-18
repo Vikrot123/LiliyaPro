@@ -10,6 +10,8 @@ class ModuleEventBridge(
     private val composition: RuntimeComposition
 ) {
 
+    private var installed = false
+
     private val moduleListener: (ModuleEvent) -> Unit = { event ->
         if (event is ModuleEvent.Failed) {
             val failureReason =
@@ -32,12 +34,24 @@ class ModuleEventBridge(
     }
 
     fun install() {
+        if (installed) {
+            return
+        }
+
         ModuleEventBus.subscribe(moduleListener)
         RuntimeEventBus.subscribe(failureListener)
+
+        installed = true
     }
 
     fun uninstall() {
+        if (!installed) {
+            return
+        }
+
         ModuleEventBus.unsubscribe(moduleListener)
         RuntimeEventBus.unsubscribe(failureListener)
+
+        installed = false
     }
 }
