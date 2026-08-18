@@ -34,7 +34,6 @@ import pro.liliya.core.runtime.lifecycle.DefaultRuntimeLifecycleRecorder
 import pro.liliya.core.runtime.lifecycle.RuntimeLifecycleRecorder
 import pro.liliya.core.runtime.lifecycle.RuntimeLifecycleRecorderHolder
 import pro.liliya.core.runtime.lifecycle.RuntimeLifecycleEvent
-import pro.liliya.core.runtime.orchestration.RuntimeShutdownComposition
 import pro.liliya.core.runtime.orchestration.RuntimeServiceComposition
 import pro.liliya.core.runtime.service.composition.DefaultRuntimeServiceComposition
 import pro.liliya.core.runtime.orchestration.RuntimeModuleComposition
@@ -100,7 +99,6 @@ import pro.liliya.core.runtime.RuntimeServiceRegistry
 
 class DefaultRuntimeComposition :
     RuntimeComposition,
-        RuntimeShutdownComposition,
         RuntimeServiceComposition,
         RuntimeModuleComposition,
                 RuntimeTelemetryProviderComposition {
