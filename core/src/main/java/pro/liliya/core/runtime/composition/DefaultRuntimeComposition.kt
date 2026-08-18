@@ -952,6 +952,7 @@ class DefaultRuntimeComposition :
         resetRuntimeServiceConfiguration()
         resetRuntimeState()
         resetRuntimeBridgeState()
+        runtimeModuleBridgeStateHolder.reset()
     }
 
 
