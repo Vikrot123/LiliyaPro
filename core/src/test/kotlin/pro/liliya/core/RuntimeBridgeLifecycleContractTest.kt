@@ -4,10 +4,10 @@ import pro.liliya.core.runtime.composition.DefaultRuntimeComposition
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class RuntimeBridgeControllerLifecycleContractTest {
+class RuntimeBridgeLifecycleContractTest {
 
     @Test
-    fun runtimeBridgeControllerCanRestartWithoutDuplicateDelivery() {
+    fun runtimeBridgeCanRestartWithoutDuplicateDelivery() {
         RuntimeEventBus.clear()
         ModuleEventBus.clear()
 
@@ -23,7 +23,8 @@ class RuntimeBridgeControllerLifecycleContractTest {
             }
         )
 
-        composition.runtimeBridgeController().install()
+        composition.installRuntimeObserverBridge()
+        composition.installModuleEventBridge()
 
         ModuleEventBus.publish(
             ModuleEvent.Failed(
@@ -33,9 +34,11 @@ class RuntimeBridgeControllerLifecycleContractTest {
             )
         )
 
-        composition.runtimeBridgeController().uninstall()
+        composition.uninstallModuleEventBridge()
+        composition.uninstallRuntimeObserverBridge()
 
-        composition.runtimeBridgeController().install()
+        composition.installRuntimeObserverBridge()
+        composition.installModuleEventBridge()
 
         ModuleEventBus.publish(
             ModuleEvent.Failed(
@@ -50,7 +53,8 @@ class RuntimeBridgeControllerLifecycleContractTest {
             received.count { it is RuntimeEvent.ModuleFailed }
         )
 
-        composition.runtimeBridgeController().uninstall()
+        composition.uninstallModuleEventBridge()
+        composition.uninstallRuntimeObserverBridge()
 
         RuntimeEventBus.clear()
         ModuleEventBus.clear()

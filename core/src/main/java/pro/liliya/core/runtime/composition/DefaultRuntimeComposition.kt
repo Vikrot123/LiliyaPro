@@ -56,8 +56,6 @@ import pro.liliya.core.runtime.orchestration.RuntimeActionController
 import pro.liliya.core.runtime.orchestration.RuntimeEventController
 import pro.liliya.core.runtime.orchestration.DefaultRuntimeEventController
 import pro.liliya.core.runtime.orchestration.DefaultRuntimeActionController
-import pro.liliya.core.runtime.orchestration.RuntimeBridgeController
-import pro.liliya.core.runtime.orchestration.DefaultRuntimeBridgeController
 import pro.liliya.core.runtime.orchestration.RuntimeModuleController
 import pro.liliya.core.runtime.orchestration.DefaultRuntimeModuleController
 import pro.liliya.core.runtime.orchestration.RuntimeShutdownController
@@ -223,8 +221,6 @@ class DefaultRuntimeComposition :
     private val moduleController: RuntimeModuleController =
         DefaultRuntimeModuleController(this)
 
-    private val bridgeController: RuntimeBridgeController =
-        DefaultRuntimeBridgeController(this)
 
     private val actionController: RuntimeActionController =
         DefaultRuntimeActionController(this)
@@ -542,7 +538,8 @@ class DefaultRuntimeComposition :
     }
 
     override fun stopRuntimeBridges() {
-        bridgeController.uninstall()
+        uninstallModuleEventBridge()
+        uninstallRuntimeObserverBridge()
 
         observerRegistry.unsubscribe(
             telemetryObserver()
@@ -561,9 +558,6 @@ class DefaultRuntimeComposition :
         return observerRegistry
     }
 
-    override fun runtimeBridgeController(): RuntimeBridgeController {
-        return bridgeController
-    }
 
     override fun observerBridge(): RuntimeObserverBridge {
         return observerBridge
