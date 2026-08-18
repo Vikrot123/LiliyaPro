@@ -34,7 +34,6 @@ import pro.liliya.core.runtime.lifecycle.DefaultRuntimeLifecycleRecorder
 import pro.liliya.core.runtime.lifecycle.RuntimeLifecycleRecorder
 import pro.liliya.core.runtime.lifecycle.RuntimeLifecycleRecorderHolder
 import pro.liliya.core.runtime.lifecycle.RuntimeLifecycleEvent
-import pro.liliya.core.runtime.service.composition.DefaultRuntimeServiceComposition
 
 import pro.liliya.core.runtime.observer.DefaultRuntimeObserverRegistry
 import pro.liliya.core.runtime.observer.RuntimeObserverBridge
@@ -93,6 +92,7 @@ import pro.liliya.core.runtime.RuntimeSupervisor
 import pro.liliya.core.runtime.RuntimeRecoveryManager
 import pro.liliya.core.runtime.RuntimeBridgeStateHolder
 import pro.liliya.core.runtime.RuntimeModuleBridgeStateHolder
+import pro.liliya.core.runtime.CoreRuntimeServiceProvider
 import pro.liliya.core.runtime.RuntimeServiceProvider
 import pro.liliya.core.runtime.RuntimeService
 import pro.liliya.core.runtime.RuntimeServiceState
@@ -237,13 +237,34 @@ class DefaultRuntimeComposition :
 
     private val statusProvider = RuntimeStatusProvider()
 
+    private val serviceProvider =
+        CoreRuntimeServiceProvider()
+
+    private var runtimeServiceRegistry =
+        RuntimeServiceRegistry()
+
+    private val runtimeSupervisor =
+        RuntimeSupervisor(
+            registryProvider = { runtimeServiceRegistry }
+        )
+
+    private val runtimeRecoveryManager =
+        RuntimeRecoveryManager(runtimeSupervisor)
+
+    private val runtimeServiceProviderHolder =
+        RuntimeServiceProviderHolder(
+            serviceProvider
+        )
+
+    private val runtimeServiceBootstrapHolder =
+        RuntimeServiceBootstrapHolder {
+            createServiceBootstrap(
+                runtimeServiceProvider()
+            )
+        }
 
 
-    private val defaultServiceComposition =
-        DefaultRuntimeServiceComposition()
 
-    private val serviceComposition: DefaultRuntimeServiceComposition =
-        defaultServiceComposition
 
 
 
@@ -878,33 +899,52 @@ class DefaultRuntimeComposition :
 
 
     override fun serviceProvider(): RuntimeServiceProvider {
-        return serviceComposition.serviceProvider()
+        return serviceProvider
     }
 
     override fun runtimeServiceProviderHolder(): RuntimeServiceProviderHolder {
-        return serviceComposition.runtimeServiceProviderHolder()
+        return runtimeServiceProviderHolder
     }
 
     override fun setRuntimeServiceProvider(provider: RuntimeServiceProvider) {
-        serviceComposition.setRuntimeServiceProvider(provider)
+        runtimeServiceProviderHolder.set(provider)
     }
 
     override fun runtimeServiceProvider(): RuntimeServiceProvider {
-        return serviceComposition.runtimeServiceProvider()
+        return runtimeServiceProviderHolder.get()
+                ?: error("RuntimeServiceProvider is not initialized")
     }
 
     override fun resetRuntimeServiceProvider() {
-        serviceComposition.resetRuntimeServiceProvider()
+        runtimeServiceProviderHolder.reset()
     }
 
     override fun configureRuntimeServiceProvider(
         provider: RuntimeServiceProvider
     ) {
-        serviceComposition.configureRuntimeServiceProvider(provider)
+        runtimeServiceBootstrapHolder
+            .get()
+            .stop()
+
+        runtimeServiceProviderHolder.set(provider)
+
+        runtimeServiceBootstrapHolder.replace(
+            createServiceBootstrap(
+                runtimeServiceProvider()
+            )
+        )
     }
 
     override fun resetRuntimeServiceConfiguration() {
-        serviceComposition.resetRuntimeServiceConfiguration()
+        val provider = runtimeServiceProvider()
+
+        runtimeServiceBootstrapHolder
+            .get()
+            .stop()
+
+        runtimeServiceBootstrapHolder.replace(
+            createServiceBootstrap(provider)
+        )
     }
 
 
@@ -915,33 +955,38 @@ class DefaultRuntimeComposition :
 
 
     override fun runtimeServiceRegistry(): RuntimeServiceRegistry {
-        return serviceComposition.runtimeServiceRegistry()
+        return runtimeServiceRegistry
     }
 
     override fun serviceBootstrap(): RuntimeServiceBootstrap {
-        return serviceComposition.serviceBootstrap()
+        return runtimeServiceBootstrapHolder.get()
     }
 
     override fun runtimeServiceBootstrapHolder(): RuntimeServiceBootstrapHolder {
-        return serviceComposition.runtimeServiceBootstrapHolder()
+        return runtimeServiceBootstrapHolder
     }
 
     override fun replaceRuntimeServiceBootstrap(bootstrap: RuntimeServiceBootstrap) {
-        serviceComposition.replaceRuntimeServiceBootstrap(bootstrap)
+        runtimeServiceBootstrapHolder.replace(bootstrap)
     }
 
     fun runtimeSupervisor(): RuntimeSupervisor {
-        return serviceComposition.runtimeSupervisor()
+        return runtimeSupervisor
     }
 
     fun createServiceBootstrap(
         provider: RuntimeServiceProvider
     ): RuntimeServiceBootstrap {
-        return serviceComposition.createServiceBootstrap(provider)
+        return RuntimeServiceBootstrap(
+            runtimeServiceProviderHolder,
+            runtimeServiceRegistry,
+            runtimeSupervisor,
+            runtimeRecoveryManager
+        )
     }
 
     fun runtimeRecoveryManager(): RuntimeRecoveryManager {
-        return serviceComposition.runtimeRecoveryManager()
+        return runtimeRecoveryManager
     }
 
 
@@ -952,19 +997,19 @@ class DefaultRuntimeComposition :
     }
 
     override fun runtimeServiceStates(): Map<String, RuntimeServiceState> {
-        return serviceComposition.runtimeServiceStates()
+        return runtimeServiceBootstrapHolder.get().getStates()
     }
 
     override fun runtimeServiceFailures(): List<RuntimeServiceFailure> {
-        return serviceComposition.runtimeServiceFailures()
+        return runtimeServiceBootstrapHolder.get().getFailures()
     }
 
     override fun runtimeServiceHealth(): Map<String, RuntimeServiceHealth> {
-        return serviceComposition.runtimeServiceHealth()
+        return runtimeServiceBootstrapHolder.get().getHealth()
     }
 
     override fun runtimeServiceRecoverySnapshot(): RuntimeRecoverySnapshot? {
-        return serviceComposition.runtimeServiceRecoverySnapshot()
+        return runtimeServiceBootstrapHolder.get().getRecoverySnapshot()
     }
 
 
