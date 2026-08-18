@@ -40,6 +40,47 @@ class RuntimeServiceBootstrapContractTest {
     }
 
 
+
+    @Test
+    fun bootstrapStop_uninstallsRecoveryManagerListener() {
+
+        RuntimeEventBus.clear()
+
+        val service = TestRuntimeService()
+
+        val provider = object : RuntimeServiceProvider {
+            override fun provideServices(): List<RuntimeService> {
+                return listOf(service)
+            }
+        }
+
+        val registry = RuntimeServiceRegistry()
+
+        val bootstrap = RuntimeServiceBootstrap(
+            provider,
+            registry
+        )
+
+        bootstrap.start()
+
+        bootstrap.stop()
+
+        RuntimeEventBus.publish(
+            RuntimeEvent.RuntimeServiceFailed(
+                serviceName = service.name,
+                reason = "after shutdown"
+            )
+        )
+
+        assertEquals(
+            0,
+            bootstrap.getRestartCount(service.name)
+        )
+
+        RuntimeEventBus.clear()
+    }
+
+
     private class TestRuntimeService : RuntimeService {
 
         override val name = "BOOTSTRAP_TEST_SERVICE"
