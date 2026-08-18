@@ -48,8 +48,6 @@ import pro.liliya.core.runtime.orchestration.RuntimeHealthComposition
 import pro.liliya.core.runtime.orchestration.RuntimeStatusComposition
 import pro.liliya.core.runtime.orchestration.RuntimeEventController
 import pro.liliya.core.runtime.orchestration.DefaultRuntimeEventController
-import pro.liliya.core.runtime.orchestration.RuntimeShutdownController
-import pro.liliya.core.runtime.orchestration.DefaultRuntimeShutdownController
 
 import pro.liliya.core.runtime.observer.DefaultRuntimeObserverRegistry
 import pro.liliya.core.runtime.observer.RuntimeObserverBridge
@@ -200,8 +198,6 @@ class DefaultRuntimeComposition :
 
 
 
-    private val shutdownController: RuntimeShutdownController =
-        DefaultRuntimeShutdownController(this)
 
 
 
@@ -446,7 +442,23 @@ class DefaultRuntimeComposition :
     }
 
     override fun stopRuntime() {
-        shutdownController.stop()
+        if (runtimeState() == CoreRuntimeState.STOPPED &&
+            moduleManager() == null
+        ) {
+            return
+        }
+
+        stopRuntimeLifecycle()
+
+        recordRuntimeStopped()
+
+        setFailureReason(null)
+        setModuleStates(emptyMap())
+
+        publishRuntimeStoppedDiagnostic()
+        publishSystemStop()
+
+        stopRuntimeBridges()
     }
 
     override fun startModuleRuntime(
