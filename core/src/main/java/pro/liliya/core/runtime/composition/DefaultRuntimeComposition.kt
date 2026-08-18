@@ -48,8 +48,6 @@ import pro.liliya.core.runtime.orchestration.RuntimeHealthComposition
 import pro.liliya.core.runtime.orchestration.RuntimeStatusComposition
 import pro.liliya.core.runtime.orchestration.RuntimeEventController
 import pro.liliya.core.runtime.orchestration.DefaultRuntimeEventController
-import pro.liliya.core.runtime.orchestration.RuntimeModuleController
-import pro.liliya.core.runtime.orchestration.DefaultRuntimeModuleController
 import pro.liliya.core.runtime.orchestration.RuntimeShutdownController
 import pro.liliya.core.runtime.orchestration.DefaultRuntimeShutdownController
 import pro.liliya.core.runtime.orchestration.RuntimeStartupController
@@ -210,8 +208,6 @@ class DefaultRuntimeComposition :
         DefaultRuntimeShutdownController(this)
 
 
-    private val moduleController: RuntimeModuleController =
-        DefaultRuntimeModuleController(this)
 
 
 
@@ -295,7 +291,11 @@ class DefaultRuntimeComposition :
     }
 
     override fun startRuntimeComponents(): ModuleManager {
-        val manager = moduleController.startRuntimeComponents()
+        val manager = createModuleRuntime()
+
+        setModuleManager(manager)
+
+        startModuleRuntime(manager)
 
         serviceBootstrap().start()
         registerRuntimeControls()
@@ -320,7 +320,11 @@ class DefaultRuntimeComposition :
     override fun stopRuntimeLifecycle() {
         serviceBootstrap().stop()
 
-        moduleController.stopRuntimeModules()
+        moduleManager()?.let {
+            setModuleStates(it.getModuleStates())
+            stopModuleRuntime(it)
+        }
+
         clearModuleRuntime()
         setRuntimeState(CoreRuntimeState.STOPPED)
         setFailureReason(null)
