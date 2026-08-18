@@ -46,8 +46,6 @@ import pro.liliya.core.runtime.orchestration.RuntimeActionComposition
 import pro.liliya.core.runtime.orchestration.RuntimeEventComposition
 import pro.liliya.core.runtime.orchestration.RuntimeHealthComposition
 import pro.liliya.core.runtime.orchestration.RuntimeStatusComposition
-import pro.liliya.core.runtime.orchestration.RuntimeEventController
-import pro.liliya.core.runtime.orchestration.DefaultRuntimeEventController
 
 import pro.liliya.core.runtime.observer.DefaultRuntimeObserverRegistry
 import pro.liliya.core.runtime.observer.RuntimeObserverBridge
@@ -203,8 +201,6 @@ class DefaultRuntimeComposition :
 
 
 
-    private val eventController: RuntimeEventController =
-        DefaultRuntimeEventController(this)
 
 
 
@@ -692,7 +688,9 @@ class DefaultRuntimeComposition :
 
 
     override fun publishSystemStart() {
-        eventController.publishSystemStart()
+        RuntimeEventBus.publish(
+            RuntimeEvent.SystemStart
+        )
     }
 
     override fun publishRuntimeStarting() {
@@ -701,19 +699,27 @@ class DefaultRuntimeComposition :
             "Core runtime starting"
         )
 
-        eventController.publishRuntimeStarting()
+        RuntimeEventBus.publish(
+            RuntimeEvent.RuntimeStarting
+        )
     }
 
     override fun publishRuntimeReady() {
-        eventController.publishRuntimeReady()
+        RuntimeEventBus.publish(
+            RuntimeEvent.RuntimeReady
+        )
     }
 
     override fun publishRuntimeFailed(reason: String) {
-        eventController.publishRuntimeFailed(reason)
+        RuntimeEventBus.publish(
+            RuntimeEvent.RuntimeFailed(reason)
+        )
     }
 
     override fun publishSystemStop() {
-        eventController.publishSystemStop()
+        RuntimeEventBus.publish(
+            RuntimeEvent.SystemStop
+        )
     }
 
     override fun publishModuleFailed(
