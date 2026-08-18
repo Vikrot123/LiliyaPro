@@ -4,7 +4,6 @@ interface RuntimeStartupComposition {
 
     fun runtimeState(): pro.liliya.core.CoreRuntimeState
 
-    fun startupController(): RuntimeStartupController
 
 
     fun resetRuntimeHealth()

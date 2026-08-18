@@ -50,8 +50,6 @@ import pro.liliya.core.runtime.orchestration.RuntimeEventController
 import pro.liliya.core.runtime.orchestration.DefaultRuntimeEventController
 import pro.liliya.core.runtime.orchestration.RuntimeShutdownController
 import pro.liliya.core.runtime.orchestration.DefaultRuntimeShutdownController
-import pro.liliya.core.runtime.orchestration.RuntimeStartupController
-import pro.liliya.core.runtime.orchestration.DefaultRuntimeStartupController
 
 import pro.liliya.core.runtime.observer.DefaultRuntimeObserverRegistry
 import pro.liliya.core.runtime.observer.RuntimeObserverBridge
@@ -201,8 +199,6 @@ class DefaultRuntimeComposition :
         RuntimeLifecycleRecorderHolder(lifecycleRecorder)
 
 
-    private val startupController: RuntimeStartupController =
-        DefaultRuntimeStartupController(this)
 
     private val shutdownController: RuntimeShutdownController =
         DefaultRuntimeShutdownController(this)
@@ -333,7 +329,57 @@ class DefaultRuntimeComposition :
 
 
     override fun startRuntime() {
-        startupController.start()
+        if (runtimeState() == CoreRuntimeState.RUNNING) {
+            return
+        }
+
+        resetRuntimeHealth()
+        installRuntimeObserverBridge()
+        installModuleEventBridge()
+
+        publishSystemStart()
+        prepareRuntimeStartup()
+        publishRuntimeStarting()
+
+        try {
+            startRuntimeLifecycle()
+            recordRuntimeStarted()
+            publishRuntimeStartedDiagnostic()
+            markRuntimeRecovered()
+            publishRuntimeReady()
+            logRuntimeStartupSuccess()
+        } catch (error: Exception) {
+            moduleManager()?.let {
+                try {
+                    stopModuleRuntime(it)
+                } catch (_: Exception) {
+                }
+            }
+
+            moduleManager()?.let {
+                setModuleStates(it.getModuleStates())
+            }
+
+            clearModuleRuntime()
+
+            markRuntimeFailed(
+                error.message ?: "unknown"
+            )
+
+            recordRuntimeFailure(
+                failureReason()
+            )
+
+            publishRuntimeFailedDiagnostic()
+
+            publishRuntimeFailed(
+                error.message ?: "unknown"
+            )
+
+            logRuntimeStartupFailure(error)
+
+            throw error
+        }
     }
 
     override fun start() {
@@ -588,10 +634,6 @@ class DefaultRuntimeComposition :
         return capabilityResolver
     }
 
-
-    override fun startupController(): RuntimeStartupController {
-        return startupController
-    }
 
 
     override fun lifecycleRecorder(): RuntimeLifecycleRecorder {
