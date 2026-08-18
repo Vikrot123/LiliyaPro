@@ -9,6 +9,8 @@ import pro.liliya.core.runtime.RuntimeServiceState
 import pro.liliya.core.runtime.RuntimeServiceHealth
 import pro.liliya.core.runtime.RuntimeServiceFailure
 import pro.liliya.core.runtime.RuntimeRecoverySnapshot
+import pro.liliya.core.runtime.RuntimeSupervisor
+import pro.liliya.core.runtime.RuntimeRecoveryManager
 
 interface RuntimeServiceComposition {
 
@@ -25,6 +27,10 @@ interface RuntimeServiceComposition {
     fun resetRuntimeServiceProvider()
 
     fun runtimeServiceRegistry(): RuntimeServiceRegistry
+
+    fun runtimeSupervisor(): RuntimeSupervisor
+
+    fun runtimeRecoveryManager(): RuntimeRecoveryManager
 
     fun serviceBootstrap(): RuntimeServiceBootstrap
 

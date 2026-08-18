@@ -6,6 +6,8 @@ import pro.liliya.core.runtime.RuntimeServiceBootstrapHolder
 import pro.liliya.core.runtime.RuntimeServiceProvider
 import pro.liliya.core.runtime.RuntimeServiceProviderHolder
 import pro.liliya.core.runtime.RuntimeServiceRegistry
+import pro.liliya.core.runtime.RuntimeSupervisor
+import pro.liliya.core.runtime.RuntimeRecoveryManager
 import pro.liliya.core.runtime.composition.RuntimeComposition
 import pro.liliya.core.runtime.orchestration.RuntimeServiceComposition
 
@@ -18,6 +20,14 @@ class DefaultRuntimeServiceComposition(
 
     private var runtimeServiceRegistry =
         RuntimeServiceRegistry()
+
+    private val runtimeSupervisor =
+        RuntimeSupervisor(
+            registryProvider = { runtimeServiceRegistry }
+        )
+
+    private val runtimeRecoveryManager =
+        RuntimeRecoveryManager(runtimeSupervisor)
 
     private val runtimeServiceProviderHolder =
         RuntimeServiceProviderHolder(
@@ -41,6 +51,14 @@ class DefaultRuntimeServiceComposition(
 
     override fun runtimeServiceRegistry(): RuntimeServiceRegistry {
         return runtimeServiceRegistry
+    }
+
+    override fun runtimeSupervisor(): RuntimeSupervisor {
+        return runtimeSupervisor
+    }
+
+    override fun runtimeRecoveryManager(): RuntimeRecoveryManager {
+        return runtimeRecoveryManager
     }
 
     override fun serviceBootstrap(): RuntimeServiceBootstrap {
