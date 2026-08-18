@@ -34,7 +34,6 @@ import pro.liliya.core.runtime.lifecycle.DefaultRuntimeLifecycleRecorder
 import pro.liliya.core.runtime.lifecycle.RuntimeLifecycleRecorder
 import pro.liliya.core.runtime.lifecycle.RuntimeLifecycleRecorderHolder
 import pro.liliya.core.runtime.lifecycle.RuntimeLifecycleEvent
-import pro.liliya.core.runtime.orchestration.RuntimeLifecycleComposition
 import pro.liliya.core.runtime.orchestration.RuntimeStartupComposition
 import pro.liliya.core.runtime.orchestration.RuntimeShutdownComposition
 import pro.liliya.core.runtime.orchestration.RuntimeServiceComposition
@@ -102,7 +101,6 @@ import pro.liliya.core.runtime.RuntimeServiceRegistry
 
 class DefaultRuntimeComposition :
     RuntimeComposition,
-    RuntimeLifecycleComposition,
     RuntimeStartupComposition,
         RuntimeShutdownComposition,
         RuntimeServiceComposition,
@@ -362,10 +360,10 @@ class DefaultRuntimeComposition :
         }
     }
 
-    override fun start() {
+    fun start() {
         startLifecycle()
     }
-    override fun stop() {
+    fun stop() {
         stopLifecycle()
     }
 
