@@ -45,8 +45,6 @@ import pro.liliya.core.runtime.orchestration.RuntimeBridgeComposition
 import pro.liliya.core.runtime.orchestration.RuntimeActionComposition
 import pro.liliya.core.runtime.orchestration.RuntimeEventComposition
 import pro.liliya.core.runtime.orchestration.RuntimeHealthComposition
-import pro.liliya.core.runtime.orchestration.RuntimeHealthController
-import pro.liliya.core.runtime.orchestration.DefaultRuntimeHealthController
 import pro.liliya.core.runtime.orchestration.RuntimeStatusComposition
 import pro.liliya.core.runtime.orchestration.RuntimeActionController
 import pro.liliya.core.runtime.orchestration.RuntimeEventController
@@ -224,8 +222,6 @@ class DefaultRuntimeComposition :
     private val eventController: RuntimeEventController =
         DefaultRuntimeEventController(this)
 
-    private val healthController: RuntimeHealthController =
-        DefaultRuntimeHealthController(this)
 
 
     private val runtimeMonitor =
@@ -922,7 +918,7 @@ class DefaultRuntimeComposition :
     }
 
     override fun runtimeHealthSnapshot(): RuntimeHealthSnapshot {
-        return healthController.createSnapshot(
+        return telemetryComposition.healthProvider().createSnapshot(
             state = runtimeState(),
             telemetry = telemetryObserver().snapshot(),
             failureReason = failureReason()
@@ -930,7 +926,7 @@ class DefaultRuntimeComposition :
     }
 
     override fun runtimeHealthReport(): RuntimeHealthReport {
-        return healthController.createReport(
+        return telemetryComposition.healthReportProvider().createReport(
             state = runtimeState(),
             telemetry = telemetryObserver().snapshot(),
             failure = failureTracker().snapshot(),
@@ -954,7 +950,7 @@ class DefaultRuntimeComposition :
             runtimeServiceHealth = runtimeServiceHealth(),
             runtimeRecoverySnapshot = runtimeServiceRecoverySnapshot(),
             runtimeStatusSnapshot = createRuntimeStatus(
-                report = healthController.createReport(
+                report = telemetryComposition.healthReportProvider().createReport(
                     state = runtimeState(),
                     telemetry = telemetryObserver().snapshot(),
                     failure = failureTracker().snapshot(),
