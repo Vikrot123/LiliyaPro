@@ -35,18 +35,32 @@ import pro.liliya.core.runtime.lifecycle.RuntimeLifecycleRecorder
 import pro.liliya.core.runtime.lifecycle.RuntimeLifecycleRecorderHolder
 import pro.liliya.core.runtime.lifecycle.RuntimeLifecycleEvent
 import pro.liliya.core.runtime.service.composition.DefaultRuntimeServiceComposition
-import pro.liliya.core.runtime.module.composition.DefaultRuntimeModuleComposition
 
 import pro.liliya.core.runtime.observer.DefaultRuntimeObserverRegistry
 import pro.liliya.core.runtime.observer.RuntimeObserverBridge
 import pro.liliya.core.runtime.module.ModuleEventBridge
 import pro.liliya.core.runtime.policy.DefaultRuntimeActionPolicyEvaluator
+
+import pro.liliya.core.module.CoreModuleProvider
+
 import pro.liliya.core.runtime.capability.RuntimeCapabilityRegistry
+
+
 import pro.liliya.core.runtime.capability.RuntimeCapabilityInfrastructure
+
+
 import pro.liliya.core.runtime.capability.DefaultRuntimeCapabilityInfrastructureProvider
+
+
 import pro.liliya.core.runtime.capability.DefaultRuntimeCapabilityRegistry
+
+
 import pro.liliya.core.runtime.capability.RuntimeCapabilityAuthorityEvaluator
+
+
 import pro.liliya.core.runtime.capability.DefaultRuntimeCapabilityAuthorityEvaluator
+
+
 import pro.liliya.core.runtime.capability.RuntimeCapabilityResolver
 import pro.liliya.core.runtime.policy.RuntimeActionPolicyEvaluator
 import pro.liliya.core.runtime.health.RuntimeHealthProvider
@@ -232,10 +246,21 @@ class DefaultRuntimeComposition :
         defaultServiceComposition
 
 
-    private val moduleComposition: DefaultRuntimeModuleComposition =
-        DefaultRuntimeModuleComposition(
-            this
-        )
+
+    private val moduleProvider: ModuleProvider =
+        CoreModuleProvider()
+
+    private val moduleProviderHolder =
+        ModuleProviderHolder(moduleProvider)
+
+    private val moduleManagerHolder =
+        ModuleManagerHolder()
+
+    private val moduleExceptionHandler =
+        ModuleExceptionHandler()
+
+    private val moduleDependencyResolver =
+        ModuleDependencyResolver()
 
     override fun diagnosticsService(): CoreRuntimeDiagnosticsService {
         return diagnosticsService
@@ -250,21 +275,28 @@ class DefaultRuntimeComposition :
     }
 
     override fun createModuleRegistry(): ModuleRegistry {
-        return moduleComposition.createModuleRegistry()
+        return ModuleRegistry(
+            capabilityInfrastructure,
+            moduleExceptionHandler,
+            moduleDependencyResolver
+        )
     }
 
     override fun createModuleManager(
         registry: ModuleRegistry,
         provider: ModuleProvider
     ): ModuleManager {
-        return moduleComposition.createModuleManager(
-            registry,
-            provider
+        return ModuleManager(
+            registry = registry,
+            provider = provider
         )
     }
 
     override fun createModuleRuntime(): ModuleManager {
-        return moduleComposition.createModuleRuntime()
+        return createModuleManager(
+            registry = createModuleRegistry(),
+            provider = moduleProviderHolder.get()
+        )
     }
 
     override fun startRuntimeComponents(): ModuleManager {
@@ -456,29 +488,29 @@ class DefaultRuntimeComposition :
     override fun stopModuleRuntime(
         manager: ModuleManager
     ) {
-        moduleComposition.stopModuleRuntime(manager)
+        manager.stopModules()
     }
 
     override fun clearModuleRuntime() {
-        moduleComposition.clearModuleRuntime()
+        moduleManagerHolder.clear()
     }
 
     override fun moduleProviderHolder(): ModuleProviderHolder {
-        return moduleComposition.moduleProviderHolder()
+        return moduleProviderHolder
     }
 
     override fun moduleExceptionHandler(): ModuleExceptionHandler {
-        return moduleComposition.moduleExceptionHandler()
+        return moduleExceptionHandler
     }
 
     override fun moduleDependencyResolver(): ModuleDependencyResolver {
-        return moduleComposition.moduleDependencyResolver()
+        return moduleDependencyResolver
     }
 
     override fun setModuleProvider(
         provider: ModuleProvider
     ) {
-        moduleComposition.setModuleProvider(provider)
+        moduleProviderHolder.set(provider)
     }
 
     override fun installModuleProvider(
@@ -492,23 +524,23 @@ class DefaultRuntimeComposition :
     }
 
     override fun resetModuleProvider() {
-        moduleComposition.resetModuleProvider()
+        moduleProviderHolder.reset()
     }
 
     override fun moduleManagerHolder(): ModuleManagerHolder {
-        return moduleComposition.moduleManagerHolder()
+        return moduleManagerHolder
     }
 
     override fun moduleManager(): ModuleManager? {
-        return moduleComposition.moduleManager()
+        return moduleManagerHolder.get()
     }
 
     override fun setModuleManager(manager: ModuleManager) {
-        moduleComposition.setModuleManager(manager)
+        moduleManagerHolder.set(manager)
     }
 
     override fun clearModuleManager() {
-        moduleComposition.clearModuleRuntime()
+        moduleManagerHolder.clear()
     }
 
     override fun runtimeStateHolder(): CoreRuntimeStateHolder {
@@ -582,7 +614,7 @@ class DefaultRuntimeComposition :
 
 
     override fun moduleProvider(): ModuleProvider {
-        return moduleComposition.moduleProvider()
+        return moduleProvider
     }
 
     override fun observerRegistry(): DefaultRuntimeObserverRegistry {
