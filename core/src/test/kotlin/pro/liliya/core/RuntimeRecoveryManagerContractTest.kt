@@ -2,9 +2,8 @@ package pro.liliya.core
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertTrue
+import kotlin.test.assertNull
 import pro.liliya.core.runtime.RuntimeRecoveryManager
-import pro.liliya.core.runtime.RuntimeRecoveryPolicy
 import pro.liliya.core.runtime.RuntimeService
 import pro.liliya.core.runtime.RuntimeServiceRegistry
 import pro.liliya.core.runtime.RuntimeServiceState
@@ -12,39 +11,40 @@ import pro.liliya.core.runtime.RuntimeSupervisor
 
 class RuntimeRecoveryManagerContractTest {
 
-    private class FailingRestartService : RuntimeService {
+    private fun createManager(): Pair<RuntimeRecoveryManager, RuntimeSupervisor> {
 
-        override val name = "recovery-service"
+        val registry = RuntimeServiceRegistry()
 
-        override var state = RuntimeServiceState.CREATED
-            private set
+        val supervisor = RuntimeSupervisor(
+            registryProvider = { registry }
+        )
 
-        var starts = 0
-
-        override fun start() {
-            starts++
-
-            if (starts == 1) {
-                throw IllegalStateException("initial failure")
-            }
-
-            state = RuntimeServiceState.RUNNING
-        }
-
-        override fun stop() {
-            state = RuntimeServiceState.STOPPED
-        }
+        return RuntimeRecoveryManager(supervisor) to supervisor
     }
 
 
     @Test
-    fun recoveryManager_restarts_failed_service() {
+    fun recoveryManager_double_install_does_not_duplicate_listener() {
 
         RuntimeEventBus.clear()
 
         val registry = RuntimeServiceRegistry()
 
-        val service = FailingRestartService()
+        val service = object : RuntimeService {
+
+            override val name = "test-service"
+
+            override var state = RuntimeServiceState.CREATED
+                private set
+
+            override fun start() {
+                state = RuntimeServiceState.RUNNING
+            }
+
+            override fun stop() {
+                state = RuntimeServiceState.STOPPED
+            }
+        }
 
         registry.register(service)
 
@@ -52,32 +52,70 @@ class RuntimeRecoveryManagerContractTest {
             registryProvider = { registry }
         )
 
-        val recoveryManager = RuntimeRecoveryManager(
-            supervisor
-        )
+        val manager = RuntimeRecoveryManager(supervisor)
 
-        recoveryManager.install()
-
-        try {
-            service.start()
-        } catch (_: Exception) {
-        }
+        manager.install()
+        manager.install()
 
         RuntimeEventBus.publish(
             RuntimeEvent.RuntimeServiceFailed(
-                serviceName = "recovery-service",
-                reason = "test failure"
+                serviceName = "test-service",
+                reason = "duplicate"
             )
-        )
-
-        assertTrue(
-            service.starts > 0
         )
 
         assertEquals(
             1,
-            supervisor.getRestartCount("recovery-service")
+            supervisor.getRestartCount("test-service")
         )
+
+        manager.uninstall()
+
+        RuntimeEventBus.clear()
+    }
+
+
+    @Test
+    fun recoveryManager_uninstall_stops_event_processing() {
+
+        RuntimeEventBus.clear()
+
+        val (manager, supervisor) = createManager()
+
+        manager.install()
+        manager.uninstall()
+
+        RuntimeEventBus.publish(
+            RuntimeEvent.RuntimeServiceFailed(
+                serviceName = "test-service",
+                reason = "after uninstall"
+            )
+        )
+
+        assertEquals(
+            0,
+            supervisor.getRestartCount("test-service")
+        )
+
+        RuntimeEventBus.clear()
+    }
+
+
+    @Test
+    fun recoveryManager_reset_clears_snapshot_state() {
+
+        RuntimeEventBus.clear()
+
+        val (manager, _) = createManager()
+
+        manager.install()
+
+        manager.reset()
+
+        val snapshot = manager.snapshot()
+
+        assertNull(snapshot.lastRecoveredService)
+        assertNull(snapshot.lastRecoverySuccessful)
 
         RuntimeEventBus.clear()
     }
