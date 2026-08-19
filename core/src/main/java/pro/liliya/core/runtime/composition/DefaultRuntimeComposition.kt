@@ -963,9 +963,17 @@ class DefaultRuntimeComposition :
         resetRuntimeState()
         stopRuntimeBridges()
         resetRuntimeHealth()
+        resetRuntimeControlState()
         lifecycleRecorder.reset()
         resetRuntimeHistory()
         resetRuntimeServiceRegistry()
+    }
+
+    private fun resetRuntimeControlState() {
+        controlRegistry.clear()
+        commandHistoryProvider.clear()
+        actionAuditProvider.clear()
+        actionHandlerRegistry.clear()
     }
 
     private fun resetRuntimeServiceRegistry() {
