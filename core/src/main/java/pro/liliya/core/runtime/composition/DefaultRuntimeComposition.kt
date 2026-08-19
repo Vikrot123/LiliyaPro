@@ -828,6 +828,7 @@ class DefaultRuntimeComposition :
     override fun resetRuntimeHealth() {
         telemetryObserver.reset()
         failureTracker.clear()
+        recoveryTracker.clear()
     }
 
     override fun markRuntimeRecovered() {
@@ -952,9 +953,8 @@ class DefaultRuntimeComposition :
         resetRuntimeServiceConfiguration()
         resetRuntimeState()
         stopRuntimeBridges()
-        telemetryObserver.reset()
+        resetRuntimeHealth()
         lifecycleRecorder.reset()
-        failureTracker.clear()
     }
 
 
