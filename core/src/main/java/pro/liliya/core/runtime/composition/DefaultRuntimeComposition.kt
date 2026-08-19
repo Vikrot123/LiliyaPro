@@ -77,6 +77,7 @@ import pro.liliya.core.runtime.control.RuntimeControlRegistry
 import pro.liliya.core.runtime.action.RuntimeActionExecutor
 
 import pro.liliya.core.runtime.dispatcher.HealthRuntimeActionHandler
+import pro.liliya.core.runtime.dispatcher.RuntimeLifecycleActionHandler
 
 import pro.liliya.core.runtime.control.DefaultRuntimeControl
 
@@ -194,10 +195,22 @@ class DefaultRuntimeComposition :
             this
         )
 
+    private val runtimeActionExecutor =
+        RuntimeActionExecutor(defaultRuntimeControl)
+
     private val healthRuntimeActionHandler =
         HealthRuntimeActionHandler(
-            RuntimeActionExecutor(defaultRuntimeControl)
+            runtimeActionExecutor
         )
+
+    private val lifecycleRuntimeActionHandler =
+        RuntimeLifecycleActionHandler(
+            runtimeActionExecutor
+        )
+
+    init {
+        registerRuntimeActionHandlers()
+    }
 
     private val lifecycleRecorder: RuntimeLifecycleRecorder =
         DefaultRuntimeLifecycleRecorder()
@@ -891,6 +904,9 @@ class DefaultRuntimeComposition :
     override fun registerRuntimeActionHandlers() {
         actionHandlerRegistry
             .register(healthRuntimeActionHandler)
+
+        actionHandlerRegistry
+            .register(lifecycleRuntimeActionHandler)
     }
 
 
