@@ -7,19 +7,14 @@ import pro.liliya.core.runtime.composition.DefaultRuntimeComposition
 class RuntimeCompositionModuleEventBridgeDuplicateDeliveryContractTest {
 
     @Test
-    fun module_event_bridge_does_not_duplicate_delivery_after_reinstall() {
-        ModuleEventBus.clear()
-        RuntimeEventBus.clear()
+    fun module_failed_event_is_not_duplicated_when_bridge_install_called_twice() {
+        val composition = DefaultRuntimeComposition()
 
         val events = mutableListOf<RuntimeEvent>()
 
-        val listener: (RuntimeEvent) -> Unit = { event ->
+        RuntimeEventBus.subscribe { event ->
             events.add(event)
         }
-
-        RuntimeEventBus.subscribe(listener)
-
-        val composition = DefaultRuntimeComposition()
 
         composition.installModuleEventBridge()
         composition.installModuleEventBridge()
@@ -27,21 +22,14 @@ class RuntimeCompositionModuleEventBridgeDuplicateDeliveryContractTest {
         ModuleEventBus.publish(
             ModuleEvent.Failed(
                 moduleName = "test-module",
-                phase = "START",
+                phase = "start",
                 reason = "failure"
             )
         )
 
-        assertEquals(
-            1,
-            events.count {
-                it is RuntimeEvent.ModuleFailed
-            }
-        )
+        val failures =
+            events.filterIsInstance<RuntimeEvent.ModuleFailed>()
 
-        RuntimeEventBus.unsubscribe(listener)
-        ModuleEventBus.clear()
-        RuntimeEventBus.clear()
-        composition.stopRuntimeBridges()
+        assertEquals(1, failures.size)
     }
 }
