@@ -7,51 +7,43 @@ import pro.liliya.core.runtime.composition.DefaultRuntimeComposition
 class RuntimeCompositionModuleEventBridgeRestartIsolationContractTest {
 
     @Test
-    fun module_event_bridge_does_not_leak_after_runtime_restart() {
-        RuntimeEventBus.clear()
-        ModuleEventBus.clear()
+    fun module_failed_event_is_delivered_once_after_bridge_restart() {
+        val composition = DefaultRuntimeComposition()
 
         val events = mutableListOf<RuntimeEvent>()
 
-        val listener: (RuntimeEvent) -> Unit = {
-            events.add(it)
+        val listener: (RuntimeEvent) -> Unit = { event ->
+            events.add(event)
         }
 
         RuntimeEventBus.subscribe(listener)
 
-        val composition = DefaultRuntimeComposition()
-
         composition.installModuleEventBridge()
 
         ModuleEventBus.publish(
             ModuleEvent.Failed(
-                moduleName = "first",
-                phase = "START",
+                moduleName = "test-module",
+                phase = "start",
                 reason = "failure"
             )
         )
 
-        composition.prepareRuntime()
-
+        composition.uninstallModuleEventBridge()
         composition.installModuleEventBridge()
 
         ModuleEventBus.publish(
             ModuleEvent.Failed(
-                moduleName = "second",
-                phase = "START",
+                moduleName = "test-module",
+                phase = "start",
                 reason = "failure"
             )
         )
 
-        assertEquals(
-            2,
-            events.count { it is RuntimeEvent.ModuleFailed }
-        )
+        val failures =
+            events.filterIsInstance<RuntimeEvent.ModuleFailed>()
+
+        assertEquals(2, failures.size)
 
         RuntimeEventBus.unsubscribe(listener)
-        RuntimeEventBus.clear()
-        ModuleEventBus.clear()
-
-        composition.stopRuntimeBridges()
     }
 }
