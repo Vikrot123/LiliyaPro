@@ -42,4 +42,44 @@ class RuntimeActionRestartAuthorityContractTest {
 
         composition.stopRuntime()
     }
+
+
+    @Test
+    fun system_can_execute_runtime_restart_action_after_authority_check() {
+        val composition = DefaultRuntimeComposition()
+
+        composition.startRuntime()
+
+        val result = composition
+            .actionDispatcher()
+            .dispatch(
+                RuntimeActionRequest(
+                    command = RuntimeCommand.RESTART,
+                    source = "restart-authority-system-test",
+                    reason = "verify restart permission",
+                    authority = RuntimeActionAuthorityContext(
+                        source = "restart-authority-system-test",
+                        level = RuntimeAuthorityLevel.SYSTEM
+                    )
+                )
+            )
+
+        assertEquals(true, result.success)
+
+        assertEquals(
+            composition.runtimeState(),
+            result.controlResult.currentState
+        )
+
+        assertEquals(
+            1,
+            composition.actionAuditProvider()
+                .snapshot()
+                .size
+        )
+
+        composition.stopRuntime()
+    }
+
 }
+
