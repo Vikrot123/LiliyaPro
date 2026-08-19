@@ -63,7 +63,41 @@ class RuntimeActionDispatcher(
 
         if (handler != null) {
 
-            val result = handler.handle(request)
+            val result = try {
+                handler.handle(request)
+            } catch (e: Exception) {
+
+                val failureResult = RuntimeActionResult(
+                    request = request,
+                    success = false,
+                    controlResult = RuntimeControlResult(
+                        command = request.command,
+                        success = false,
+                        previousState = runtimeComposition.runtimeState(),
+                        currentState = runtimeComposition.runtimeState(),
+                        status = createStatus(),
+                        message = e.message ?: "Action handler failed"
+                    )
+                )
+
+                auditProvider.record(
+                    RuntimeActionAuditRecord(
+                        request = request,
+                        success = false,
+                        message = failureResult.controlResult.message,
+                        policyId = policyResult.policyId,
+                        policyDecision = policyResult.decision,
+                        authoritySource = policyResult.authoritySource,
+                        authorityLevel = policyResult.authorityLevel,
+                        capabilityAllowed = policyResult.capabilityAllowed,
+                        capabilityDescription = policyResult.capabilityDescription,
+                        requiredAuthority = policyResult.requiredAuthority,
+                        actualAuthority = policyResult.actualAuthority
+                    )
+                )
+
+                return failureResult
+            }
 
             runtimeComposition.commandHistoryProvider().record(
                 pro.liliya.core.runtime.history.RuntimeCommandRecord(
