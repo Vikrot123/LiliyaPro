@@ -23,4 +23,6 @@ interface RuntimeCapabilityLifecycleManager {
     fun find(
         command: RuntimeCommand
     ): RuntimeManagedCapability?
+
+    fun reset()
 }

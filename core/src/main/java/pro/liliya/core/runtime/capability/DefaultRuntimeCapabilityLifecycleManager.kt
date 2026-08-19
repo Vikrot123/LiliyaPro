@@ -40,4 +40,8 @@ class DefaultRuntimeCapabilityLifecycleManager :
     ): RuntimeManagedCapability? {
         return capabilities[command]
     }
+
+    override fun reset() {
+        capabilities.clear()
+    }
 }

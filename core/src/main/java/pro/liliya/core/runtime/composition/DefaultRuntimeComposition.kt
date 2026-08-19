@@ -965,6 +965,7 @@ class DefaultRuntimeComposition :
         resetRuntimeHealth()
         runtimeSupervisor.reset()
         resetRuntimeControlState()
+        resetRuntimeCapabilities()
         lifecycleRecorder.reset()
         resetRuntimeHistory()
         resetRuntimeServiceRegistry()
@@ -975,6 +976,12 @@ class DefaultRuntimeComposition :
         commandHistoryProvider.clear()
         actionAuditProvider.clear()
         actionHandlerRegistry.clear()
+    }
+
+    private fun resetRuntimeCapabilities() {
+        capabilityInfrastructure
+            .lifecycleManager()
+            .reset()
     }
 
     private fun resetRuntimeServiceRegistry() {
