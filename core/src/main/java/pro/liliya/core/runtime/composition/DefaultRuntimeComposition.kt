@@ -951,8 +951,7 @@ class DefaultRuntimeComposition :
     override fun prepareRuntime() {
         resetRuntimeServiceConfiguration()
         resetRuntimeState()
-        resetRuntimeBridgeState()
-        runtimeModuleBridgeStateHolder.reset()
+        stopRuntimeBridges()
     }
 
 
