@@ -105,7 +105,12 @@ object CoreRuntime {
     fun executeRuntimeCommand(
         command: pro.liliya.core.runtime.control.RuntimeCommand
     ): pro.liliya.core.runtime.control.RuntimeControlResult {
-        return runtimeComposition.defaultRuntimeControl().execute(command)
+        return runtimeComposition.defaultRuntimeControl().execute(
+            pro.liliya.core.runtime.action.RuntimeActionRequest(
+                command = command,
+                source = "core-runtime-command"
+            )
+        )
     }
 
     fun getRuntimeActionAudit():

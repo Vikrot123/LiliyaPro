@@ -4,6 +4,8 @@ import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import pro.liliya.core.runtime.action.RuntimeActionRequest
+import pro.liliya.core.runtime.authority.RuntimeActionAuthorityContext
+import pro.liliya.core.runtime.authority.RuntimeAuthorityLevel
 import pro.liliya.core.runtime.control.RuntimeCommand
 
 class CoreRuntimeDispatcherFailureContractTest {
@@ -18,7 +20,11 @@ class CoreRuntimeDispatcherFailureContractTest {
                 RuntimeActionRequest(
                     command = RuntimeCommand.START,
                     source = "failure-test",
-                    reason = "verify missing handler handling"
+                    reason = "verify missing handler handling",
+                      authority = RuntimeActionAuthorityContext(
+                          source = "failure-test",
+                          level = RuntimeAuthorityLevel.USER
+                      )
                 )
             )
 

@@ -70,6 +70,9 @@ class RuntimeServiceBootstrap(
 
     fun start() {
 
+        println("BOOTSTRAP START CALLED")
+        println("BOOTSTRAP REGISTERED BEFORE START = ${registeredServices.keys}")
+
         if (started) {
             return
         }
@@ -82,8 +85,11 @@ class RuntimeServiceBootstrap(
             }
 
         registeredServices.values.forEach { service ->
+            println("BOOTSTRAP REGISTERING SERVICE = ${service.name}")
             registry.register(service)
         }
+
+        println("BOOTSTRAP STATES AFTER REGISTER = ${registry.getStates().keys}")
 
         recoveryManager.install()
 

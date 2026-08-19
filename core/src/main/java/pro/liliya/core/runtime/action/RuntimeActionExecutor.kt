@@ -11,7 +11,7 @@ class RuntimeActionExecutor(
     ): RuntimeActionResult {
 
         val result = runtimeControl.execute(
-            request.command
+            request
         )
 
         return RuntimeActionResult(

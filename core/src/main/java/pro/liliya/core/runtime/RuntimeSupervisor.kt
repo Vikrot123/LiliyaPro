@@ -21,6 +21,9 @@ class RuntimeSupervisor(
 
     fun recover(serviceName: String): Boolean {
 
+        println("SUPERVISOR RECOVER REQUEST = $serviceName")
+        println("SUPERVISOR BEFORE COUNTS = $restartCounters")
+
         val currentRetries =
             restartCounters[serviceName] ?: 0
 
@@ -33,9 +36,13 @@ class RuntimeSupervisor(
 
         return try {
             registry().restart(serviceName)
+            println("SUPERVISOR RECOVER SUCCESS = $serviceName")
             true
-        } catch (_: Exception) {
-            false
+        } catch (error: Exception) {
+            throw IllegalStateException(
+                "RECOVERY FAILED FOR $serviceName: ${error.message}",
+                error
+            )
         }
     }
 

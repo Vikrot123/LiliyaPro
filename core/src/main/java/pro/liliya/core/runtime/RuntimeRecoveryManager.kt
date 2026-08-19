@@ -52,6 +52,16 @@ class RuntimeRecoveryManager(
     }
 
 
+    fun recover(serviceName: String): Boolean {
+        val recovered = supervisor.recover(serviceName)
+
+        lastRecoveredService = serviceName
+        lastRecoverySuccessful = recovered
+
+        return recovered
+    }
+
+
     fun reset() {
 
         uninstall()

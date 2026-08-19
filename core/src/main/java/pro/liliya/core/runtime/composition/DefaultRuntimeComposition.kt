@@ -78,6 +78,8 @@ import pro.liliya.core.runtime.action.RuntimeActionExecutor
 
 import pro.liliya.core.runtime.dispatcher.HealthRuntimeActionHandler
 import pro.liliya.core.runtime.dispatcher.RuntimeLifecycleActionHandler
+import pro.liliya.core.runtime.dispatcher.RuntimeRestartActionHandler
+import pro.liliya.core.runtime.dispatcher.RuntimeRecoverActionHandler
 
 import pro.liliya.core.runtime.control.DefaultRuntimeControl
 
@@ -205,6 +207,17 @@ class DefaultRuntimeComposition :
 
     private val lifecycleRuntimeActionHandler =
         RuntimeLifecycleActionHandler(
+            runtimeActionExecutor
+        )
+
+    private val restartRuntimeActionHandler =
+        RuntimeRestartActionHandler(
+            runtimeActionExecutor
+        )
+
+
+    private val recoverRuntimeActionHandler =
+        RuntimeRecoverActionHandler(
             runtimeActionExecutor
         )
 
@@ -907,6 +920,12 @@ class DefaultRuntimeComposition :
 
         actionHandlerRegistry
             .register(lifecycleRuntimeActionHandler)
+
+        actionHandlerRegistry
+            .register(restartRuntimeActionHandler)
+
+        actionHandlerRegistry
+            .register(recoverRuntimeActionHandler)
     }
 
 
@@ -1036,7 +1055,7 @@ class DefaultRuntimeComposition :
         )
     }
 
-    fun runtimeRecoveryManager(): RuntimeRecoveryManager {
+    override fun runtimeRecoveryManager(): RuntimeRecoveryManager {
         return runtimeRecoveryManager
     }
 

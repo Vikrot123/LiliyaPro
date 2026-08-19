@@ -54,6 +54,9 @@ class RuntimeActionDispatcher(
                 )
             )
 
+            recordCommandHistory(deniedResult)
+
+
             return deniedResult
         }
 
@@ -96,18 +99,11 @@ class RuntimeActionDispatcher(
                     )
                 )
 
+                recordCommandHistory(failureResult)
                 return failureResult
             }
 
-            runtimeComposition.commandHistoryProvider().record(
-                pro.liliya.core.runtime.history.RuntimeCommandRecord(
-                    command = result.controlResult.command,
-                    success = result.success,
-                    previousState = result.controlResult.previousState,
-                    currentState = result.controlResult.currentState,
-                    message = result.controlResult.message
-                )
-            )
+            recordCommandHistory(result)
 
             auditProvider.record(
                 RuntimeActionAuditRecord(
@@ -157,7 +153,22 @@ authorityLevel = policyResult.authorityLevel,
             )
         )
 
+        recordCommandHistory(failureResult)
         return failureResult
+    }
+
+    private fun recordCommandHistory(
+        result: RuntimeActionResult
+    ) {
+        runtimeComposition.commandHistoryProvider().record(
+            pro.liliya.core.runtime.history.RuntimeCommandRecord(
+                command = result.controlResult.command,
+                success = result.success,
+                previousState = result.controlResult.previousState,
+                currentState = result.controlResult.currentState,
+                message = result.controlResult.message
+            )
+        )
     }
 
     private fun createStatus(): RuntimeStatusSnapshot {

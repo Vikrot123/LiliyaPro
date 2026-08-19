@@ -8,6 +8,7 @@ data class RuntimeActionRequest(
     val command: RuntimeCommand,
     val source: String = "unknown",
     val reason: String = "unspecified",
+    val target: String? = null,
     val timestamp: Long = System.currentTimeMillis(),
     val authority: RuntimeActionAuthorityContext? = null
 ) {

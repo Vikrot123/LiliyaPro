@@ -1,9 +1,10 @@
 package pro.liliya.core.runtime.control
 
+import pro.liliya.core.runtime.action.RuntimeActionRequest
+
 interface RuntimeControl {
 
     fun execute(
-        command: RuntimeCommand
+        request: RuntimeActionRequest
     ): RuntimeControlResult
-
 }

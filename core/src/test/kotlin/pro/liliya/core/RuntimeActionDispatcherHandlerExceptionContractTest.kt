@@ -41,6 +41,13 @@ class RuntimeActionDispatcherHandlerExceptionContractTest {
                 .size
         )
 
-        composition.stopRuntime()
+                  assertEquals(
+              1,
+              composition.commandHistoryProvider()
+                  .snapshot()
+                  .size
+          )
+
+          composition.stopRuntime()
     }
 }

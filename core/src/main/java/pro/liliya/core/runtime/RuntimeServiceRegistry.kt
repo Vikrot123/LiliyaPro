@@ -131,10 +131,13 @@ class RuntimeServiceRegistry {
     }
 
     fun restart(serviceName: String) {
+        println("RECOVERY RESTART REQUEST: $serviceName")
+        println("RECOVERY REGISTERED SERVICES: ${services.keys}")
+
 
         val service = services[serviceName]
             ?: throw IllegalArgumentException(
-                "Runtime service not found: $serviceName"
+                "Runtime service not found: $serviceName, available=${services.keys}"
             )
 
         service.stop()

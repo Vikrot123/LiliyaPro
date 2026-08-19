@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import pro.liliya.core.runtime.control.RuntimeCommand
+import pro.liliya.core.runtime.action.RuntimeActionRequest
 
 class CoreRuntimeControlContractTest {
 
@@ -15,9 +16,12 @@ class CoreRuntimeControlContractTest {
         try {
             val control = CoreRuntime.runtimeControl()
 
-            val result = control.execute(
-                RuntimeCommand.HEALTH_CHECK
-            )
+              val result = control.execute(
+                  RuntimeActionRequest(
+                      command = RuntimeCommand.HEALTH_CHECK,
+                      source = "core-runtime-control-contract-test"
+                  )
+              )
 
             assertTrue(result.success)
 
