@@ -21,4 +21,8 @@ class DefaultRuntimeLifecycleRecorder : RuntimeLifecycleRecorder {
     override fun last(): RuntimeLifecycleRecord? {
         return history.lastOrNull()
     }
+
+    override fun reset() {
+        history.clear()
+    }
 }

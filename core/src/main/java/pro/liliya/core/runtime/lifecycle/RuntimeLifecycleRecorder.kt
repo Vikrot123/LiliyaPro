@@ -10,4 +10,6 @@ interface RuntimeLifecycleRecorder {
     fun records(): List<RuntimeLifecycleRecord>
 
     fun last(): RuntimeLifecycleRecord?
+
+    fun reset()
 }

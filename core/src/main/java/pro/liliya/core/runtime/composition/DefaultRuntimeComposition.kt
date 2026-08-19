@@ -953,6 +953,7 @@ class DefaultRuntimeComposition :
         resetRuntimeState()
         stopRuntimeBridges()
         telemetryObserver.reset()
+        lifecycleRecorder.reset()
     }
 
 
