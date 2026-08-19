@@ -829,6 +829,7 @@ class DefaultRuntimeComposition :
         telemetryObserver.reset()
         failureTracker.clear()
         recoveryTracker.clear()
+        runtimeRecoveryManager.reset()
     }
 
     override fun markRuntimeRecovered() {
