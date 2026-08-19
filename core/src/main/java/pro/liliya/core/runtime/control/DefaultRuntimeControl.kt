@@ -25,6 +25,32 @@ class DefaultRuntimeControl(
 
         return when (command) {
 
+            RuntimeCommand.START -> {
+                runtimeComposition.startRuntime()
+
+                RuntimeControlResult(
+                    command = command,
+                    success = true,
+                    previousState = previousState,
+                    currentState = runtimeComposition.runtimeState(),
+                    status = status,
+                    message = "Runtime start completed"
+                )
+            }
+
+            RuntimeCommand.STOP -> {
+                runtimeComposition.stopRuntime()
+
+                RuntimeControlResult(
+                    command = command,
+                    success = true,
+                    previousState = previousState,
+                    currentState = runtimeComposition.runtimeState(),
+                    status = status,
+                    message = "Runtime stop completed"
+                )
+            }
+
             RuntimeCommand.HEALTH_CHECK -> {
                 RuntimeControlResult(
                     command = command,
