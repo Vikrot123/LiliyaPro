@@ -37,6 +37,7 @@ import pro.liliya.core.runtime.lifecycle.RuntimeLifecycleEvent
 
 import pro.liliya.core.runtime.observer.DefaultRuntimeObserverRegistry
 import pro.liliya.core.runtime.observer.RuntimeObserverBridge
+import pro.liliya.core.runtime.recovery.RuntimeRecoveryEventBridge
 import pro.liliya.core.runtime.module.ModuleEventBridge
 import pro.liliya.core.runtime.policy.DefaultRuntimeActionPolicyEvaluator
 
@@ -255,6 +256,9 @@ class DefaultRuntimeComposition :
     private val recoveryTracker =
         RuntimeRecoveryTracker()
 
+    private val runtimeRecoveryEventBridge =
+        RuntimeRecoveryEventBridge()
+
     private val telemetryObserver = RuntimeTelemetryObserver()
 
     private val healthReportProvider = RuntimeHealthReportProvider(
@@ -396,6 +400,7 @@ class DefaultRuntimeComposition :
         resetRuntimeHealth()
         installRuntimeObserverBridge()
         installModuleEventBridge()
+        installRuntimeRecoveryEventBridge()
 
         publishSystemStart()
         prepareRuntimeStartup()
@@ -648,6 +653,7 @@ class DefaultRuntimeComposition :
     }
 
     override fun stopRuntimeBridges() {
+        uninstallRuntimeRecoveryEventBridge()
         uninstallModuleEventBridge()
         uninstallRuntimeObserverBridge()
 
@@ -810,6 +816,14 @@ class DefaultRuntimeComposition :
                 reason = reason
             )
         )
+    }
+
+    fun installRuntimeRecoveryEventBridge() {
+        runtimeRecoveryEventBridge.install()
+    }
+
+    fun uninstallRuntimeRecoveryEventBridge() {
+        runtimeRecoveryEventBridge.uninstall()
     }
 
     override fun installModuleEventBridge() {

@@ -23,5 +23,10 @@ sealed class RuntimeEvent {
         val timestamp: Long = System.currentTimeMillis()
     ) : RuntimeEvent()
 
+    data class RuntimeServiceRecovered(
+        val serviceName: String,
+        val timestamp: Long = System.currentTimeMillis()
+    ) : RuntimeEvent()
+
     data object SystemStop : RuntimeEvent()
 }

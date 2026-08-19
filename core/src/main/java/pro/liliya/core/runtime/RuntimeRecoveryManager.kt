@@ -2,6 +2,8 @@ package pro.liliya.core.runtime
 
 import pro.liliya.core.RuntimeEvent
 import pro.liliya.core.RuntimeEventBus
+import pro.liliya.core.runtime.recovery.RuntimeRecoveryEvent
+import pro.liliya.core.runtime.recovery.RuntimeRecoveryEventBus
 
 class RuntimeRecoveryManager(
     private val supervisor: RuntimeSupervisor
@@ -53,12 +55,41 @@ class RuntimeRecoveryManager(
 
 
     fun recover(serviceName: String): Boolean {
-        val recovered = supervisor.recover(serviceName)
 
-        lastRecoveredService = serviceName
-        lastRecoverySuccessful = recovered
+        RuntimeRecoveryEventBus.publish(
+            RuntimeRecoveryEvent.Started(serviceName)
+        )
 
-        return recovered
+        return try {
+
+            val recovered = supervisor.recover(serviceName)
+
+            lastRecoveredService = serviceName
+            lastRecoverySuccessful = recovered
+
+            if (recovered) {
+                RuntimeRecoveryEventBus.publish(
+                    RuntimeRecoveryEvent.Completed(serviceName)
+                )
+            } else {
+                RuntimeRecoveryEventBus.publish(
+                    RuntimeRecoveryEvent.Failed(serviceName)
+                )
+            }
+
+            recovered
+
+        } catch (error: Throwable) {
+
+            lastRecoveredService = serviceName
+            lastRecoverySuccessful = false
+
+            RuntimeRecoveryEventBus.publish(
+                RuntimeRecoveryEvent.Failed(serviceName)
+            )
+
+            false
+        }
     }
 
 
