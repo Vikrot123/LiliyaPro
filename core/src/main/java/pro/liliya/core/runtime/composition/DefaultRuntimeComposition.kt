@@ -963,6 +963,7 @@ class DefaultRuntimeComposition :
         resetRuntimeState()
         stopRuntimeBridges()
         resetRuntimeHealth()
+        runtimeSupervisor.reset()
         resetRuntimeControlState()
         lifecycleRecorder.reset()
         resetRuntimeHistory()
