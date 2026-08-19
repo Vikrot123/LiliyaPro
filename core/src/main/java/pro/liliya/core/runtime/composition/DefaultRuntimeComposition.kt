@@ -635,7 +635,7 @@ class DefaultRuntimeComposition :
 
 
     override fun moduleProvider(): ModuleProvider {
-        return moduleProvider
+        return moduleProviderHolder.get()
     }
 
     override fun observerRegistry(): DefaultRuntimeObserverRegistry {
@@ -959,6 +959,7 @@ class DefaultRuntimeComposition :
         resetRuntimeServiceConfiguration()
         resetRuntimeServiceProvider()
         clearModuleManager()
+        resetModuleProvider()
         resetRuntimeState()
         stopRuntimeBridges()
         resetRuntimeHealth()
