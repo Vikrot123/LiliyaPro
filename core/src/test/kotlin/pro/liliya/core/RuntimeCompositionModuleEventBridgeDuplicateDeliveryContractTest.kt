@@ -1,5 +1,8 @@
 package pro.liliya.core
 
+import pro.liliya.core.ModuleEventBus
+
+import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import pro.liliya.core.runtime.composition.DefaultRuntimeComposition
@@ -32,4 +35,10 @@ class RuntimeCompositionModuleEventBridgeDuplicateDeliveryContractTest {
 
         assertEquals(1, failures.size)
     }
+    @AfterTest
+    fun cleanup() {
+        ModuleEventBus.clear()
+        RuntimeEventBus.clear()
+    }
+
 }
