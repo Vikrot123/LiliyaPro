@@ -4,10 +4,10 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import pro.liliya.core.runtime.composition.DefaultRuntimeComposition
 
-class RuntimeCompositionModuleEventBridgeDuplicateDeliveryContractTest {
+class RuntimeCompositionModuleEventBridgeCompositionIsolationContractTest {
 
     @Test
-    fun module_event_bridge_does_not_duplicate_delivery_after_reinstall() {
+    fun module_event_bridge_does_not_leak_between_compositions() {
         ModuleEventBus.clear()
         RuntimeEventBus.clear()
 
@@ -19,10 +19,11 @@ class RuntimeCompositionModuleEventBridgeDuplicateDeliveryContractTest {
 
         RuntimeEventBus.subscribe(listener)
 
-        val composition = DefaultRuntimeComposition()
+        val first = DefaultRuntimeComposition()
+        first.installModuleEventBridge()
 
-        composition.installModuleEventBridge()
-        composition.installModuleEventBridge()
+        val second = DefaultRuntimeComposition()
+        second.installModuleEventBridge()
 
         ModuleEventBus.publish(
             ModuleEvent.Failed(
@@ -42,6 +43,8 @@ class RuntimeCompositionModuleEventBridgeDuplicateDeliveryContractTest {
         RuntimeEventBus.unsubscribe(listener)
         ModuleEventBus.clear()
         RuntimeEventBus.clear()
-        composition.stopRuntimeBridges()
+
+        first.stopRuntimeBridges()
+        second.stopRuntimeBridges()
     }
 }

@@ -8,6 +8,10 @@ class ModuleEventBridge(
     private val composition: RuntimeComposition
 ) {
 
+    companion object {
+        private var activeBridge: ModuleEventBridge? = null
+    }
+
     private var installed = false
 
     private val moduleListener: (ModuleEvent) -> Unit = { event ->
@@ -27,8 +31,11 @@ class ModuleEventBridge(
             return
         }
 
+        activeBridge?.uninstall()
+
         ModuleEventBus.subscribe(moduleListener)
 
+        activeBridge = this
         installed = true
     }
 
@@ -38,6 +45,10 @@ class ModuleEventBridge(
         }
 
         ModuleEventBus.unsubscribe(moduleListener)
+
+        if (activeBridge === this) {
+            activeBridge = null
+        }
 
         installed = false
     }
