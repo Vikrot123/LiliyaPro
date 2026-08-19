@@ -958,6 +958,7 @@ class DefaultRuntimeComposition :
     override fun prepareRuntime() {
         resetRuntimeServiceConfiguration()
         resetRuntimeServiceProvider()
+        clearModuleManager()
         resetRuntimeState()
         stopRuntimeBridges()
         resetRuntimeHealth()
