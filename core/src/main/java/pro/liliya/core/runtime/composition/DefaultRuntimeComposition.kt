@@ -882,6 +882,11 @@ class DefaultRuntimeComposition :
         return actionAuditProvider
     }
 
+    private fun resetRuntimeHistory() {
+        commandHistoryProvider.clear()
+        actionAuditProvider.clear()
+    }
+
     override fun registerRuntimeActionHandlers() {
         actionHandlerRegistry
             .register(healthRuntimeActionHandler)
@@ -955,6 +960,7 @@ class DefaultRuntimeComposition :
         stopRuntimeBridges()
         resetRuntimeHealth()
         lifecycleRecorder.reset()
+        resetRuntimeHistory()
     }
 
 
