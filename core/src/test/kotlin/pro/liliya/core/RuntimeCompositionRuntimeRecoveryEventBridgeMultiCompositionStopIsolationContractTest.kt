@@ -1,5 +1,6 @@
 package pro.liliya.core
 
+import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import pro.liliya.core.runtime.composition.DefaultRuntimeComposition
@@ -39,4 +40,11 @@ class RuntimeCompositionRuntimeRecoveryEventBridgeMultiCompositionStopIsolationC
 
         RuntimeEventBus.unsubscribe(listener)
     }
+    @AfterTest
+    fun cleanup() {
+        RuntimeRecoveryEventBus.clear()
+        RuntimeEventBus.clear()
+    }
+
+
 }
