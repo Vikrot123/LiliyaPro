@@ -8,13 +8,19 @@ class RuntimeActionHandlerRegistry {
     fun register(
         handler: RuntimeActionHandler
     ) {
-        handlers.add(handler)
+        if (!handlers.contains(handler)) {
+            handlers.add(handler)
+        }
     }
 
     fun find(
         predicate: (RuntimeActionHandler) -> Boolean
     ): RuntimeActionHandler? {
         return handlers.firstOrNull(predicate)
+    }
+
+    fun snapshot(): List<RuntimeActionHandler> {
+        return handlers.toList()
     }
 
     fun clear() {
