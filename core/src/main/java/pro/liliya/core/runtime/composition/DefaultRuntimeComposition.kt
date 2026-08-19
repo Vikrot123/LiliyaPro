@@ -954,6 +954,7 @@ class DefaultRuntimeComposition :
         stopRuntimeBridges()
         telemetryObserver.reset()
         lifecycleRecorder.reset()
+        failureTracker.clear()
     }
 
 
