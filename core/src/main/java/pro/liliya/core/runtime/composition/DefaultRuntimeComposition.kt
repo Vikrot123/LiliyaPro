@@ -962,6 +962,11 @@ class DefaultRuntimeComposition :
         resetRuntimeHealth()
         lifecycleRecorder.reset()
         resetRuntimeHistory()
+        resetRuntimeServiceRegistry()
+    }
+
+    private fun resetRuntimeServiceRegistry() {
+        runtimeServiceRegistry.reset()
     }
 
 
