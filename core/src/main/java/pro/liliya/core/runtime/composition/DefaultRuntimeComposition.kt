@@ -96,6 +96,7 @@ import pro.liliya.core.runtime.RuntimeSupervisor
 import pro.liliya.core.runtime.RuntimeRecoveryManager
 import pro.liliya.core.runtime.RuntimeObserverBridgeStateHolder
 import pro.liliya.core.runtime.RuntimeModuleBridgeStateHolder
+import pro.liliya.core.runtime.RuntimeRecoveryEventBridgeStateHolder
 import pro.liliya.core.runtime.CoreRuntimeServiceProvider
 import pro.liliya.core.runtime.RuntimeServiceProvider
 import pro.liliya.core.runtime.RuntimeService
@@ -148,6 +149,8 @@ class DefaultRuntimeComposition :
 
     private val runtimeModuleBridgeStateHolder =
         RuntimeModuleBridgeStateHolder()
+    private val runtimeRecoveryEventBridgeStateHolder =
+        RuntimeRecoveryEventBridgeStateHolder()
 
     private val observerRegistry =
         DefaultRuntimeObserverRegistry()
@@ -640,6 +643,10 @@ class DefaultRuntimeComposition :
         return runtimeModuleBridgeStateHolder
     }
 
+    override fun runtimeRecoveryEventBridgeStateHolder(): RuntimeRecoveryEventBridgeStateHolder {
+        return runtimeRecoveryEventBridgeStateHolder
+    }
+
     override fun isRuntimeObserverBridgeInstalled(): Boolean {
         return runtimeBridgeStateHolder.isRuntimeObserverBridgeInstalled()
     }
@@ -820,11 +827,15 @@ class DefaultRuntimeComposition :
     }
 
     fun installRuntimeRecoveryEventBridge() {
-        runtimeRecoveryEventBridge.install()
+        if (!runtimeRecoveryEventBridgeStateHolder.isRuntimeRecoveryEventBridgeInstalled()) {
+            runtimeRecoveryEventBridge.install()
+            runtimeRecoveryEventBridgeStateHolder.markRuntimeRecoveryEventBridgeInstalled()
+        }
     }
 
     fun uninstallRuntimeRecoveryEventBridge() {
         runtimeRecoveryEventBridge.uninstall()
+        runtimeRecoveryEventBridgeStateHolder.reset()
     }
 
     override fun installModuleEventBridge() {
