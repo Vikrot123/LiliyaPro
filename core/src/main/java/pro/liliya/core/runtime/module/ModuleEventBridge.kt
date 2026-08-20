@@ -34,6 +34,8 @@ class ModuleEventBridge(
     fun uninstall() {
         ModuleEventBus.unsubscribe(moduleListener)
 
+        composition.runtimeModuleBridgeStateHolder().reset()
+
         if (activeBridge === this) {
             activeBridge = null
         }
