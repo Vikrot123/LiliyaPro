@@ -11,18 +11,18 @@ class RuntimeObserverBridgePrepareIsolationContractTest {
     fun runtime_observer_bridge_state_is_cleared_after_prepare_runtime() {
         val composition = DefaultRuntimeComposition()
 
-        composition.runtimeBridgeStateHolder()
+        composition.runtimeObserverBridgeStateHolder()
             .markRuntimeObserverBridgeInstalled()
 
         assertTrue(
-            composition.runtimeBridgeStateHolder()
+            composition.runtimeObserverBridgeStateHolder()
                 .isRuntimeObserverBridgeInstalled()
         )
 
         composition.prepareRuntime()
 
         assertFalse(
-            composition.runtimeBridgeStateHolder()
+            composition.runtimeObserverBridgeStateHolder()
                 .isRuntimeObserverBridgeInstalled()
         )
     }

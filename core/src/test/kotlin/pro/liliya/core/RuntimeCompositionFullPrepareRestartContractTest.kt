@@ -28,7 +28,7 @@ class RuntimeCompositionFullPrepareRestartContractTest {
         )
 
         assertFalse(
-            composition.runtimeBridgeStateHolder()
+            composition.runtimeObserverBridgeStateHolder()
                 .isRuntimeObserverBridgeInstalled()
         )
 
@@ -45,7 +45,7 @@ class RuntimeCompositionFullPrepareRestartContractTest {
         )
 
         assertTrue(
-            composition.runtimeBridgeStateHolder()
+            composition.runtimeObserverBridgeStateHolder()
                 .isRuntimeObserverBridgeInstalled()
         )
 

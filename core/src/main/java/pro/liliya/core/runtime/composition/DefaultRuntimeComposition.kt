@@ -144,7 +144,7 @@ class DefaultRuntimeComposition :
     private val runtimeStateHolder =
         CoreRuntimeStateHolder()
 
-    private val runtimeBridgeStateHolder =
+    private val runtimeObserverBridgeStateHolder =
         RuntimeObserverBridgeStateHolder()
 
     private val runtimeModuleBridgeStateHolder =
@@ -635,8 +635,8 @@ class DefaultRuntimeComposition :
         runtimeStateHolder.setModuleStates(states)
     }
 
-    override fun runtimeBridgeStateHolder(): RuntimeObserverBridgeStateHolder {
-        return runtimeBridgeStateHolder
+    override fun runtimeObserverBridgeStateHolder(): RuntimeObserverBridgeStateHolder {
+        return runtimeObserverBridgeStateHolder
     }
 
     override fun runtimeModuleBridgeStateHolder(): RuntimeModuleBridgeStateHolder {
@@ -648,15 +648,15 @@ class DefaultRuntimeComposition :
     }
 
     override fun isRuntimeObserverBridgeInstalled(): Boolean {
-        return runtimeBridgeStateHolder.isRuntimeObserverBridgeInstalled()
+        return runtimeObserverBridgeStateHolder.isRuntimeObserverBridgeInstalled()
     }
 
     override fun markRuntimeObserverBridgeInstalled() {
-        runtimeBridgeStateHolder.markRuntimeObserverBridgeInstalled()
+        runtimeObserverBridgeStateHolder.markRuntimeObserverBridgeInstalled()
     }
 
-    override fun resetRuntimeBridgeState() {
-        runtimeBridgeStateHolder.reset()
+    override fun resetRuntimeObserverBridgeState() {
+        runtimeObserverBridgeStateHolder.reset()
     }
 
     override fun stopRuntimeBridges() {
@@ -665,7 +665,7 @@ class DefaultRuntimeComposition :
         uninstallRuntimeObserverBridge()
 
         
-        resetRuntimeBridgeState()
+        resetRuntimeObserverBridgeState()
     }
 
 
@@ -701,7 +701,7 @@ class DefaultRuntimeComposition :
 
         observerBridge.uninstall()
 
-        resetRuntimeBridgeState()
+        resetRuntimeObserverBridgeState()
     }
 
     override fun actionPolicyEvaluator(): RuntimeActionPolicyEvaluator {
