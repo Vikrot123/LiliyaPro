@@ -1,6 +1,6 @@
 package pro.liliya.core.runtime
 
-class RuntimeBridgeStateHolder {
+class RuntimeObserverBridgeStateHolder {
 
     private var runtimeObserverBridgeInstalled = false
 
