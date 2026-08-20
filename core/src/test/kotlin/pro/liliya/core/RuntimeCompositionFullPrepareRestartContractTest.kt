@@ -37,6 +37,11 @@ class RuntimeCompositionFullPrepareRestartContractTest {
                 .isModuleEventBridgeInstalled()
         )
 
+        assertFalse(
+            composition.runtimeRecoveryEventBridgeStateHolder()
+                .isRuntimeRecoveryEventBridgeInstalled()
+        )
+
         composition.startRuntime()
 
         assertEquals(
@@ -52,6 +57,11 @@ class RuntimeCompositionFullPrepareRestartContractTest {
         assertTrue(
             composition.runtimeModuleBridgeStateHolder()
                 .isModuleEventBridgeInstalled()
+        )
+
+        assertTrue(
+            composition.runtimeRecoveryEventBridgeStateHolder()
+                .isRuntimeRecoveryEventBridgeInstalled()
         )
 
         composition.stopRuntime()
