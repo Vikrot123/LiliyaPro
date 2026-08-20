@@ -1,6 +1,5 @@
 package pro.liliya.core
 
-import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import pro.liliya.core.runtime.composition.DefaultRuntimeComposition
@@ -10,29 +9,36 @@ import pro.liliya.core.runtime.recovery.RuntimeRecoveryEventBus
 class RuntimeCompositionRuntimeRecoveryEventBridgeReinstallIsolationContractTest {
 
     @Test
-    fun recovery_failed_event_is_not_duplicated_after_reinstall_sequence() {
-        val first = DefaultRuntimeComposition()
-        val second = DefaultRuntimeComposition()
+    fun recovery_bridge_reinstall_does_not_duplicate_delivery() {
+
+        RuntimeRecoveryEventBus.clear()
+        RuntimeEventBus.clear()
 
         val events = mutableListOf<RuntimeEvent>()
 
-        val listener: (RuntimeEvent) -> Unit = { event ->
-            events.add(event)
+        val listener: (RuntimeEvent) -> Unit = {
+            events.add(it)
         }
 
         RuntimeEventBus.subscribe(listener)
 
-        first.installRuntimeRecoveryEventBridge()
+        val composition = DefaultRuntimeComposition()
 
-        first.uninstallRuntimeRecoveryEventBridge()
-
-        first.installRuntimeRecoveryEventBridge()
-
-        second.installRuntimeRecoveryEventBridge()
+        composition.installRuntimeRecoveryEventBridge()
 
         RuntimeRecoveryEventBus.publish(
             RuntimeRecoveryEvent.Failed(
-                serviceName = "test-service"
+                serviceName = "before-reinstall"
+            )
+        )
+
+        composition.uninstallRuntimeRecoveryEventBridge()
+
+        composition.installRuntimeRecoveryEventBridge()
+
+        RuntimeRecoveryEventBus.publish(
+            RuntimeRecoveryEvent.Failed(
+                serviceName = "after-reinstall"
             )
         )
 
@@ -41,13 +47,10 @@ class RuntimeCompositionRuntimeRecoveryEventBridgeReinstallIsolationContractTest
 
         assertEquals(2, failures.size)
 
+        composition.stopRuntimeBridges()
+
         RuntimeEventBus.unsubscribe(listener)
-    }
-    @AfterTest
-    fun cleanup() {
         RuntimeRecoveryEventBus.clear()
         RuntimeEventBus.clear()
     }
-
-
 }
