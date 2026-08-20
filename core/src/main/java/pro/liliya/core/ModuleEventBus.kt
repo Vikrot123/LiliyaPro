@@ -3,7 +3,7 @@ package pro.liliya.core
 object ModuleEventBus {
 
     private val listeners =
-        mutableListOf<(ModuleEvent) -> Unit>()
+        linkedSetOf<(ModuleEvent) -> Unit>()
 
     fun subscribe(
         listener: (ModuleEvent) -> Unit

@@ -7,12 +7,9 @@ import pro.liliya.core.runtime.composition.RuntimeComposition
 class ModuleEventBridge(
     private val composition: RuntimeComposition
 ) {
-
     companion object {
         private var activeBridge: ModuleEventBridge? = null
     }
-
-    private var installed = false
 
     private val moduleListener: (ModuleEvent) -> Unit = { event ->
         if (event is ModuleEvent.Failed) {
@@ -27,29 +24,18 @@ class ModuleEventBridge(
     }
 
     fun install() {
-        if (installed) {
-            return
-        }
-
         activeBridge?.uninstall()
 
         ModuleEventBus.subscribe(moduleListener)
 
         activeBridge = this
-        installed = true
     }
 
     fun uninstall() {
-        if (!installed) {
-            return
-        }
-
         ModuleEventBus.unsubscribe(moduleListener)
 
         if (activeBridge === this) {
             activeBridge = null
         }
-
-        installed = false
     }
 }
