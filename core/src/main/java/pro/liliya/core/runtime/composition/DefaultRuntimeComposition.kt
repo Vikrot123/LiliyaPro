@@ -657,11 +657,7 @@ class DefaultRuntimeComposition :
         uninstallModuleEventBridge()
         uninstallRuntimeObserverBridge()
 
-        observerRegistry.unsubscribe(
-            telemetryObserver()
-        )
-
-
+        
         resetRuntimeBridgeState()
     }
 
@@ -683,16 +679,21 @@ class DefaultRuntimeComposition :
         if (!isRuntimeObserverBridgeInstalled()) {
             observerBridge.install()
             markRuntimeObserverBridgeInstalled()
-        }
 
-        observerRegistry.subscribe(
-            telemetryObserver()
-        )
+            observerRegistry.subscribe(
+                telemetryObserver()
+            )
+        }
     }
 
 
     fun uninstallRuntimeObserverBridge() {
+        observerRegistry.unsubscribe(
+            telemetryObserver()
+        )
+
         observerBridge.uninstall()
+
         resetRuntimeBridgeState()
     }
 
