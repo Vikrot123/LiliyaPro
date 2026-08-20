@@ -1,6 +1,5 @@
 package pro.liliya.core
 
-import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import pro.liliya.core.runtime.composition.DefaultRuntimeComposition
@@ -10,39 +9,63 @@ import pro.liliya.core.runtime.recovery.RuntimeRecoveryEventBus
 class RuntimeCompositionRuntimeRecoveryEventBridgeStopBarrierContractTest {
 
     @Test
-    fun recovery_event_is_blocked_after_runtime_bridge_stop() {
-        val composition = DefaultRuntimeComposition()
+    fun stopped_recovery_bridge_blocks_delivery_without_affecting_other_composition() {
+        RuntimeRecoveryEventBus.clear()
+        RuntimeEventBus.clear()
 
         val events = mutableListOf<RuntimeEvent>()
 
-        val listener: (RuntimeEvent) -> Unit = { event ->
-            events.add(event)
+        val listener: (RuntimeEvent) -> Unit = {
+            events.add(it)
         }
 
         RuntimeEventBus.subscribe(listener)
 
-        composition.installRuntimeRecoveryEventBridge()
+        val first = DefaultRuntimeComposition()
+        val second = DefaultRuntimeComposition()
 
-        composition.stopRuntimeBridges()
+        first.installRuntimeRecoveryEventBridge()
+        second.installRuntimeRecoveryEventBridge()
 
         RuntimeRecoveryEventBus.publish(
             RuntimeRecoveryEvent.Failed(
-                serviceName = "test-service"
+                serviceName = "before-stop"
             )
         )
 
-        val failures =
-            events.filterIsInstance<RuntimeEvent.RuntimeServiceFailed>()
+        assertEquals(
+            2,
+            events.filterIsInstance<RuntimeEvent.RuntimeServiceFailed>().size
+        )
 
-        assertEquals(0, failures.size)
+        first.stopRuntimeBridges()
+
+        RuntimeRecoveryEventBus.publish(
+            RuntimeRecoveryEvent.Failed(
+                serviceName = "after-first-stop"
+            )
+        )
+
+        assertEquals(
+            3,
+            events.filterIsInstance<RuntimeEvent.RuntimeServiceFailed>().size
+        )
+
+        second.stopRuntimeBridges()
+
+        RuntimeRecoveryEventBus.publish(
+            RuntimeRecoveryEvent.Failed(
+                serviceName = "after-second-stop"
+            )
+        )
+
+        assertEquals(
+            3,
+            events.filterIsInstance<RuntimeEvent.RuntimeServiceFailed>().size
+        )
 
         RuntimeEventBus.unsubscribe(listener)
-    }
-    @AfterTest
-    fun cleanup() {
         RuntimeRecoveryEventBus.clear()
         RuntimeEventBus.clear()
     }
-
-
 }
