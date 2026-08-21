@@ -1,21 +1,20 @@
 package pro.liliya.core
 
 import kotlin.test.Test
-import kotlin.test.assertNull
 import kotlin.test.assertEquals
 import pro.liliya.core.runtime.*
 
 class RuntimeRecoveryManagerUninstallIsolationContractTest {
 
     @Test
-    fun uninstall_blocks_recovery_until_reinstall() {
+    fun uninstall_removes_only_target_manager_listener() {
         RuntimeEventBus.clear()
 
-        val registry = RuntimeServiceRegistry()
+        val registryA = RuntimeServiceRegistry()
+        val registryB = RuntimeServiceRegistry()
 
-        registry.register(object : RuntimeService {
-            override val name = "uninstall-service"
-
+        registryA.register(object : RuntimeService {
+            override val name = "uninstall-service-a"
             override var state = RuntimeServiceState.CREATED
 
             override fun start() {
@@ -27,76 +26,66 @@ class RuntimeRecoveryManagerUninstallIsolationContractTest {
             }
         })
 
-        val supervisor = RuntimeSupervisor(
-            registryProvider = { registry }
+        registryB.register(object : RuntimeService {
+            override val name = "uninstall-service-b"
+            override var state = RuntimeServiceState.CREATED
+
+            override fun start() {
+                state = RuntimeServiceState.RUNNING
+            }
+
+            override fun stop() {
+                state = RuntimeServiceState.STOPPED
+            }
+        })
+
+        val supervisorA = RuntimeSupervisor(
+            registryProvider = { registryA }
         )
 
-        val manager = RuntimeRecoveryManager(
-            supervisor,
-            registry
+        val supervisorB = RuntimeSupervisor(
+            registryProvider = { registryB }
         )
 
-        manager.install()
+        val managerA = RuntimeRecoveryManager(
+            supervisorA,
+            registryA
+        )
+
+        val managerB = RuntimeRecoveryManager(
+            supervisorB,
+            registryB
+        )
+
+        managerA.install()
+        managerB.install()
+
+        managerA.uninstall()
 
         RuntimeEventBus.publish(
             RuntimeEvent.RuntimeServiceFailed(
-                serviceName = "uninstall-service",
-                reason = "before uninstall",
-                sourceRegistry = registry
+                serviceName = "uninstall-service-a",
+                reason = "after-uninstall",
+                sourceRegistry = registryA
             )
-        )
-
-        val firstCount = supervisor.getRestartCount("uninstall-service")
-
-        manager.uninstall()
-
-        val beforeReinstall = manager.snapshot()
-
-        assertEquals(
-            "uninstall-service",
-            beforeReinstall.lastRecoveredService
         )
 
         RuntimeEventBus.publish(
             RuntimeEvent.RuntimeServiceFailed(
-                serviceName = "uninstall-service",
-                reason = "after uninstall",
-                sourceRegistry = registry
+                serviceName = "uninstall-service-b",
+                reason = "still-active",
+                sourceRegistry = registryB
             )
         )
 
-        val afterUninstall = manager.snapshot()
-
         assertEquals(
-            firstCount,
-            supervisor.getRestartCount("uninstall-service")
+            0,
+            supervisorA.getRestartCount("uninstall-service-a")
         )
 
         assertEquals(
-            "uninstall-service",
-            afterUninstall.lastRecoveredService
-        )
-
-        manager.install()
-
-        RuntimeEventBus.publish(
-            RuntimeEvent.RuntimeServiceFailed(
-                serviceName = "uninstall-service",
-                reason = "after reinstall",
-                sourceRegistry = registry
-            )
-        )
-
-        val afterReinstall = manager.snapshot()
-
-        assertEquals(
-            "uninstall-service",
-            afterReinstall.lastRecoveredService
-        )
-
-        assertEquals(
-            true,
-            afterReinstall.lastRecoverySuccessful
+            1,
+            supervisorB.getRestartCount("uninstall-service-b")
         )
 
         RuntimeEventBus.clear()
