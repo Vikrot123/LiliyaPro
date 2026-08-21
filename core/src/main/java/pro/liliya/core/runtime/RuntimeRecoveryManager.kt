@@ -6,7 +6,8 @@ import pro.liliya.core.runtime.recovery.RuntimeRecoveryEvent
 import pro.liliya.core.runtime.recovery.RuntimeRecoveryEventBus
 
 class RuntimeRecoveryManager(
-    private val supervisor: RuntimeSupervisor
+    private val supervisor: RuntimeSupervisor,
+    private val registry: RuntimeServiceRegistry? = null
 ) {
 
     private var installed = false
@@ -14,18 +15,23 @@ class RuntimeRecoveryManager(
     private var lastRecoveredService: String? = null
     private var lastRecoverySuccessful: Boolean? = null
 
-    private val eventListener: (RuntimeEvent) -> Unit = { event ->
+    private val eventListener: (RuntimeEvent) -> Unit = { event ->        if (event is RuntimeEvent.RuntimeServiceFailed) {
+            val sourceRegistry = event.sourceRegistry
 
-        if (event is RuntimeEvent.RuntimeServiceFailed) {
+            if (
+                sourceRegistry == null ||
+                registry == null ||
+                sourceRegistry === registry
+            ) {
+                val recovered =
+                    supervisor.recover(event.serviceName)
 
-            val recovered =
-                supervisor.recover(event.serviceName)
+                lastRecoveredService =
+                    event.serviceName
 
-            lastRecoveredService =
-                event.serviceName
-
-            lastRecoverySuccessful =
-                recovered
+                lastRecoverySuccessful =
+                    recovered
+            }
         }
     }
 

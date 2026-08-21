@@ -282,7 +282,7 @@ class DefaultRuntimeComposition :
         )
 
     private val runtimeRecoveryManager =
-        RuntimeRecoveryManager(runtimeSupervisor)
+        RuntimeRecoveryManager(runtimeSupervisor, runtimeServiceRegistry)
 
     private val runtimeServiceProviderHolder =
         RuntimeServiceProviderHolder(

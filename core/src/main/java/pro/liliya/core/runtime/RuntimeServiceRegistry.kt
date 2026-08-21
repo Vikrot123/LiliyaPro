@@ -51,7 +51,8 @@ class RuntimeServiceRegistry {
                 RuntimeEventBus.publish(
                     RuntimeEvent.RuntimeServiceFailed(
                         serviceName = service.name,
-                        reason = error.message ?: "unknown"
+                        reason = error.message ?: "unknown",
+                        sourceRegistry = this
                     )
                 )
             }
@@ -83,7 +84,8 @@ class RuntimeServiceRegistry {
                 RuntimeEventBus.publish(
                     RuntimeEvent.RuntimeServiceFailed(
                         serviceName = service.name,
-                        reason = error.message ?: "unknown"
+                        reason = error.message ?: "unknown",
+                        sourceRegistry = this
                     )
                 )
             }
@@ -157,7 +159,8 @@ class RuntimeServiceRegistry {
             RuntimeEventBus.publish(
                 RuntimeEvent.RuntimeServiceFailed(
                     serviceName = service.name,
-                    reason = error.message ?: "unknown"
+                    reason = error.message ?: "unknown",
+                    sourceRegistry = this
                 )
             )
 

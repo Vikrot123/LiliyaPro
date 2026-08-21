@@ -20,7 +20,8 @@ sealed class RuntimeEvent {
     data class RuntimeServiceFailed(
         val serviceName: String,
         val reason: String,
-        val timestamp: Long = System.currentTimeMillis()
+        val timestamp: Long = System.currentTimeMillis(),
+        val sourceRegistry: pro.liliya.core.runtime.RuntimeServiceRegistry? = null
     ) : RuntimeEvent()
 
     data class RuntimeServiceRecovered(
