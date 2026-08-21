@@ -525,6 +525,8 @@ class DefaultRuntimeComposition :
             return
         }
 
+        stopRuntimeBridges()
+
         stopRuntimeLifecycle()
 
         recordRuntimeStopped()
@@ -535,7 +537,6 @@ class DefaultRuntimeComposition :
         publishRuntimeStoppedDiagnostic()
         publishSystemStop()
 
-        stopRuntimeBridges()
     }
 
     override fun startModuleRuntime(
