@@ -115,8 +115,9 @@ class RuntimeRecoveryManager(
 
 
     fun reset() {
-
         uninstall()
+
+        recoveringServices.clear()
 
         lastRecoveredService = null
         lastRecoverySuccessful = null
