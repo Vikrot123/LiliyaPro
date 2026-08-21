@@ -3,7 +3,9 @@ package pro.liliya.core.runtime.recovery
 import pro.liliya.core.RuntimeEvent
 import pro.liliya.core.RuntimeEventBus
 
-class RuntimeRecoveryEventBridge {
+class RuntimeRecoveryEventBridge(
+    private val recoveryEventBus: RuntimeRecoveryEventBus = RuntimeRecoveryEventBus()
+) {
 
     private var installed = false
 
@@ -37,7 +39,7 @@ class RuntimeRecoveryEventBridge {
             return
         }
 
-        RuntimeRecoveryEventBus.subscribe(listener)
+        recoveryEventBus.subscribe(listener)
         installed = true
     }
 
@@ -46,7 +48,7 @@ class RuntimeRecoveryEventBridge {
             return
         }
 
-        RuntimeRecoveryEventBus.unsubscribe(listener)
+        recoveryEventBus.unsubscribe(listener)
         installed = false
     }
 }

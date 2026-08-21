@@ -11,7 +11,7 @@ class RuntimeCompositionRuntimeRecoveryEventBridgeCompletedOnlyContractTest {
 
     @Test
     fun recovery_started_does_not_publish_service_recovered_but_completed_does() {
-        RuntimeRecoveryEventBus.clear()
+        
         RuntimeEventBus.clear()
 
         val events = mutableListOf<RuntimeEvent>()
@@ -24,7 +24,7 @@ class RuntimeCompositionRuntimeRecoveryEventBridgeCompletedOnlyContractTest {
 
         composition.installRuntimeRecoveryEventBridge()
 
-        RuntimeRecoveryEventBus.publish(
+        composition.recoveryEventBus.publish(
             RuntimeRecoveryEvent.Started(
                 serviceName = "test-service"
             )
@@ -35,7 +35,7 @@ class RuntimeCompositionRuntimeRecoveryEventBridgeCompletedOnlyContractTest {
             events.filterIsInstance<RuntimeEvent.RuntimeServiceRecovered>().size
         )
 
-        RuntimeRecoveryEventBus.publish(
+        composition.recoveryEventBus.publish(
             RuntimeRecoveryEvent.Completed(
                 serviceName = "test-service"
             )
@@ -50,7 +50,7 @@ class RuntimeCompositionRuntimeRecoveryEventBridgeCompletedOnlyContractTest {
 
     @AfterTest
     fun cleanup() {
-        RuntimeRecoveryEventBus.clear()
+        
         RuntimeEventBus.clear()
     }
 }

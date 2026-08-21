@@ -11,7 +11,7 @@ class RuntimeCompositionRuntimeRecoveryEventBridgeReinstallIsolationContractTest
     @Test
     fun recovery_bridge_reinstall_does_not_duplicate_delivery() {
 
-        RuntimeRecoveryEventBus.clear()
+        
         RuntimeEventBus.clear()
 
         val events = mutableListOf<RuntimeEvent>()
@@ -26,7 +26,7 @@ class RuntimeCompositionRuntimeRecoveryEventBridgeReinstallIsolationContractTest
 
         composition.installRuntimeRecoveryEventBridge()
 
-        RuntimeRecoveryEventBus.publish(
+        composition.recoveryEventBus.publish(
             RuntimeRecoveryEvent.Failed(
                 serviceName = "before-reinstall"
             )
@@ -36,7 +36,7 @@ class RuntimeCompositionRuntimeRecoveryEventBridgeReinstallIsolationContractTest
 
         composition.installRuntimeRecoveryEventBridge()
 
-        RuntimeRecoveryEventBus.publish(
+        composition.recoveryEventBus.publish(
             RuntimeRecoveryEvent.Failed(
                 serviceName = "after-reinstall"
             )
@@ -50,7 +50,7 @@ class RuntimeCompositionRuntimeRecoveryEventBridgeReinstallIsolationContractTest
         composition.stopRuntimeBridges()
 
         RuntimeEventBus.unsubscribe(listener)
-        RuntimeRecoveryEventBus.clear()
+        
         RuntimeEventBus.clear()
     }
 }

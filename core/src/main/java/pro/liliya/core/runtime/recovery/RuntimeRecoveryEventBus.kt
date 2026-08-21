@@ -1,14 +1,14 @@
 package pro.liliya.core.runtime.recovery
 
-object RuntimeRecoveryEventBus {
+class RuntimeRecoveryEventBus {
 
     private val listeners =
-        mutableListOf<(RuntimeRecoveryEvent) -> Unit>()
+        linkedSetOf<(RuntimeRecoveryEvent) -> Unit>()
 
     fun subscribe(
         listener: (RuntimeRecoveryEvent) -> Unit
     ) {
-        listeners += listener
+        listeners.add(listener)
     }
 
     fun unsubscribe(

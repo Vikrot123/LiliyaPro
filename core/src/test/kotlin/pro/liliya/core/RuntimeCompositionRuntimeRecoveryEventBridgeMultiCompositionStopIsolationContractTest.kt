@@ -27,7 +27,7 @@ class RuntimeCompositionRuntimeRecoveryEventBridgeMultiCompositionStopIsolationC
 
         first.stopRuntimeBridges()
 
-        RuntimeRecoveryEventBus.publish(
+        second.recoveryEventBus.publish(
             RuntimeRecoveryEvent.Failed(
                 serviceName = "test-service"
             )
@@ -42,7 +42,7 @@ class RuntimeCompositionRuntimeRecoveryEventBridgeMultiCompositionStopIsolationC
     }
     @AfterTest
     fun cleanup() {
-        RuntimeRecoveryEventBus.clear()
+        
         RuntimeEventBus.clear()
     }
 

@@ -1,5 +1,7 @@
 package pro.liliya.core.runtime.composition
 
+import pro.liliya.core.runtime.recovery.RuntimeRecoveryEventBus
+
 import pro.liliya.core.logging.Logger
 import pro.liliya.core.logging.LoggerFactory
 import pro.liliya.core.logging.LogConfig
@@ -152,6 +154,9 @@ class DefaultRuntimeComposition :
     private val runtimeRecoveryEventBridgeStateHolder =
         RuntimeRecoveryEventBridgeStateHolder()
 
+    override val recoveryEventBus =
+        RuntimeRecoveryEventBus()
+
     private val observerRegistry =
         DefaultRuntimeObserverRegistry()
 
@@ -260,7 +265,7 @@ class DefaultRuntimeComposition :
         RuntimeRecoveryTracker()
 
     private val runtimeRecoveryEventBridge =
-        RuntimeRecoveryEventBridge()
+        RuntimeRecoveryEventBridge(recoveryEventBus)
 
     private val telemetryObserver = RuntimeTelemetryObserver()
 
@@ -282,7 +287,7 @@ class DefaultRuntimeComposition :
         )
 
     private val runtimeRecoveryManager =
-        RuntimeRecoveryManager(runtimeSupervisor, runtimeServiceRegistry)
+        RuntimeRecoveryManager(runtimeSupervisor, runtimeServiceRegistry, recoveryEventBus)
 
     private val runtimeServiceProviderHolder =
         RuntimeServiceProviderHolder(

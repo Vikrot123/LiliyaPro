@@ -11,7 +11,7 @@ class RuntimeCompositionRuntimeRecoveryEventBridgePrepareDuplicateIsolationContr
     @Test
     fun recovery_bridge_does_not_duplicate_delivery_after_prepare_runtime() {
 
-        RuntimeRecoveryEventBus.clear()
+        
         RuntimeEventBus.clear()
 
         val events = mutableListOf<RuntimeEvent>()
@@ -26,7 +26,7 @@ class RuntimeCompositionRuntimeRecoveryEventBridgePrepareDuplicateIsolationContr
 
         composition.installRuntimeRecoveryEventBridge()
 
-        RuntimeRecoveryEventBus.publish(
+        composition.recoveryEventBus.publish(
             RuntimeRecoveryEvent.Failed(
                 serviceName = "before-prepare"
             )
@@ -36,7 +36,7 @@ class RuntimeCompositionRuntimeRecoveryEventBridgePrepareDuplicateIsolationContr
 
         composition.installRuntimeRecoveryEventBridge()
 
-        RuntimeRecoveryEventBus.publish(
+        composition.recoveryEventBus.publish(
             RuntimeRecoveryEvent.Failed(
                 serviceName = "after-prepare"
             )
@@ -50,7 +50,7 @@ class RuntimeCompositionRuntimeRecoveryEventBridgePrepareDuplicateIsolationContr
         composition.stopRuntimeBridges()
 
         RuntimeEventBus.unsubscribe(listener)
-        RuntimeRecoveryEventBus.clear()
+        
         RuntimeEventBus.clear()
     }
 }

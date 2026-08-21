@@ -15,7 +15,7 @@ class RuntimeRecoveryManagerDuplicateExecutionContractTest {
     @Test
     fun duplicate_recovery_requests_are_executed_as_independent_recoveries() {
 
-        RuntimeRecoveryEventBus.clear()
+        val recoveryEventBus = RuntimeRecoveryEventBus()
 
         val registry = RuntimeServiceRegistry()
 
@@ -27,11 +27,15 @@ class RuntimeRecoveryManagerDuplicateExecutionContractTest {
             registryProvider = { registry }
         )
 
-        val manager = RuntimeRecoveryManager(supervisor)
+        val manager = RuntimeRecoveryManager(
+            supervisor,
+            registry,
+            recoveryEventBus
+        )
 
         val events = mutableListOf<String>()
 
-        RuntimeRecoveryEventBus.subscribe { event ->
+        recoveryEventBus.subscribe { event ->
             when (event) {
                 is RuntimeRecoveryEvent.Started ->
                     events.add("started")
@@ -62,7 +66,7 @@ class RuntimeRecoveryManagerDuplicateExecutionContractTest {
             supervisor.getRestartCount("service")
         )
 
-        RuntimeRecoveryEventBus.clear()
+        recoveryEventBus.clear()
     }
 
 

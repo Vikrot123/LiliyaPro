@@ -13,7 +13,7 @@ class RuntimeCompositionRuntimeRecoveryEventBridgeIsolationContractTest {
     fun recovery_event_is_delivered_once_after_bridge_restart() {
 
         RuntimeEventBus.clear()
-        RuntimeRecoveryEventBus.clear()
+        
 
         val recovered = mutableListOf<RuntimeEvent.RuntimeServiceRecovered>()
 
@@ -32,7 +32,7 @@ class RuntimeCompositionRuntimeRecoveryEventBridgeIsolationContractTest {
 
         composition.installRuntimeRecoveryEventBridge()
 
-        RuntimeRecoveryEventBus.publish(
+        composition.recoveryEventBus.publish(
             RuntimeRecoveryEvent.Completed("service")
         )
 
@@ -45,6 +45,6 @@ class RuntimeCompositionRuntimeRecoveryEventBridgeIsolationContractTest {
     @AfterTest
     fun cleanup() {
         RuntimeEventBus.clear()
-        RuntimeRecoveryEventBus.clear()
+        
     }
 }

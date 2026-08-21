@@ -1,5 +1,7 @@
 package pro.liliya.core.runtime
 
+import pro.liliya.core.runtime.recovery.RuntimeRecoveryEventBus
+
 class RuntimeServiceBootstrap(
     private val providerHolder: RuntimeServiceProviderHolder,
     private val registry: RuntimeServiceRegistry,
@@ -51,11 +53,13 @@ class RuntimeServiceBootstrap(
                 registryProvider = { registry }
             )
 
+            val recoveryEventBus = RuntimeRecoveryEventBus()
+
             return LegacyDependencies(
                 providerHolder = RuntimeServiceProviderHolder(provider),
                 registry = registry,
                 supervisor = supervisor,
-                recoveryManager = RuntimeRecoveryManager(supervisor)
+                recoveryManager = RuntimeRecoveryManager(supervisor, registry, recoveryEventBus)
             )
         }
     }

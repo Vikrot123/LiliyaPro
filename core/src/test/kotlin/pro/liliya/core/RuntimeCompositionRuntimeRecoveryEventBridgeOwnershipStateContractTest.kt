@@ -10,7 +10,7 @@ class RuntimeCompositionRuntimeRecoveryEventBridgeOwnershipStateContractTest {
 
     @Test
     fun replacing_or_stopping_one_recovery_bridge_does_not_corrupt_other_composition_state() {
-        RuntimeRecoveryEventBus.clear()
+        
         RuntimeEventBus.clear()
 
         val first = DefaultRuntimeComposition()
@@ -60,7 +60,7 @@ class RuntimeCompositionRuntimeRecoveryEventBridgeOwnershipStateContractTest {
                 .isRuntimeRecoveryEventBridgeInstalled()
         )
 
-        RuntimeRecoveryEventBus.clear()
+        
         RuntimeEventBus.clear()
     }
 }

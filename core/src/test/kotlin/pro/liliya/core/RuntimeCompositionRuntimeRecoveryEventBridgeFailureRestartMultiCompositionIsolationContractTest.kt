@@ -10,7 +10,7 @@ class RuntimeCompositionRuntimeRecoveryEventBridgeFailureRestartMultiComposition
 
     @Test
     fun recovery_failure_restart_multi_composition_isolation_is_preserved() {
-        RuntimeRecoveryEventBus.clear()
+        
         RuntimeEventBus.clear()
 
         val events = mutableListOf<RuntimeEvent>()
@@ -27,7 +27,7 @@ class RuntimeCompositionRuntimeRecoveryEventBridgeFailureRestartMultiComposition
         first.installRuntimeRecoveryEventBridge()
         second.installRuntimeRecoveryEventBridge()
 
-        RuntimeRecoveryEventBus.publish(
+        first.recoveryEventBus.publish(
             RuntimeRecoveryEvent.Failed(
                 serviceName = "test-service"
             )
@@ -39,7 +39,7 @@ class RuntimeCompositionRuntimeRecoveryEventBridgeFailureRestartMultiComposition
         second.uninstallRuntimeRecoveryEventBridge()
         second.installRuntimeRecoveryEventBridge()
 
-        RuntimeRecoveryEventBus.publish(
+        first.recoveryEventBus.publish(
             RuntimeRecoveryEvent.Failed(
                 serviceName = "test-service-after-restart"
             )
@@ -49,7 +49,7 @@ class RuntimeCompositionRuntimeRecoveryEventBridgeFailureRestartMultiComposition
             events.filterIsInstance<RuntimeEvent.RuntimeServiceFailed>()
 
         assertEquals(
-            4,
+            2,
             afterRestart.size
         )
 
@@ -57,7 +57,7 @@ class RuntimeCompositionRuntimeRecoveryEventBridgeFailureRestartMultiComposition
         second.stopRuntimeBridges()
 
         RuntimeEventBus.unsubscribe(listener)
-        RuntimeRecoveryEventBus.clear()
+        
         RuntimeEventBus.clear()
     }
 }

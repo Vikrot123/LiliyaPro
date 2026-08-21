@@ -10,7 +10,7 @@ class RuntimeCompositionRuntimeRecoveryEventBridgeFailureMultiCompositionIsolati
 
     @Test
     fun recovery_failure_multi_composition_delivery_is_isolated() {
-        RuntimeRecoveryEventBus.clear()
+        
         RuntimeEventBus.clear()
 
         val events = mutableListOf<RuntimeEvent>()
@@ -27,7 +27,7 @@ class RuntimeCompositionRuntimeRecoveryEventBridgeFailureMultiCompositionIsolati
         first.installRuntimeRecoveryEventBridge()
         second.installRuntimeRecoveryEventBridge()
 
-        RuntimeRecoveryEventBus.publish(
+        first.recoveryEventBus.publish(
             RuntimeRecoveryEvent.Failed(
                 serviceName = "test-service"
             )
@@ -37,7 +37,7 @@ class RuntimeCompositionRuntimeRecoveryEventBridgeFailureMultiCompositionIsolati
             events.filterIsInstance<RuntimeEvent.RuntimeServiceFailed>()
 
         assertEquals(
-            2,
+            1,
             failures.size
         )
 
@@ -45,7 +45,7 @@ class RuntimeCompositionRuntimeRecoveryEventBridgeFailureMultiCompositionIsolati
         second.stopRuntimeBridges()
 
         RuntimeEventBus.unsubscribe(listener)
-        RuntimeRecoveryEventBus.clear()
+        
         RuntimeEventBus.clear()
     }
 }

@@ -10,7 +10,7 @@ class RuntimeCompositionRuntimeRecoveryEventBridgeStopBarrierContractTest {
 
     @Test
     fun stopped_recovery_bridge_blocks_delivery_without_affecting_other_composition() {
-        RuntimeRecoveryEventBus.clear()
+        
         RuntimeEventBus.clear()
 
         val events = mutableListOf<RuntimeEvent>()
@@ -27,45 +27,45 @@ class RuntimeCompositionRuntimeRecoveryEventBridgeStopBarrierContractTest {
         first.installRuntimeRecoveryEventBridge()
         second.installRuntimeRecoveryEventBridge()
 
-        RuntimeRecoveryEventBus.publish(
+        first.recoveryEventBus.publish(
             RuntimeRecoveryEvent.Failed(
                 serviceName = "before-stop"
             )
         )
 
         assertEquals(
-            2,
+            1,
             events.filterIsInstance<RuntimeEvent.RuntimeServiceFailed>().size
         )
 
         first.stopRuntimeBridges()
 
-        RuntimeRecoveryEventBus.publish(
+        first.recoveryEventBus.publish(
             RuntimeRecoveryEvent.Failed(
                 serviceName = "after-first-stop"
             )
         )
 
         assertEquals(
-            3,
+            1,
             events.filterIsInstance<RuntimeEvent.RuntimeServiceFailed>().size
         )
 
         second.stopRuntimeBridges()
 
-        RuntimeRecoveryEventBus.publish(
+        second.recoveryEventBus.publish(
             RuntimeRecoveryEvent.Failed(
                 serviceName = "after-second-stop"
             )
         )
 
         assertEquals(
-            3,
+            1,
             events.filterIsInstance<RuntimeEvent.RuntimeServiceFailed>().size
         )
 
         RuntimeEventBus.unsubscribe(listener)
-        RuntimeRecoveryEventBus.clear()
+        
         RuntimeEventBus.clear()
     }
 }

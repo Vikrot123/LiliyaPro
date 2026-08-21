@@ -7,7 +7,8 @@ import pro.liliya.core.runtime.recovery.RuntimeRecoveryEventBus
 
 class RuntimeRecoveryManager(
     private val supervisor: RuntimeSupervisor,
-    private val registry: RuntimeServiceRegistry? = null
+    private val registry: RuntimeServiceRegistry? = null,
+    private val recoveryEventBus: RuntimeRecoveryEventBus = RuntimeRecoveryEventBus()
 ) {
 
     private var installed = false
@@ -62,7 +63,7 @@ class RuntimeRecoveryManager(
 
     fun recover(serviceName: String): Boolean {
 
-        RuntimeRecoveryEventBus.publish(
+        recoveryEventBus.publish(
             RuntimeRecoveryEvent.Started(serviceName)
         )
 
@@ -74,11 +75,11 @@ class RuntimeRecoveryManager(
             lastRecoverySuccessful = recovered
 
             if (recovered) {
-                RuntimeRecoveryEventBus.publish(
+                recoveryEventBus.publish(
                     RuntimeRecoveryEvent.Completed(serviceName)
                 )
             } else {
-                RuntimeRecoveryEventBus.publish(
+                recoveryEventBus.publish(
                     RuntimeRecoveryEvent.Failed(serviceName)
                 )
             }
@@ -90,7 +91,7 @@ class RuntimeRecoveryManager(
             lastRecoveredService = serviceName
             lastRecoverySuccessful = false
 
-            RuntimeRecoveryEventBus.publish(
+            recoveryEventBus.publish(
                 RuntimeRecoveryEvent.Failed(serviceName)
             )
 

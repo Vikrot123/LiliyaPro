@@ -23,7 +23,7 @@ class RuntimeCompositionRuntimeRecoveryEventBridgeRestartIsolationContractTest {
 
         composition.installRuntimeRecoveryEventBridge()
 
-        RuntimeRecoveryEventBus.publish(
+        composition.recoveryEventBus.publish(
             RuntimeRecoveryEvent.Failed(
                 serviceName = "test-service"
             )
@@ -32,7 +32,7 @@ class RuntimeCompositionRuntimeRecoveryEventBridgeRestartIsolationContractTest {
         composition.uninstallRuntimeRecoveryEventBridge()
         composition.installRuntimeRecoveryEventBridge()
 
-        RuntimeRecoveryEventBus.publish(
+        composition.recoveryEventBus.publish(
             RuntimeRecoveryEvent.Failed(
                 serviceName = "test-service"
             )
@@ -47,7 +47,7 @@ class RuntimeCompositionRuntimeRecoveryEventBridgeRestartIsolationContractTest {
     }
     @AfterTest
     fun cleanup() {
-        RuntimeRecoveryEventBus.clear()
+        
         RuntimeEventBus.clear()
     }
 

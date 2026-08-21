@@ -25,7 +25,7 @@ class RuntimeCompositionRuntimeRecoveryEventBridgeCompositionIsolationContractTe
         first.installRuntimeRecoveryEventBridge()
         second.installRuntimeRecoveryEventBridge()
 
-        RuntimeRecoveryEventBus.publish(
+        first.recoveryEventBus.publish(
             RuntimeRecoveryEvent.Failed(
                 serviceName = "test-service"
             )
@@ -34,13 +34,13 @@ class RuntimeCompositionRuntimeRecoveryEventBridgeCompositionIsolationContractTe
         val failures =
             events.filterIsInstance<RuntimeEvent.RuntimeServiceFailed>()
 
-        assertEquals(2, failures.size)
+        assertEquals(1, failures.size)
 
         RuntimeEventBus.unsubscribe(listener)
     }
     @AfterTest
     fun cleanup() {
-        RuntimeRecoveryEventBus.clear()
+        
         RuntimeEventBus.clear()
     }
 

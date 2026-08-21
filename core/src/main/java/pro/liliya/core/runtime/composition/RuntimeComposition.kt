@@ -1,5 +1,7 @@
 package pro.liliya.core.runtime.composition
 
+import pro.liliya.core.runtime.recovery.RuntimeRecoveryEventBus
+
 import pro.liliya.core.logging.Logger
 
 import pro.liliya.core.CoreDiagnosticSnapshot
@@ -58,6 +60,9 @@ import pro.liliya.core.runtime.health.RuntimeHealthSnapshot
 import pro.liliya.core.runtime.telemetry.RuntimeTelemetrySnapshot
 
 interface RuntimeComposition {
+    
+    val recoveryEventBus: RuntimeRecoveryEventBus
+
 
     fun context(): CoreRuntimeContext
     fun diagnosticSource(): CoreDiagnosticSource

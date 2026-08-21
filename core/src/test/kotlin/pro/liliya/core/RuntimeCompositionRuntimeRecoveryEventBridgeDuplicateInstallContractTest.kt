@@ -13,7 +13,7 @@ class RuntimeCompositionRuntimeRecoveryEventBridgeDuplicateInstallContractTest {
     fun duplicate_install_does_not_duplicate_recovery_delivery() {
 
         RuntimeEventBus.clear()
-        RuntimeRecoveryEventBus.clear()
+        
 
         val recovered = mutableListOf<RuntimeEvent.RuntimeServiceRecovered>()
 
@@ -28,7 +28,7 @@ class RuntimeCompositionRuntimeRecoveryEventBridgeDuplicateInstallContractTest {
         composition.installRuntimeRecoveryEventBridge()
         composition.installRuntimeRecoveryEventBridge()
 
-        RuntimeRecoveryEventBus.publish(
+        composition.recoveryEventBus.publish(
             RuntimeRecoveryEvent.Completed("service")
         )
 
@@ -41,6 +41,6 @@ class RuntimeCompositionRuntimeRecoveryEventBridgeDuplicateInstallContractTest {
     @AfterTest
     fun cleanup() {
         RuntimeEventBus.clear()
-        RuntimeRecoveryEventBus.clear()
+        
     }
 }
