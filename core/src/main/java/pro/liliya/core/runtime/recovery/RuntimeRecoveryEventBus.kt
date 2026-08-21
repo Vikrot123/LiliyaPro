@@ -22,7 +22,10 @@ class RuntimeRecoveryEventBus {
     ) {
         listeners.toList()
             .forEach { listener ->
-                listener(event)
+                try {
+                    listener(event)
+                } catch (_: Exception) {
+                }
             }
     }
 
