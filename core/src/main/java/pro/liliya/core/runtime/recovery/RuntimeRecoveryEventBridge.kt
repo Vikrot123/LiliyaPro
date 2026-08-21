@@ -8,11 +8,7 @@ class RuntimeRecoveryEventBridge {
     private val listener: (RuntimeRecoveryEvent) -> Unit = { event ->
         when (event) {
             is RuntimeRecoveryEvent.Started -> {
-                RuntimeEventBus.publish(
-                    RuntimeEvent.RuntimeServiceRecovered(
-                        event.serviceName
-                    )
-                )
+                // Recovery has started; the service is not recovered yet.
             }
 
             is RuntimeRecoveryEvent.Completed -> {
