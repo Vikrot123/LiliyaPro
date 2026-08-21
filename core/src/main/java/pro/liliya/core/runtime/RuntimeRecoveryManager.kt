@@ -16,6 +16,8 @@ class RuntimeRecoveryManager(
     private var lastRecoveredService: String? = null
     private var lastRecoverySuccessful: Boolean? = null
 
+    private val recoveringServices = mutableSetOf<String>()
+
     private val eventListener: (RuntimeEvent) -> Unit = { event ->        if (event is RuntimeEvent.RuntimeServiceFailed) {
             val sourceRegistry = event.sourceRegistry
 
@@ -24,14 +26,26 @@ class RuntimeRecoveryManager(
                 registry == null ||
                 sourceRegistry === registry
             ) {
-                val recovered =
-                    supervisor.recover(event.serviceName)
+                try {
+                    if (recoveringServices.add(event.serviceName)) {
+                    try {
+                        val recovered = supervisor.recover(event.serviceName)
 
-                lastRecoveredService =
-                    event.serviceName
+                        lastRecoveredService = event.serviceName
+                        lastRecoverySuccessful = recovered
+                    } finally {
+                        recoveringServices.remove(event.serviceName)
+                    }
+                }
 
-                lastRecoverySuccessful =
-                    recovered
+                } catch (error: Throwable) {
+
+                    lastRecoveredService =
+                        event.serviceName
+
+                    lastRecoverySuccessful =
+                        false
+                }
             }
         }
     }
