@@ -30,7 +30,12 @@ class RuntimeRecoveryManager(
                 sourceRegistry === registry
             ) {
                 val acquired = synchronized(globalRecoveringServices) {
-                    globalRecoveringServices.add(event.serviceName)
+                    if (globalRecoveringServices.contains(event.serviceName)) {
+                        false
+                    } else {
+                        globalRecoveringServices.add(event.serviceName)
+                        true
+                    }
                 }
 
                 if (acquired) {
