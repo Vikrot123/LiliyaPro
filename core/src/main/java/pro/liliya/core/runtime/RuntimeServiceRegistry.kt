@@ -146,6 +146,12 @@ class RuntimeServiceRegistry {
 
         try {
             service.start()
+
+            RuntimeEventBus.publish(
+                RuntimeEvent.RuntimeServiceRecovered(
+                    serviceName = service.name
+                )
+            )
         } catch (error: Exception) {
 
             val failure = RuntimeServiceFailure(
