@@ -1,33 +1,33 @@
 package pro.liliya.core
 
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class RuntimeEventBusDuplicateSubscriptionContractTest {
 
     @Test
-    fun sameListenerSubscribedTwiceMustReceiveEventTwice() {
+    fun duplicate_subscription_must_not_deliver_event_twice() {
+        RuntimeEventBus.clear()
 
-        val received = mutableListOf<RuntimeEvent>()
+        val events = mutableListOf<RuntimeEvent>()
 
         val listener: (RuntimeEvent) -> Unit = {
-            received.add(it)
+            events.add(it)
         }
-
-        RuntimeEventBus.clear()
 
         RuntimeEventBus.subscribe(listener)
         RuntimeEventBus.subscribe(listener)
 
         RuntimeEventBus.publish(
-            RuntimeEvent.SystemStart
+            RuntimeEvent.RuntimeReady
         )
 
         assertEquals(
-            2,
-            received.size
+            1,
+            events.size
         )
 
+        RuntimeEventBus.unsubscribe(listener)
         RuntimeEventBus.clear()
     }
 }
