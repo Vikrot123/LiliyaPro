@@ -5,6 +5,8 @@ import pro.liliya.core.RuntimeEventBus
 
 class RuntimeRecoveryEventBridge {
 
+    private var installed = false
+
     private val listener: (RuntimeRecoveryEvent) -> Unit = { event ->
         when (event) {
             is RuntimeRecoveryEvent.Started -> {
@@ -31,10 +33,20 @@ class RuntimeRecoveryEventBridge {
     }
 
     fun install() {
+        if (installed) {
+            return
+        }
+
         RuntimeRecoveryEventBus.subscribe(listener)
+        installed = true
     }
 
     fun uninstall() {
+        if (!installed) {
+            return
+        }
+
         RuntimeRecoveryEventBus.unsubscribe(listener)
+        installed = false
     }
 }
