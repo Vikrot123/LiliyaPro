@@ -16,7 +16,10 @@ class RuntimeRecoveryManager(
     private var lastRecoveredService: String? = null
     private var lastRecoverySuccessful: Boolean? = null
 
-    private val recoveringServices = mutableSetOf<String>()
+    private companion object {
+    val globalRecoveringServices = mutableSetOf<String>()
+    val installedOwners = mutableSetOf<RuntimeServiceRegistry?>()
+}
 
     private val eventListener: (RuntimeEvent) -> Unit = { event ->        if (event is RuntimeEvent.RuntimeServiceFailed) {
             val sourceRegistry = event.sourceRegistry
@@ -26,26 +29,27 @@ class RuntimeRecoveryManager(
                 registry == null ||
                 sourceRegistry === registry
             ) {
-                try {
-                    if (recoveringServices.add(event.serviceName)) {
+                val acquired = synchronized(globalRecoveringServices) {
+                    globalRecoveringServices.add(event.serviceName)
+                }
+
+                if (acquired) {
                     try {
                         val recovered = supervisor.recover(event.serviceName)
 
                         lastRecoveredService = event.serviceName
                         lastRecoverySuccessful = recovered
+                    } catch (error: Throwable) {
+                        lastRecoveredService = event.serviceName
+                        lastRecoverySuccessful = false
                     } finally {
-                        recoveringServices.remove(event.serviceName)
+                        synchronized(globalRecoveringServices) {
+                            globalRecoveringServices.remove(event.serviceName)
+                        }
                     }
                 }
 
-                } catch (error: Throwable) {
-
-                    lastRecoveredService =
-                        event.serviceName
-
-                    lastRecoverySuccessful =
-                        false
-                }
+                
             }
         }
     }
@@ -55,6 +59,12 @@ class RuntimeRecoveryManager(
 
         if (installed) {
             return
+        }
+
+        synchronized(installedOwners) {
+            if (!installedOwners.add(registry)) {
+                return
+            }
         }
 
         RuntimeEventBus.subscribe(eventListener)
@@ -70,6 +80,10 @@ class RuntimeRecoveryManager(
         }
 
         RuntimeEventBus.unsubscribe(eventListener)
+
+        synchronized(installedOwners) {
+            installedOwners.remove(registry)
+        }
 
         installed = false
     }
@@ -117,7 +131,13 @@ class RuntimeRecoveryManager(
     fun reset() {
         uninstall()
 
-        recoveringServices.clear()
+        synchronized(globalRecoveringServices) {
+            globalRecoveringServices.clear()
+        }
+
+        synchronized(installedOwners) {
+            installedOwners.remove(registry)
+        }
 
         lastRecoveredService = null
         lastRecoverySuccessful = null
