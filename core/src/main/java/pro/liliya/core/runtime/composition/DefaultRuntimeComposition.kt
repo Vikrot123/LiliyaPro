@@ -834,12 +834,14 @@ class DefaultRuntimeComposition :
 
     fun installRuntimeRecoveryEventBridge() {
         if (!runtimeRecoveryEventBridgeStateHolder.isRuntimeRecoveryEventBridgeInstalled()) {
+            runtimeRecoveryManager.install()
             runtimeRecoveryEventBridge.install()
             runtimeRecoveryEventBridgeStateHolder.markRuntimeRecoveryEventBridgeInstalled()
         }
     }
 
     fun uninstallRuntimeRecoveryEventBridge() {
+        runtimeRecoveryManager.uninstall()
         runtimeRecoveryEventBridge.uninstall()
         runtimeRecoveryEventBridgeStateHolder.reset()
     }
