@@ -5,6 +5,11 @@ import pro.liliya.core.RuntimeEventBus
 import pro.liliya.core.runtime.recovery.RuntimeRecoveryEvent
 import pro.liliya.core.runtime.recovery.RuntimeRecoveryEventBus
 
+private data class RecoveryKey(
+    val registry: RuntimeServiceRegistry?,
+    val serviceName: String
+)
+
 class RuntimeRecoveryManager(
     private val supervisor: RuntimeSupervisor,
     private val registry: RuntimeServiceRegistry? = null,
@@ -17,7 +22,7 @@ class RuntimeRecoveryManager(
     private var lastRecoverySuccessful: Boolean? = null
 
     private companion object {
-    val globalRecoveringServices = mutableSetOf<String>()
+    val activeRecoveries = mutableMapOf<RecoveryKey, Any>()
     val installedOwners = mutableSetOf<RuntimeServiceRegistry?>()
 }
 
@@ -29,16 +34,21 @@ class RuntimeRecoveryManager(
                 registry == null ||
                 sourceRegistry === registry
             ) {
-                val acquired = synchronized(globalRecoveringServices) {
-                    if (globalRecoveringServices.contains(event.serviceName)) {
+                val recoveryKey = RecoveryKey(
+                    registry = registry,
+                    serviceName = event.serviceName
+                )
+
+                val isOwner = synchronized(activeRecoveries) {
+                    if (activeRecoveries.containsKey(recoveryKey)) {
                         false
                     } else {
-                        globalRecoveringServices.add(event.serviceName)
+                        activeRecoveries[recoveryKey] = Any()
                         true
                     }
                 }
 
-                if (acquired) {
+                if (isOwner) {
                     try {
                         val recovered = supervisor.recover(event.serviceName)
 
@@ -48,8 +58,8 @@ class RuntimeRecoveryManager(
                         lastRecoveredService = event.serviceName
                         lastRecoverySuccessful = false
                     } finally {
-                        synchronized(globalRecoveringServices) {
-                            globalRecoveringServices.remove(event.serviceName)
+                        synchronized(activeRecoveries) {
+                            activeRecoveries.remove(recoveryKey)
                         }
                     }
                 }
@@ -136,8 +146,8 @@ class RuntimeRecoveryManager(
     fun reset() {
         uninstall()
 
-        synchronized(globalRecoveringServices) {
-            globalRecoveringServices.clear()
+        synchronized(activeRecoveries) {
+            activeRecoveries.clear()
         }
 
         synchronized(installedOwners) {
