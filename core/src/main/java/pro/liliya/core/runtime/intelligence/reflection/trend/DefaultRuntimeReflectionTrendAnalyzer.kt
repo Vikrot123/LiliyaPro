@@ -11,7 +11,7 @@ class DefaultRuntimeReflectionTrendAnalyzer :
 
         if (history.isEmpty()) {
             return RuntimeReflectionTrend(
-                stability = "UNKNOWN",
+                stability = RuntimeReflectionStability.UNKNOWN,
                 healthyRatio = 0.0,
                 improving = false
             )
@@ -25,9 +25,9 @@ class DefaultRuntimeReflectionTrendAnalyzer :
 
         val stability =
             when {
-                ratio >= 0.8 -> "STABLE"
-                ratio >= 0.5 -> "DEGRADED"
-                else -> "UNSTABLE"
+                ratio >= 0.8 -> RuntimeReflectionStability.STABLE
+                ratio >= 0.5 -> RuntimeReflectionStability.DEGRADED
+                else -> RuntimeReflectionStability.UNSTABLE
             }
 
         val improving =

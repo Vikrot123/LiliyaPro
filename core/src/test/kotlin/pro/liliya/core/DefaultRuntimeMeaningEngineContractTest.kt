@@ -7,6 +7,7 @@ import pro.liliya.core.runtime.intelligence.context.RuntimeContextSnapshot
 import pro.liliya.core.runtime.intelligence.meaning.DefaultRuntimeMeaningEngine
 import pro.liliya.core.runtime.intelligence.meaning.RuntimeMeaningContext
 import pro.liliya.core.runtime.intelligence.meaning.RuntimeMeaningSignificance
+import pro.liliya.core.runtime.intelligence.reflection.trend.RuntimeReflectionStability
 import pro.liliya.core.runtime.intelligence.reflection.RuntimeReflectionSnapshot
 import pro.liliya.core.runtime.intelligence.reflection.trend.RuntimeReflectionTrend
 import pro.liliya.core.runtime.intelligence.selfmodel.RuntimeSelfModel
@@ -40,7 +41,7 @@ class DefaultRuntimeMeaningEngineContractTest {
                             analyzedAt = 1L
                         ),
                         trend = RuntimeReflectionTrend(
-                            stability = "STABLE",
+                            stability = RuntimeReflectionStability.STABLE,
                             healthyRatio = 1.0,
                             improving = false
                         )

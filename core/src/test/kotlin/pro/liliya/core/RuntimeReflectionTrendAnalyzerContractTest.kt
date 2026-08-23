@@ -6,6 +6,7 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 import pro.liliya.core.runtime.intelligence.reflection.RuntimeReflectionSnapshot
 import pro.liliya.core.runtime.intelligence.reflection.trend.DefaultRuntimeReflectionTrendAnalyzer
+import pro.liliya.core.runtime.intelligence.reflection.trend.RuntimeReflectionStability
 
 class RuntimeReflectionTrendAnalyzerContractTest {
 
@@ -17,7 +18,7 @@ class RuntimeReflectionTrendAnalyzerContractTest {
                 .analyze(emptyList())
 
         assertEquals(
-            "UNKNOWN",
+            RuntimeReflectionStability.UNKNOWN,
             result.stability
         )
 
@@ -59,7 +60,7 @@ class RuntimeReflectionTrendAnalyzerContractTest {
                 .analyze(history)
 
         assertEquals(
-            "STABLE",
+            RuntimeReflectionStability.STABLE,
             result.stability
         )
 
@@ -96,7 +97,7 @@ class RuntimeReflectionTrendAnalyzerContractTest {
                 .analyze(history)
 
         assertEquals(
-            "UNSTABLE",
+            RuntimeReflectionStability.UNSTABLE,
             result.stability
         )
 

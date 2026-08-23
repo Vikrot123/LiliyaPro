@@ -1,5 +1,7 @@
 package pro.liliya.core.runtime.intelligence.meaning
 
+import pro.liliya.core.runtime.intelligence.reflection.trend.RuntimeReflectionStability
+
 class DefaultRuntimeMeaningEngine : RuntimeMeaningEngine {
 
     override fun interpret(
@@ -12,7 +14,7 @@ class DefaultRuntimeMeaningEngine : RuntimeMeaningEngine {
 
         when {
             context.reflection.healthy &&
-                context.trend.stability == "STABLE" -> {
+                context.trend.stability == RuntimeReflectionStability.STABLE -> {
 
                 significance = RuntimeMeaningSignificance.STABLE
                 interpretation =
@@ -20,7 +22,7 @@ class DefaultRuntimeMeaningEngine : RuntimeMeaningEngine {
                 confidence = 0.95
             }
 
-            context.trend.stability == "DEGRADED" -> {
+            context.trend.stability == RuntimeReflectionStability.DEGRADED -> {
 
                 significance = RuntimeMeaningSignificance.WARNING
                 interpretation =
@@ -28,7 +30,7 @@ class DefaultRuntimeMeaningEngine : RuntimeMeaningEngine {
                 confidence = 0.75
             }
 
-            context.trend.stability == "UNSTABLE" -> {
+            context.trend.stability == RuntimeReflectionStability.UNSTABLE -> {
 
                 significance = RuntimeMeaningSignificance.CRITICAL
                 interpretation =
