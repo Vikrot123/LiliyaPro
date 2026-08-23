@@ -17,7 +17,6 @@ class RuntimeRecoveryManager(
     private var lastRecoverySuccessful: Boolean? = null
 
     private companion object {
-    val globalRecoveringServices = mutableSetOf<String>()
     val installedOwners = mutableSetOf<RuntimeServiceRegistry?>()
 }
 
@@ -29,9 +28,7 @@ class RuntimeRecoveryManager(
                 registry == null ||
                 sourceRegistry === registry
             ) {
-                val acquired = synchronized(globalRecoveringServices) {
-                    globalRecoveringServices.add(event.serviceName)
-                }
+                val acquired = registry?.tryAcquireRecovery(event.serviceName) != false
 
                 if (acquired) {
                     try {
@@ -43,9 +40,7 @@ class RuntimeRecoveryManager(
                         lastRecoveredService = event.serviceName
                         lastRecoverySuccessful = false
                     } finally {
-                        synchronized(globalRecoveringServices) {
-                            globalRecoveringServices.remove(event.serviceName)
-                        }
+                        registry?.releaseRecovery(event.serviceName)
                     }
                 }
 
@@ -130,10 +125,6 @@ class RuntimeRecoveryManager(
 
     fun reset() {
         uninstall()
-
-        synchronized(globalRecoveringServices) {
-            globalRecoveringServices.clear()
-        }
 
         synchronized(installedOwners) {
             installedOwners.remove(registry)

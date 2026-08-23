@@ -14,6 +14,20 @@ class RuntimeServiceRegistry {
 
     private var terminated = false
 
+    private val recoveryOwnership = mutableSetOf<String>()
+
+    fun tryAcquireRecovery(serviceName: String): Boolean {
+        return synchronized(recoveryOwnership) {
+            recoveryOwnership.add(serviceName)
+        }
+    }
+
+    fun releaseRecovery(serviceName: String) {
+        synchronized(recoveryOwnership) {
+            recoveryOwnership.remove(serviceName)
+        }
+    }
+
 
     fun register(service: RuntimeService) {
         if (services.containsKey(service.name)) {
@@ -129,6 +143,11 @@ class RuntimeServiceRegistry {
         services.clear()
         failures.clear()
         serviceFailures.clear()
+
+        synchronized(recoveryOwnership) {
+            recoveryOwnership.clear()
+        }
+
         terminated = false
     }
 
