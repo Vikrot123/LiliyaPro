@@ -15,6 +15,9 @@ import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.summary.DefaultR
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.transition.DefaultRuntimeKnowledgeLifecycleTransitionManager
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.integration.DefaultRuntimeKnowledgeLifecycleMemory
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.integration.RuntimeKnowledgeLifecycleMemory
+import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.observer.registry.DefaultRuntimeKnowledgeLifecycleObserverRegistryHolder
+import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.observer.registry.RuntimeKnowledgeLifecycleObserverRegistryHolder
+import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.service.provider.DefaultRuntimeKnowledgeLifecycleObserverProvider
 
 class DefaultRuntimeKnowledgeLifecycleComposition :
     RuntimeKnowledgeLifecycleComposition {
@@ -75,10 +78,20 @@ class DefaultRuntimeKnowledgeLifecycleComposition :
             transitionManager
         )
 
+    private val observerRegistryHolder:
+        RuntimeKnowledgeLifecycleObserverRegistryHolder =
+        DefaultRuntimeKnowledgeLifecycleObserverRegistryHolder()
+
+    private val observerProvider =
+        DefaultRuntimeKnowledgeLifecycleObserverProvider(
+            observerRegistryHolder
+        )
+
     private var service:
         RuntimeKnowledgeLifecycleService =
         DefaultRuntimeKnowledgeLifecycleService(
-            pipeline
+            pipeline,
+            observerProvider = observerProvider
         )
 
     override fun lifecycleService():
@@ -99,7 +112,8 @@ class DefaultRuntimeKnowledgeLifecycleComposition :
     override fun reset() {
         service =
             DefaultRuntimeKnowledgeLifecycleService(
-                pipeline
+                pipeline,
+                observerProvider = observerProvider
             )
     }
 }
