@@ -5,6 +5,7 @@ import kotlin.test.assertSame
 import pro.liliya.core.runtime.intelligence.knowledge.RuntimeKnowledge
 import pro.liliya.core.runtime.intelligence.knowledge.RuntimeKnowledgeSource
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.observer.registry.RuntimeKnowledgeLifecycleObserverRegistry
+import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.observer.RuntimeKnowledgeLifecycleObserver
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.pipeline.RuntimeKnowledgeLifecyclePipeline
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.pipeline.RuntimeKnowledgeLifecyclePipelineResult
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.orchestrator.RuntimeKnowledgeLifecycleOrchestrationResult
@@ -34,6 +35,11 @@ class DefaultRuntimeKnowledgeLifecycleServiceProviderContractTest {
 
                 override fun register(
                     observer: pro.liliya.core.runtime.intelligence.knowledge.lifecycle.observer.RuntimeKnowledgeLifecycleObserver
+                ) {
+                }
+
+                override fun unregister(
+                    observer: RuntimeKnowledgeLifecycleObserver
                 ) {
                 }
 

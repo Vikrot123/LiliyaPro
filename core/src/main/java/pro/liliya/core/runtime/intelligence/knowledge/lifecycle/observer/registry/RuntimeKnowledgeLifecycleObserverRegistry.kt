@@ -9,6 +9,10 @@ interface RuntimeKnowledgeLifecycleObserverRegistry {
         observer: RuntimeKnowledgeLifecycleObserver
     )
 
+    fun unregister(
+        observer: RuntimeKnowledgeLifecycleObserver
+    )
+
     fun notify(
         result: RuntimeKnowledgeLifecycleServiceResult
     )

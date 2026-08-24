@@ -100,6 +100,11 @@ class DefaultRuntimeKnowledgeLifecycleServiceContractTest {
                 ) {
                 }
 
+                override fun unregister(
+                    observer: RuntimeKnowledgeLifecycleObserver
+                ) {
+                }
+
                 override fun notify(
                     result: RuntimeKnowledgeLifecycleServiceResult
                 ) {
@@ -148,6 +153,11 @@ class DefaultRuntimeKnowledgeLifecycleServiceContractTest {
             var received: RuntimeKnowledgeLifecycleServiceResult? = null
 
             override fun register(
+                observer: RuntimeKnowledgeLifecycleObserver
+            ) {
+            }
+
+            override fun unregister(
                 observer: RuntimeKnowledgeLifecycleObserver
             ) {
             }

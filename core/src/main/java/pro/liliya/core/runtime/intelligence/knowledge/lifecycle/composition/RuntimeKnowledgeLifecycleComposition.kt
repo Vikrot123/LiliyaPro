@@ -20,5 +20,9 @@ interface RuntimeKnowledgeLifecycleComposition {
         observer: RuntimeKnowledgeLifecycleObserver
     )
 
+    fun unregisterLifecycleObserver(
+        observer: RuntimeKnowledgeLifecycleObserver
+    )
+
     fun reset()
 }

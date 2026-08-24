@@ -120,6 +120,14 @@ class DefaultRuntimeKnowledgeLifecycleComposition :
             .register(observer)
     }
 
+    override fun unregisterLifecycleObserver(
+        observer: RuntimeKnowledgeLifecycleObserver
+    ) {
+        observerRegistryHolder
+            .registry()
+            .unregister(observer)
+    }
+
     override fun reset() {
         observerRegistryHolder
             .reset()

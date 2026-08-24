@@ -17,6 +17,12 @@ class DefaultRuntimeKnowledgeLifecycleObserverRegistry :
         }
     }
 
+    override fun unregister(
+        observer: RuntimeKnowledgeLifecycleObserver
+    ) {
+        observers.remove(observer)
+    }
+
     override fun notify(
         result: RuntimeKnowledgeLifecycleServiceResult
     ) {
