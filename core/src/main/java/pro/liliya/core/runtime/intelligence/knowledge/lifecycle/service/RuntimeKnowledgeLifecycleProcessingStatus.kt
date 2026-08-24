@@ -2,5 +2,6 @@ package pro.liliya.core.runtime.intelligence.knowledge.lifecycle.service
 
 enum class RuntimeKnowledgeLifecycleProcessingStatus {
     EXECUTED,
-    SKIPPED
+    SKIPPED,
+    FAILED
 }

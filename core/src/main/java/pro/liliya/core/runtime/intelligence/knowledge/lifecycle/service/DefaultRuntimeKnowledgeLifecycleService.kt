@@ -11,22 +11,33 @@ class DefaultRuntimeKnowledgeLifecycleService(
         knowledge: RuntimeKnowledge
     ): RuntimeKnowledgeLifecycleServiceResult {
 
-        val pipelineResult =
-            pipeline.process(knowledge)
+        return try {
+            val pipelineResult =
+                pipeline.process(knowledge)
 
-        val status =
-            if (pipelineResult.orchestrationResult
-                .executionResult
-                .executed
-            ) {
-                RuntimeKnowledgeLifecycleProcessingStatus.EXECUTED
-            } else {
-                RuntimeKnowledgeLifecycleProcessingStatus.SKIPPED
-            }
+            val status =
+                if (pipelineResult.orchestrationResult
+                    .executionResult
+                    .executed
+                ) {
+                    RuntimeKnowledgeLifecycleProcessingStatus.EXECUTED
+                } else {
+                    RuntimeKnowledgeLifecycleProcessingStatus.SKIPPED
+                }
 
-        return RuntimeKnowledgeLifecycleServiceResult(
-            status = status,
-            pipelineResult = pipelineResult
-        )
+            RuntimeKnowledgeLifecycleServiceResult(
+                status = status,
+                pipelineResult = pipelineResult,
+                error = null
+            )
+
+        } catch (error: Throwable) {
+
+            RuntimeKnowledgeLifecycleServiceResult(
+                status = RuntimeKnowledgeLifecycleProcessingStatus.FAILED,
+                pipelineResult = null,
+                error = error
+            )
+        }
     }
 }

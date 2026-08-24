@@ -4,5 +4,6 @@ import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.pipeline.Runtime
 
 data class RuntimeKnowledgeLifecycleServiceResult(
     val status: RuntimeKnowledgeLifecycleProcessingStatus,
-    val pipelineResult: RuntimeKnowledgeLifecyclePipelineResult
+    val pipelineResult: RuntimeKnowledgeLifecyclePipelineResult?,
+    val error: Throwable?
 )

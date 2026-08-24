@@ -52,4 +52,34 @@ class DefaultRuntimeKnowledgeLifecycleServiceContractTest {
                 RuntimeKnowledgeLifecycleProcessingStatus.EXECUTED
         )
     }
+
+    @Test
+    fun service_reports_failed_processing() {
+
+        val service =
+            DefaultRuntimeKnowledgeLifecycleService(
+                object : RuntimeKnowledgeLifecyclePipeline {
+
+                    override fun process(
+                        knowledge: RuntimeKnowledge
+                    ): RuntimeKnowledgeLifecyclePipelineResult {
+
+                        throw IllegalStateException("pipeline failed")
+                    }
+                }
+            )
+
+        val result =
+            service.processKnowledge(knowledge())
+
+        assertTrue(
+            result.status ==
+                RuntimeKnowledgeLifecycleProcessingStatus.FAILED
+        )
+
+        assertTrue(
+            result.error != null
+        )
+    }
+
 }
