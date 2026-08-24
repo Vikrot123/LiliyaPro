@@ -119,6 +119,7 @@ import pro.liliya.core.runtime.intelligence.memory.composition.RuntimeMemoryComp
 import pro.liliya.core.runtime.intelligence.memory.composition.RuntimeMemoryCompositionHolder
 import pro.liliya.core.runtime.intelligence.memory.factory.DefaultRuntimeMemoryCompositionFactory
 import pro.liliya.core.runtime.intelligence.memory.service.RuntimeMemoryService
+import pro.liliya.core.runtime.intelligence.memory.lifecycle.RuntimeMemoryLifecycleController
 
 
 class DefaultRuntimeComposition :
@@ -794,6 +795,12 @@ class DefaultRuntimeComposition :
         RuntimeMemoryService {
         return memoryComposition()
             .service()
+    }
+
+    override fun memoryLifecycle():
+        RuntimeMemoryLifecycleController {
+        return memoryComposition()
+            .lifecycle()
     }
 
     override fun recordRuntimeStarted() {
