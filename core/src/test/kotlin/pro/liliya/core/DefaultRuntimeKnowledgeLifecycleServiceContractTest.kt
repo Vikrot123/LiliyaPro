@@ -10,6 +10,9 @@ import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.orchestrator.Run
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.executor.RuntimeKnowledgeLifecycleExecutionResult
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.service.DefaultRuntimeKnowledgeLifecycleService
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.service.RuntimeKnowledgeLifecycleProcessingStatus
+import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.service.RuntimeKnowledgeLifecycleServiceResult
+import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.observer.registry.RuntimeKnowledgeLifecycleObserverRegistry
+import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.observer.RuntimeKnowledgeLifecycleObserver
 
 class DefaultRuntimeKnowledgeLifecycleServiceContractTest {
 
@@ -79,6 +82,106 @@ class DefaultRuntimeKnowledgeLifecycleServiceContractTest {
 
         assertTrue(
             result.error != null
+        )
+    }
+
+
+    @Test
+    fun service_notifies_observer_registry_after_processing() {
+
+        val registry =
+            object : RuntimeKnowledgeLifecycleObserverRegistry {
+
+                var received:
+                    RuntimeKnowledgeLifecycleServiceResult? = null
+
+                override fun register(
+                    observer: RuntimeKnowledgeLifecycleObserver
+                ) {
+                }
+
+                override fun notify(
+                    result: RuntimeKnowledgeLifecycleServiceResult
+                ) {
+                    received = result
+                }
+            }
+
+        val service =
+            DefaultRuntimeKnowledgeLifecycleService(
+                object : RuntimeKnowledgeLifecyclePipeline {
+
+                    override fun process(
+                        knowledge: RuntimeKnowledge
+                    ): RuntimeKnowledgeLifecyclePipelineResult {
+
+                        return RuntimeKnowledgeLifecyclePipelineResult(
+                            RuntimeKnowledgeLifecycleOrchestrationResult(
+                                RuntimeKnowledgeLifecycleExecutionResult(
+                                    executed = true
+                                )
+                            )
+                        )
+                    }
+                },
+                registry
+            )
+
+        val result =
+            service.processKnowledge(knowledge())
+
+        assertTrue(
+            result.status ==
+                RuntimeKnowledgeLifecycleProcessingStatus.EXECUTED
+        )
+
+        assertTrue(
+            registry.received == result
+        )
+    }
+
+    @Test
+    fun service_notifies_observer_registry_after_failed_processing() {
+
+        val registry = object : RuntimeKnowledgeLifecycleObserverRegistry {
+
+            var received: RuntimeKnowledgeLifecycleServiceResult? = null
+
+            override fun register(
+                observer: RuntimeKnowledgeLifecycleObserver
+            ) {
+            }
+
+            override fun notify(
+                result: RuntimeKnowledgeLifecycleServiceResult
+            ) {
+                received = result
+            }
+        }
+
+        val service =
+            DefaultRuntimeKnowledgeLifecycleService(
+                object : RuntimeKnowledgeLifecyclePipeline {
+
+                    override fun process(
+                        knowledge: RuntimeKnowledge
+                    ): RuntimeKnowledgeLifecyclePipelineResult {
+
+                        throw IllegalStateException("pipeline failed")
+                    }
+                },
+                registry
+            )
+
+        val result = service.processKnowledge(knowledge())
+
+        assertTrue(
+            result.status ==
+                RuntimeKnowledgeLifecycleProcessingStatus.FAILED
+        )
+
+        assertTrue(
+            registry.received == result
         )
     }
 
