@@ -111,6 +111,9 @@ import pro.liliya.core.runtime.telemetry.RuntimeTelemetrySnapshot
 import pro.liliya.core.runtime.RuntimeServiceProviderHolder
 import pro.liliya.core.runtime.RuntimeRecoverySnapshot
 import pro.liliya.core.runtime.RuntimeServiceRegistry
+import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.composition.DefaultRuntimeKnowledgeLifecycleCompositionHolder
+import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.composition.RuntimeKnowledgeLifecycleComposition
+import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.composition.RuntimeKnowledgeLifecycleCompositionHolder
 
 class DefaultRuntimeComposition :
         RuntimeComposition {
@@ -239,6 +242,9 @@ class DefaultRuntimeComposition :
 
     private val lifecycleRecorderHolder =
         RuntimeLifecycleRecorderHolder(lifecycleRecorder)
+
+    private val knowledgeLifecycleCompositionHolder =
+        DefaultRuntimeKnowledgeLifecycleCompositionHolder()
 
 
 
@@ -738,6 +744,16 @@ class DefaultRuntimeComposition :
 
     override fun lifecycleRecorderHolder(): RuntimeLifecycleRecorderHolder {
         return lifecycleRecorderHolder
+    }
+
+    override fun knowledgeLifecycleComposition():
+        RuntimeKnowledgeLifecycleComposition {
+        return knowledgeLifecycleCompositionHolder.composition()
+    }
+
+    override fun knowledgeLifecycleCompositionHolder():
+        RuntimeKnowledgeLifecycleCompositionHolder {
+        return knowledgeLifecycleCompositionHolder
     }
 
     override fun recordRuntimeStarted() {
