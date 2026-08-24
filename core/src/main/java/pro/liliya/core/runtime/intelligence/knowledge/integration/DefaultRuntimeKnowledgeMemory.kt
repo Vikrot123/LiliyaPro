@@ -16,13 +16,26 @@ import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.RuntimeKnowledge
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.integration.query.DefaultRuntimeKnowledgeLifecycleMemoryQuery
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.integration.query.RuntimeKnowledgeLifecycleMemoryQuery
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.query.DefaultRuntimeKnowledgeLifecycleStateQuery
+import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.state.RuntimeKnowledgeLifecycleStateStore
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.state.DefaultRuntimeKnowledgeLifecycleStateStore
+import pro.liliya.core.runtime.intelligence.knowledge.retrieval.lifecycle.DefaultRuntimeKnowledgeLifecycleFilter
+import pro.liliya.core.runtime.intelligence.knowledge.retrieval.lifecycle.RuntimeKnowledgeLifecycleFilter
 
 class DefaultRuntimeKnowledgeMemory(
+    private val lifecycleStateStore: RuntimeKnowledgeLifecycleStateStore =
+        DefaultRuntimeKnowledgeLifecycleStateStore(),
+
     private val lifecycleMemoryQuery: RuntimeKnowledgeLifecycleMemoryQuery =
         DefaultRuntimeKnowledgeLifecycleMemoryQuery(
             DefaultRuntimeKnowledgeLifecycleStateQuery(
-                DefaultRuntimeKnowledgeLifecycleStateStore()
+                lifecycleStateStore
+            )
+        ),
+
+    private val lifecycleFilter: RuntimeKnowledgeLifecycleFilter =
+        DefaultRuntimeKnowledgeLifecycleFilter(
+            DefaultRuntimeKnowledgeLifecycleStateQuery(
+                lifecycleStateStore
             )
         )
 ) : RuntimeKnowledgeMemory {
@@ -85,8 +98,10 @@ class DefaultRuntimeKnowledgeMemory(
     ): List<RuntimeKnowledgeGraphRankingResult> {
 
         val nodes =
-            knowledgeStore
-                .knowledge()
+            lifecycleFilter
+                .filter(
+                    knowledgeStore.knowledge()
+                )
                 .map {
                     RuntimeKnowledgeGraphNode(
                         knowledge = it,
