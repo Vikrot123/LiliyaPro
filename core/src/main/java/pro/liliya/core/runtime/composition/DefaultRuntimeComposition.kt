@@ -390,10 +390,19 @@ class DefaultRuntimeComposition :
     }
 
     override fun prepareRuntimeStartup() {
+
+        memoryComposition()
+            .lifecycle()
+            .reset()
+
         setRuntimeState(CoreRuntimeState.STARTING)
     }
 
     override fun startRuntimeLifecycle(): ModuleManager {
+
+        memoryComposition()
+            .lifecycle()
+            .start()
 
         val manager = startRuntimeComponents()
 
@@ -411,6 +420,11 @@ class DefaultRuntimeComposition :
         }
 
         clearModuleRuntime()
+
+        memoryComposition()
+            .lifecycle()
+            .stop()
+
         setRuntimeState(CoreRuntimeState.STOPPED)
         setFailureReason(null)
         setModuleStates(emptyMap())
