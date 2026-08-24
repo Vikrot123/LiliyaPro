@@ -5,19 +5,31 @@ import pro.liliya.core.runtime.intelligence.knowledge.integration.DefaultRuntime
 import pro.liliya.core.runtime.intelligence.knowledge.integration.RuntimeKnowledgeMemory
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.DefaultRuntimeKnowledgeLifecycleManager
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.RuntimeKnowledgeLifecycleState
+import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.query.DefaultRuntimeKnowledgeLifecycleStateQuery
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.state.DefaultRuntimeKnowledgeLifecycleStateStore
+import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.transition.DefaultRuntimeKnowledgeLifecycleTransitionManager
+import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.transition.RuntimeKnowledgeLifecycleTransitionManager
 
-class DefaultRuntimeKnowledgeLifecycleMemory :
-    RuntimeKnowledgeLifecycleMemory {
+class DefaultRuntimeKnowledgeLifecycleMemory(
+    private val stateStore: DefaultRuntimeKnowledgeLifecycleStateStore =
+        DefaultRuntimeKnowledgeLifecycleStateStore()
+) : RuntimeKnowledgeLifecycleMemory {
 
     private val memory =
-        DefaultRuntimeKnowledgeMemory()
+        DefaultRuntimeKnowledgeMemory(
+            lifecycleStateStore = stateStore
+        )
 
     private val lifecycle =
         DefaultRuntimeKnowledgeLifecycleManager()
 
-    private val stateStore =
-        DefaultRuntimeKnowledgeLifecycleStateStore()
+    private val transitionManager: RuntimeKnowledgeLifecycleTransitionManager =
+        DefaultRuntimeKnowledgeLifecycleTransitionManager(
+            DefaultRuntimeKnowledgeLifecycleStateQuery(
+                stateStore
+            ),
+            stateStore
+        )
 
     override fun create(
         knowledge: RuntimeKnowledge
@@ -26,7 +38,7 @@ class DefaultRuntimeKnowledgeLifecycleMemory :
             knowledge
         )
 
-        stateStore.setState(
+        transitionManager.transition(
             knowledge,
             lifecycle.create(
                 knowledge
@@ -37,7 +49,7 @@ class DefaultRuntimeKnowledgeLifecycleMemory :
     override fun activate(
         knowledge: RuntimeKnowledge
     ) {
-        stateStore.setState(
+        transitionManager.transition(
             knowledge,
             RuntimeKnowledgeLifecycleState.ACTIVE
         )
@@ -46,7 +58,7 @@ class DefaultRuntimeKnowledgeLifecycleMemory :
     override fun revise(
         knowledge: RuntimeKnowledge
     ) {
-        stateStore.setState(
+        transitionManager.transition(
             knowledge,
             RuntimeKnowledgeLifecycleState.REVIEW
         )
@@ -55,7 +67,7 @@ class DefaultRuntimeKnowledgeLifecycleMemory :
     override fun archive(
         knowledge: RuntimeKnowledge
     ) {
-        stateStore.setState(
+        transitionManager.transition(
             knowledge,
             RuntimeKnowledgeLifecycleState.ARCHIVED
         )
