@@ -9,6 +9,7 @@ import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.pipeline.Runtime
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.orchestrator.RuntimeKnowledgeLifecycleOrchestrationResult
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.executor.RuntimeKnowledgeLifecycleExecutionResult
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.service.DefaultRuntimeKnowledgeLifecycleService
+import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.service.RuntimeKnowledgeLifecycleProcessingStatus
 
 class DefaultRuntimeKnowledgeLifecycleServiceContractTest {
 
@@ -47,9 +48,8 @@ class DefaultRuntimeKnowledgeLifecycleServiceContractTest {
             service.processKnowledge(knowledge())
 
         assertTrue(
-            result.orchestrationResult
-                .executionResult
-                .executed
+            result.status ==
+                RuntimeKnowledgeLifecycleProcessingStatus.EXECUTED
         )
     }
 }

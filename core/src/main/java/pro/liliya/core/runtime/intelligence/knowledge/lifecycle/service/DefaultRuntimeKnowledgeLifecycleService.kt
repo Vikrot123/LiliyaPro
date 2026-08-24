@@ -2,7 +2,6 @@ package pro.liliya.core.runtime.intelligence.knowledge.lifecycle.service
 
 import pro.liliya.core.runtime.intelligence.knowledge.RuntimeKnowledge
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.pipeline.RuntimeKnowledgeLifecyclePipeline
-import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.pipeline.RuntimeKnowledgeLifecyclePipelineResult
 
 class DefaultRuntimeKnowledgeLifecycleService(
     private val pipeline: RuntimeKnowledgeLifecyclePipeline
@@ -10,8 +9,24 @@ class DefaultRuntimeKnowledgeLifecycleService(
 
     override fun processKnowledge(
         knowledge: RuntimeKnowledge
-    ): RuntimeKnowledgeLifecyclePipelineResult {
+    ): RuntimeKnowledgeLifecycleServiceResult {
 
-        return pipeline.process(knowledge)
+        val pipelineResult =
+            pipeline.process(knowledge)
+
+        val status =
+            if (pipelineResult.orchestrationResult
+                .executionResult
+                .executed
+            ) {
+                RuntimeKnowledgeLifecycleProcessingStatus.EXECUTED
+            } else {
+                RuntimeKnowledgeLifecycleProcessingStatus.SKIPPED
+            }
+
+        return RuntimeKnowledgeLifecycleServiceResult(
+            status = status,
+            pipelineResult = pipelineResult
+        )
     }
 }
