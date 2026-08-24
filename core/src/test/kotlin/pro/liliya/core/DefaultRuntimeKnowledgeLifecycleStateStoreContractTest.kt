@@ -1,0 +1,42 @@
+package pro.liliya.core
+
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import pro.liliya.core.runtime.intelligence.knowledge.RuntimeKnowledge
+import pro.liliya.core.runtime.intelligence.knowledge.RuntimeKnowledgeSource
+import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.RuntimeKnowledgeLifecycleState
+import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.state.DefaultRuntimeKnowledgeLifecycleStateStore
+
+class DefaultRuntimeKnowledgeLifecycleStateStoreContractTest {
+
+    private fun knowledge(): RuntimeKnowledge {
+        return RuntimeKnowledge(
+            statement = "runtime lifecycle state",
+            confidence = 0.8,
+            source = RuntimeKnowledgeSource.CONSOLIDATION,
+            createdAt = 1L
+        )
+    }
+
+    @Test
+    fun store_keeps_knowledge_state() {
+
+        val store =
+            DefaultRuntimeKnowledgeLifecycleStateStore()
+
+        val knowledge =
+            knowledge()
+
+        store.setState(
+            knowledge,
+            RuntimeKnowledgeLifecycleState.ACTIVE
+        )
+
+        assertEquals(
+            RuntimeKnowledgeLifecycleState.ACTIVE,
+            store.getState(
+                knowledge
+            )
+        )
+    }
+}
