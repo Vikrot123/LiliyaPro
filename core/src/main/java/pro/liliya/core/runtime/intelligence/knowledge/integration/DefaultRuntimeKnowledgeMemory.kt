@@ -12,9 +12,20 @@ import pro.liliya.core.runtime.intelligence.knowledge.graph.ranking.DefaultRunti
 import pro.liliya.core.runtime.intelligence.knowledge.graph.ranking.RuntimeKnowledgeGraphRankingResult
 import pro.liliya.core.runtime.intelligence.knowledge.graph.store.DefaultRuntimeKnowledgeGraphStore
 import pro.liliya.core.runtime.intelligence.knowledge.store.DefaultRuntimeKnowledgeStore
+import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.RuntimeKnowledgeLifecycleState
+import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.integration.query.DefaultRuntimeKnowledgeLifecycleMemoryQuery
+import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.integration.query.RuntimeKnowledgeLifecycleMemoryQuery
+import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.query.DefaultRuntimeKnowledgeLifecycleStateQuery
+import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.state.DefaultRuntimeKnowledgeLifecycleStateStore
 
-class DefaultRuntimeKnowledgeMemory :
-    RuntimeKnowledgeMemory {
+class DefaultRuntimeKnowledgeMemory(
+    private val lifecycleMemoryQuery: RuntimeKnowledgeLifecycleMemoryQuery =
+        DefaultRuntimeKnowledgeLifecycleMemoryQuery(
+            DefaultRuntimeKnowledgeLifecycleStateQuery(
+                DefaultRuntimeKnowledgeLifecycleStateStore()
+            )
+        )
+) : RuntimeKnowledgeMemory {
 
     private val knowledgeStore =
         DefaultRuntimeKnowledgeStore()
@@ -36,6 +47,7 @@ class DefaultRuntimeKnowledgeMemory :
 
     private val ranker =
         DefaultRuntimeKnowledgeGraphRanker()
+
 
     override fun remember(
         knowledge: RuntimeKnowledge
@@ -67,6 +79,7 @@ class DefaultRuntimeKnowledgeMemory :
         )
     }
 
+
     override fun query(
         text: String
     ): List<RuntimeKnowledgeGraphRankingResult> {
@@ -89,6 +102,14 @@ class DefaultRuntimeKnowledgeMemory :
 
         return ranker.rank(
             results
+        )
+    }
+
+    override fun getLifecycleState(
+        knowledge: RuntimeKnowledge
+    ): RuntimeKnowledgeLifecycleState? {
+        return lifecycleMemoryQuery.getState(
+            knowledge
         )
     }
 }
