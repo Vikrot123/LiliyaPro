@@ -6,6 +6,8 @@ import pro.liliya.core.runtime.intelligence.memory.installer.DefaultRuntimeMemor
 import pro.liliya.core.runtime.intelligence.memory.installer.RuntimeMemoryProviderInstaller
 import pro.liliya.core.runtime.intelligence.memory.registry.DefaultRuntimeMemoryRegistry
 import pro.liliya.core.runtime.intelligence.memory.registry.RuntimeMemoryRegistry
+import pro.liliya.core.runtime.intelligence.memory.service.DefaultRuntimeMemoryService
+import pro.liliya.core.runtime.intelligence.memory.service.RuntimeMemoryService
 
 class DefaultRuntimeMemoryComposition :
     RuntimeMemoryComposition {
@@ -16,6 +18,11 @@ class DefaultRuntimeMemoryComposition :
     private val access: RuntimeMemoryAccess =
         DefaultRuntimeMemoryAccess(
             registry
+        )
+
+    private val service: RuntimeMemoryService =
+        DefaultRuntimeMemoryService(
+            access
         )
 
     private val providerInstaller: RuntimeMemoryProviderInstaller =
@@ -33,5 +40,9 @@ class DefaultRuntimeMemoryComposition :
 
     override fun access(): RuntimeMemoryAccess {
         return access
+    }
+
+    override fun service(): RuntimeMemoryService {
+        return service
     }
 }
