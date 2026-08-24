@@ -12,4 +12,8 @@ interface RuntimeKnowledgeLifecycleHistoryQuery {
     fun transitionCount(
         knowledge: RuntimeKnowledge
     ): Int
+
+    fun history(
+        knowledge: RuntimeKnowledge
+    ): List<RuntimeKnowledgeLifecycleHistoryEntry>
 }

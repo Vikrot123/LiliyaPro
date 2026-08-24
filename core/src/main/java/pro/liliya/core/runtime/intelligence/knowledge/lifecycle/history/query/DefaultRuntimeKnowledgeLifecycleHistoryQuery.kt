@@ -25,4 +25,11 @@ class DefaultRuntimeKnowledgeLifecycleHistoryQuery(
             .history(knowledge)
             .size
     }
+
+    override fun history(
+        knowledge: RuntimeKnowledge
+    ): List<RuntimeKnowledgeLifecycleHistoryEntry> {
+
+        return historyStore.history(knowledge)
+    }
 }
