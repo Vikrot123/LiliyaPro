@@ -121,6 +121,9 @@ class DefaultRuntimeKnowledgeLifecycleComposition :
     }
 
     override fun reset() {
+        observerRegistryHolder
+            .reset()
+
         service =
             DefaultRuntimeKnowledgeLifecycleService(
                 pipeline,
