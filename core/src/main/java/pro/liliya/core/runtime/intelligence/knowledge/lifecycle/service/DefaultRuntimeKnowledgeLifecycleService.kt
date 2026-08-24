@@ -2,11 +2,13 @@ package pro.liliya.core.runtime.intelligence.knowledge.lifecycle.service
 
 import pro.liliya.core.runtime.intelligence.knowledge.RuntimeKnowledge
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.observer.registry.RuntimeKnowledgeLifecycleObserverRegistry
+import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.service.provider.RuntimeKnowledgeLifecycleObserverProvider
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.pipeline.RuntimeKnowledgeLifecyclePipeline
 
 class DefaultRuntimeKnowledgeLifecycleService(
     private val pipeline: RuntimeKnowledgeLifecyclePipeline,
-    private val observerRegistry: RuntimeKnowledgeLifecycleObserverRegistry? = null
+    private val observerRegistry: RuntimeKnowledgeLifecycleObserverRegistry? = null,
+    private val observerProvider: RuntimeKnowledgeLifecycleObserverProvider? = null
 ) : RuntimeKnowledgeLifecycleService {
 
     override fun processKnowledge(
@@ -35,7 +37,10 @@ class DefaultRuntimeKnowledgeLifecycleService(
                     error = null
                 )
 
-            observerRegistry?.notify(result)
+            observerProvider
+                ?.observerRegistry()
+                ?.notify(result)
+                ?: observerRegistry?.notify(result)
 
             result
 
@@ -49,7 +54,10 @@ class DefaultRuntimeKnowledgeLifecycleService(
                     error = error
                 )
 
-            observerRegistry?.notify(result)
+            observerProvider
+                ?.observerRegistry()
+                ?.notify(result)
+                ?: observerRegistry?.notify(result)
 
             result
         }
