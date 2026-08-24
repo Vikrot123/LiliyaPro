@@ -21,7 +21,10 @@ class DefaultRuntimeKnowledgeLifecycleObserverRegistry :
         result: RuntimeKnowledgeLifecycleServiceResult
     ) {
         observers.forEach { observer ->
-            observer.onProcessed(result)
+            try {
+                observer.onProcessed(result)
+            } catch (_: Throwable) {
+            }
         }
     }
 }
