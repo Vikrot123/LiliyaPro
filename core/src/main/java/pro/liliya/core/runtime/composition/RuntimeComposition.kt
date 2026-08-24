@@ -22,6 +22,9 @@ import pro.liliya.core.runtime.lifecycle.RuntimeLifecycleRecorder
 import pro.liliya.core.runtime.lifecycle.RuntimeLifecycleRecorderHolder
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.composition.RuntimeKnowledgeLifecycleComposition
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.composition.RuntimeKnowledgeLifecycleCompositionHolder
+import pro.liliya.core.runtime.intelligence.memory.composition.RuntimeMemoryComposition
+import pro.liliya.core.runtime.intelligence.memory.composition.RuntimeMemoryCompositionHolder
+
 import pro.liliya.core.runtime.observer.RuntimeObserverBridge
 import pro.liliya.core.runtime.observer.DefaultRuntimeObserverRegistry
 import pro.liliya.core.runtime.policy.RuntimeActionPolicyEvaluator
@@ -185,6 +188,12 @@ interface RuntimeComposition {
 
     fun knowledgeLifecycleCompositionHolder():
         RuntimeKnowledgeLifecycleCompositionHolder
+
+    fun memoryComposition():
+        RuntimeMemoryComposition
+
+    fun memoryCompositionHolder():
+        RuntimeMemoryCompositionHolder
 
 
     fun recordRuntimeStarted()

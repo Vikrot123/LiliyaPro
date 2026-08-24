@@ -114,6 +114,11 @@ import pro.liliya.core.runtime.RuntimeServiceRegistry
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.composition.DefaultRuntimeKnowledgeLifecycleCompositionHolder
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.composition.RuntimeKnowledgeLifecycleComposition
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.composition.RuntimeKnowledgeLifecycleCompositionHolder
+import pro.liliya.core.runtime.intelligence.memory.composition.DefaultRuntimeMemoryCompositionHolder
+import pro.liliya.core.runtime.intelligence.memory.composition.RuntimeMemoryComposition
+import pro.liliya.core.runtime.intelligence.memory.composition.RuntimeMemoryCompositionHolder
+import pro.liliya.core.runtime.intelligence.memory.factory.DefaultRuntimeMemoryCompositionFactory
+
 
 class DefaultRuntimeComposition :
         RuntimeComposition {
@@ -245,6 +250,11 @@ class DefaultRuntimeComposition :
 
     private val knowledgeLifecycleCompositionHolder =
         DefaultRuntimeKnowledgeLifecycleCompositionHolder()
+
+    private val memoryCompositionHolder =
+        DefaultRuntimeMemoryCompositionHolder(
+            DefaultRuntimeMemoryCompositionFactory()
+        )
 
 
 
@@ -754,6 +764,16 @@ class DefaultRuntimeComposition :
     override fun knowledgeLifecycleCompositionHolder():
         RuntimeKnowledgeLifecycleCompositionHolder {
         return knowledgeLifecycleCompositionHolder
+    }
+
+    override fun memoryComposition():
+        RuntimeMemoryComposition {
+        return memoryCompositionHolder.composition()
+    }
+
+    override fun memoryCompositionHolder():
+        RuntimeMemoryCompositionHolder {
+        return memoryCompositionHolder
     }
 
     override fun recordRuntimeStarted() {
