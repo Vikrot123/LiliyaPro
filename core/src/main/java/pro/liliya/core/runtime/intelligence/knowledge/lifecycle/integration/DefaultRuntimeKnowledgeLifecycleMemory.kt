@@ -12,7 +12,14 @@ import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.transition.Runti
 
 class DefaultRuntimeKnowledgeLifecycleMemory(
     private val stateStore: DefaultRuntimeKnowledgeLifecycleStateStore =
-        DefaultRuntimeKnowledgeLifecycleStateStore()
+        DefaultRuntimeKnowledgeLifecycleStateStore(),
+    private val transitionManager: RuntimeKnowledgeLifecycleTransitionManager =
+        DefaultRuntimeKnowledgeLifecycleTransitionManager(
+            DefaultRuntimeKnowledgeLifecycleStateQuery(
+                stateStore
+            ),
+            stateStore
+        )
 ) : RuntimeKnowledgeLifecycleMemory {
 
     private val memory =
@@ -22,14 +29,6 @@ class DefaultRuntimeKnowledgeLifecycleMemory(
 
     private val lifecycle =
         DefaultRuntimeKnowledgeLifecycleManager()
-
-    private val transitionManager: RuntimeKnowledgeLifecycleTransitionManager =
-        DefaultRuntimeKnowledgeLifecycleTransitionManager(
-            DefaultRuntimeKnowledgeLifecycleStateQuery(
-                stateStore
-            ),
-            stateStore
-        )
 
     override fun create(
         knowledge: RuntimeKnowledge

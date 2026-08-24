@@ -4,6 +4,7 @@ import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.decision.Default
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.executor.DefaultRuntimeKnowledgeLifecycleExecutor
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.history.DefaultRuntimeKnowledgeLifecycleHistoryStore
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.history.query.DefaultRuntimeKnowledgeLifecycleHistoryQuery
+import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.history.query.RuntimeKnowledgeLifecycleHistoryQuery
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.pipeline.DefaultRuntimeKnowledgeLifecyclePipeline
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.service.DefaultRuntimeKnowledgeLifecycleService
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.service.RuntimeKnowledgeLifecycleService
@@ -70,7 +71,8 @@ class DefaultRuntimeKnowledgeLifecycleComposition :
     private val lifecycleMemory:
         RuntimeKnowledgeLifecycleMemory =
         DefaultRuntimeKnowledgeLifecycleMemory(
-            stateStore
+            stateStore,
+            transitionManager
         )
 
     private var service:
@@ -87,6 +89,11 @@ class DefaultRuntimeKnowledgeLifecycleComposition :
     override fun lifecycleMemory():
         RuntimeKnowledgeLifecycleMemory {
         return lifecycleMemory
+    }
+
+    override fun lifecycleHistoryQuery():
+        RuntimeKnowledgeLifecycleHistoryQuery {
+        return historyQuery
     }
 
     override fun reset() {
