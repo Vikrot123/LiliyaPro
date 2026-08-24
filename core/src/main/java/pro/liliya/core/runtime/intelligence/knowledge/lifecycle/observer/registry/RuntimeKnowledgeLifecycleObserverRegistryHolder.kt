@@ -4,5 +4,6 @@ interface RuntimeKnowledgeLifecycleObserverRegistryHolder {
 
     fun registry(): RuntimeKnowledgeLifecycleObserverRegistry
 
+
     fun reset()
 }

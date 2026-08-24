@@ -16,6 +16,7 @@ import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.transition.Defau
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.integration.DefaultRuntimeKnowledgeLifecycleMemory
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.integration.RuntimeKnowledgeLifecycleMemory
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.observer.registry.DefaultRuntimeKnowledgeLifecycleObserverRegistryHolder
+import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.observer.RuntimeKnowledgeLifecycleObserver
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.observer.registry.RuntimeKnowledgeLifecycleObserverRegistryHolder
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.service.provider.DefaultRuntimeKnowledgeLifecycleObserverProvider
 
@@ -107,6 +108,16 @@ class DefaultRuntimeKnowledgeLifecycleComposition :
     override fun lifecycleHistoryQuery():
         RuntimeKnowledgeLifecycleHistoryQuery {
         return historyQuery
+    }
+
+    override fun registerLifecycleObserver(
+        observer: RuntimeKnowledgeLifecycleObserver
+    ) {
+        println("REGISTER_OBSERVER_CALL")
+
+        observerRegistryHolder
+            .registry()
+            .register(observer)
     }
 
     override fun reset() {
