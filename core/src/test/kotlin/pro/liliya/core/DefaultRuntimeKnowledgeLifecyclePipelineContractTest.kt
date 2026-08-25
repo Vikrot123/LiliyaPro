@@ -49,4 +49,56 @@ class DefaultRuntimeKnowledgeLifecyclePipelineContractTest {
                 .executed
         )
     }
+    @Test
+    fun pipeline_preserves_successful_orchestration_result() {
+        val pipeline =
+            DefaultRuntimeKnowledgeLifecyclePipeline(
+                object : RuntimeKnowledgeLifecycleOrchestrator {
+                    override fun process(
+                        knowledge: RuntimeKnowledge
+                    ): RuntimeKnowledgeLifecycleOrchestrationResult {
+                        return RuntimeKnowledgeLifecycleOrchestrationResult(
+                            RuntimeKnowledgeLifecycleExecutionResult(
+                                executed = true
+                            )
+                        )
+                    }
+                }
+            )
+
+        val result = pipeline.process(knowledge())
+
+        assertTrue(
+            result.orchestrationResult
+                .executionResult
+                .executed
+        )
+    }
+
+    @Test
+    fun pipeline_preserves_rejected_orchestration_result() {
+        val pipeline =
+            DefaultRuntimeKnowledgeLifecyclePipeline(
+                object : RuntimeKnowledgeLifecycleOrchestrator {
+                    override fun process(
+                        knowledge: RuntimeKnowledge
+                    ): RuntimeKnowledgeLifecycleOrchestrationResult {
+                        return RuntimeKnowledgeLifecycleOrchestrationResult(
+                            RuntimeKnowledgeLifecycleExecutionResult(
+                                executed = false
+                            )
+                        )
+                    }
+                }
+            )
+
+        val result = pipeline.process(knowledge())
+
+        assertTrue(
+            !result.orchestrationResult
+                .executionResult
+                .executed
+        )
+    }
+
 }
