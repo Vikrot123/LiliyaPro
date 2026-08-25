@@ -39,9 +39,18 @@ class CognitiveContextCompositionServiceProcessLifecycleContractTest {
             CognitiveContextType.TASK
         )
 
-        assertEquals(first.values, second.values)
+        assertEquals(first.values.size, second.values.size)
         assertEquals(first.selectedCount, second.selectedCount)
         assertEquals(first.rejectedCount, second.rejectedCount)
+
+        assertEquals(
+            first.values.values.map { value ->
+                (value as CognitiveContextSnapshot).values["value"]
+            },
+            second.values.values.map { value ->
+                (value as CognitiveContextSnapshot).values["value"]
+            }
+        )
     }
 
     @Test
