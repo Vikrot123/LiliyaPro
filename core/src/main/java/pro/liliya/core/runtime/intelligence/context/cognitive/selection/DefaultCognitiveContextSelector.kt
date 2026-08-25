@@ -26,7 +26,7 @@ class DefaultCognitiveContextSelector(
 
         if (snapshot.metadata.isEmpty()) {
             return CognitiveContextSelection(
-                values = snapshot.values,
+                values = LinkedHashMap(snapshot.values),
                 selectedCount = snapshot.values.size,
                 rejectedCount = 0
             )
