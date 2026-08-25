@@ -15,10 +15,15 @@ class DefaultCognitiveContextBuilder :
         val values = linkedMapOf<String, Any?>()
 
         sources.forEachIndexed { index, source ->
-            val snapshot = source.snapshot(type)
+            try {
+                val snapshot = source.snapshot(type)
 
-            if (snapshot != null) {
-                values["source_$index"] = snapshot
+                if (snapshot != null) {
+                    values["source_$index"] = snapshot
+                }
+            } catch (_: Exception) {
+                // A failing source must not prevent later sources
+                // from contributing to the cognitive context.
             }
         }
 
