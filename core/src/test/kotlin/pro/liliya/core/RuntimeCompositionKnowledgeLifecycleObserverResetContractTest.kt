@@ -2,6 +2,8 @@ package pro.liliya.core
 
 import kotlin.test.Test
 import kotlin.test.assertNotNull
+import kotlin.test.assertNotSame
+import kotlin.test.assertSame
 import kotlin.test.assertNull
 
 import pro.liliya.core.runtime.composition.DefaultRuntimeComposition
@@ -125,6 +127,40 @@ class RuntimeCompositionKnowledgeLifecycleObserverResetContractTest {
         assertNull(
             oldObserver.lastProcessedResult()
         )
+    }
+
+    @Test
+    fun reset_rebinds_service_to_new_observer_registry() {
+        val composition = DefaultRuntimeComposition()
+        val lifecycle = composition.knowledgeLifecycleComposition()
+
+        val oldObserver = DefaultRuntimeKnowledgeLifecycleObserver()
+
+        lifecycle.registerLifecycleObserver(oldObserver)
+
+        lifecycle
+            .lifecycleService()
+            .processKnowledge(knowledge())
+
+        val beforeResetResult = oldObserver.lastProcessedResult()
+
+        assertNotNull(beforeResetResult)
+
+        lifecycle.reset()
+
+        val newObserver = DefaultRuntimeKnowledgeLifecycleObserver()
+
+        lifecycle.registerLifecycleObserver(newObserver)
+
+        lifecycle
+            .lifecycleService()
+            .processKnowledge(knowledge())
+
+        val afterResetResult = newObserver.lastProcessedResult()
+
+        assertNotNull(afterResetResult)
+        assertNotSame(beforeResetResult, afterResetResult)
+        assertSame(beforeResetResult, oldObserver.lastProcessedResult())
     }
 
 }
