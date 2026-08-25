@@ -69,7 +69,7 @@ class RuntimeReflectionTrendAnalyzerContractTest {
             result.healthyRatio
         )
 
-        assertTrue(
+        assertFalse(
             result.improving
         )
     }

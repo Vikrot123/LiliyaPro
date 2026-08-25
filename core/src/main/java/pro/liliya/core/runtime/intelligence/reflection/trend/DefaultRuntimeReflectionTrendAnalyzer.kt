@@ -32,7 +32,7 @@ class DefaultRuntimeReflectionTrendAnalyzer :
 
         val improving =
             history.size >= 2 &&
-            !history.last().healthy.not() &&
+            !history[history.lastIndex - 1].healthy &&
             history.last().healthy
 
         return RuntimeReflectionTrend(
