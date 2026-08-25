@@ -67,10 +67,14 @@ import pro.liliya.core.runtime.health.RuntimeRecoverySnapshot as HealthRecoveryS
 import pro.liliya.core.runtime.health.RuntimeHealthSnapshot
 import pro.liliya.core.runtime.telemetry.RuntimeTelemetrySnapshot
 
+import pro.liliya.core.runtime.intelligence.context.cognitive.composition.CognitiveContextComposition
+
 interface RuntimeComposition {
     
     val recoveryEventBus: RuntimeRecoveryEventBus
 
+
+    fun cognitiveContextComposition(): CognitiveContextComposition
 
     fun context(): CoreRuntimeContext
     fun diagnosticSource(): CoreDiagnosticSource

@@ -122,6 +122,11 @@ import pro.liliya.core.runtime.intelligence.memory.service.RuntimeMemoryService
 import pro.liliya.core.runtime.intelligence.memory.lifecycle.RuntimeMemoryLifecycleController
 
 
+import pro.liliya.core.runtime.intelligence.context.DefaultRuntimeContextProvider
+import pro.liliya.core.runtime.intelligence.context.cognitive.composition.DefaultCognitiveContextComposition
+
+import pro.liliya.core.runtime.intelligence.context.cognitive.composition.CognitiveContextComposition
+
 class DefaultRuntimeComposition :
         RuntimeComposition {
 
@@ -298,6 +303,17 @@ class DefaultRuntimeComposition :
 
     private var runtimeServiceRegistry =
         RuntimeServiceRegistry()
+
+    private val runtimeContextProvider =
+        DefaultRuntimeContextProvider(
+            registry = runtimeServiceRegistry,
+            runtimeStateHolder = runtimeStateHolder
+        )
+
+    private val cognitiveContextComposition =
+        DefaultCognitiveContextComposition(
+            runtimeContextProvider
+        )
 
     private val runtimeSupervisor =
         RuntimeSupervisor(
@@ -1124,6 +1140,12 @@ class DefaultRuntimeComposition :
     override fun runtimeServiceRegistry(): RuntimeServiceRegistry {
         return runtimeServiceRegistry
     }
+
+    override fun cognitiveContextComposition():
+        CognitiveContextComposition {
+        return cognitiveContextComposition
+    }
+
 
     override fun serviceBootstrap(): RuntimeServiceBootstrap {
         return runtimeServiceBootstrapHolder.get()
