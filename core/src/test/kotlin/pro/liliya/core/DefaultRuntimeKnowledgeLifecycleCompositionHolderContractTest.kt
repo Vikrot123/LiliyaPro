@@ -1,6 +1,8 @@
 package pro.liliya.core
 
 import kotlin.test.Test
+import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.state.DefaultRuntimeKnowledgeLifecycleStateStore
+import pro.liliya.core.runtime.intelligence.knowledge.integration.DefaultRuntimeKnowledgeMemory
 import kotlin.test.assertNotSame
 import kotlin.test.assertSame
 
@@ -12,7 +14,7 @@ class DefaultRuntimeKnowledgeLifecycleCompositionHolderContractTest {
     fun holder_returns_same_composition_instance() {
 
         val holder =
-            DefaultRuntimeKnowledgeLifecycleCompositionHolder()
+            DefaultRuntimeKnowledgeLifecycleCompositionHolder(DefaultRuntimeKnowledgeMemory(), DefaultRuntimeKnowledgeLifecycleStateStore())
 
         val first =
             holder.composition()
@@ -30,7 +32,7 @@ class DefaultRuntimeKnowledgeLifecycleCompositionHolderContractTest {
     fun holder_reset_creates_new_composition_instance() {
 
         val holder =
-            DefaultRuntimeKnowledgeLifecycleCompositionHolder()
+            DefaultRuntimeKnowledgeLifecycleCompositionHolder(DefaultRuntimeKnowledgeMemory(), DefaultRuntimeKnowledgeLifecycleStateStore())
 
         val first =
             holder.composition()

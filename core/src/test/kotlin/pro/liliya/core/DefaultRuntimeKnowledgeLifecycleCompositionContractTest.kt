@@ -1,6 +1,8 @@
 package pro.liliya.core
 
 import kotlin.test.Test
+import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.state.DefaultRuntimeKnowledgeLifecycleStateStore
+import pro.liliya.core.runtime.intelligence.knowledge.integration.DefaultRuntimeKnowledgeMemory
 import kotlin.test.assertNotSame
 import kotlin.test.assertSame
 
@@ -11,7 +13,7 @@ class DefaultRuntimeKnowledgeLifecycleCompositionContractTest {
     @Test
     fun composition_returns_same_service_instance() {
         val composition =
-            DefaultRuntimeKnowledgeLifecycleComposition()
+            DefaultRuntimeKnowledgeLifecycleComposition(DefaultRuntimeKnowledgeMemory(), DefaultRuntimeKnowledgeLifecycleStateStore())
 
         val first =
             composition.lifecycleService()
@@ -28,7 +30,7 @@ class DefaultRuntimeKnowledgeLifecycleCompositionContractTest {
     @Test
     fun composition_reset_creates_new_service_instance() {
         val composition =
-            DefaultRuntimeKnowledgeLifecycleComposition()
+            DefaultRuntimeKnowledgeLifecycleComposition(DefaultRuntimeKnowledgeMemory(), DefaultRuntimeKnowledgeLifecycleStateStore())
 
         val first =
             composition.lifecycleService()

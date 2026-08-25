@@ -18,13 +18,18 @@ import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.integration.Runt
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.observer.registry.DefaultRuntimeKnowledgeLifecycleObserverRegistryHolder
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.observer.RuntimeKnowledgeLifecycleObserver
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.observer.registry.RuntimeKnowledgeLifecycleObserverRegistryHolder
+import pro.liliya.core.runtime.intelligence.knowledge.integration.RuntimeKnowledgeMemory
+import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.state.RuntimeKnowledgeLifecycleStateStore
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.service.provider.DefaultRuntimeKnowledgeLifecycleObserverProvider
 
-class DefaultRuntimeKnowledgeLifecycleComposition :
-    RuntimeKnowledgeLifecycleComposition {
+class DefaultRuntimeKnowledgeLifecycleComposition(
+    private val knowledgeMemory: RuntimeKnowledgeMemory,
+    private val knowledgeLifecycleStateStore:
+        RuntimeKnowledgeLifecycleStateStore
+) : RuntimeKnowledgeLifecycleComposition {
 
     private val stateStore =
-        DefaultRuntimeKnowledgeLifecycleStateStore()
+        knowledgeLifecycleStateStore
 
     private val historyStore =
         DefaultRuntimeKnowledgeLifecycleHistoryStore()
@@ -75,8 +80,9 @@ class DefaultRuntimeKnowledgeLifecycleComposition :
     private val lifecycleMemory:
         RuntimeKnowledgeLifecycleMemory =
         DefaultRuntimeKnowledgeLifecycleMemory(
-            stateStore,
-            transitionManager
+            stateStore = stateStore,
+            transitionManager = transitionManager,
+            knowledgeMemory = knowledgeMemory
         )
 
     private val observerRegistryHolder:

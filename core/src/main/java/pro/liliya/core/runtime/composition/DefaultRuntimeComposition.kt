@@ -255,12 +255,21 @@ class DefaultRuntimeComposition :
     private val lifecycleRecorderHolder =
         RuntimeLifecycleRecorderHolder(lifecycleRecorder)
 
-    private val knowledgeLifecycleCompositionHolder =
-        DefaultRuntimeKnowledgeLifecycleCompositionHolder()
-
     private val memoryCompositionHolder =
         DefaultRuntimeMemoryCompositionHolder(
             DefaultRuntimeMemoryCompositionFactory()
+        )
+
+    private val knowledgeLifecycleCompositionHolder =
+        DefaultRuntimeKnowledgeLifecycleCompositionHolder(
+            knowledgeMemory =
+                memoryCompositionHolder
+                    .composition()
+                    .knowledgeMemory(),
+            knowledgeLifecycleStateStore =
+                memoryCompositionHolder
+                    .composition()
+                    .knowledgeLifecycleStateStore()
         )
 
 

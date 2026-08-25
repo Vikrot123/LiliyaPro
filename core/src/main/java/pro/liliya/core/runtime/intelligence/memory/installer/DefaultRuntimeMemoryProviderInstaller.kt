@@ -4,10 +4,11 @@ import pro.liliya.core.runtime.intelligence.memory.adapter.RuntimeKnowledgeMemor
 import pro.liliya.core.runtime.intelligence.memory.api.RuntimeMemoryType
 import pro.liliya.core.runtime.intelligence.memory.capability.RuntimeMemoryCapability
 import pro.liliya.core.runtime.intelligence.memory.registry.RuntimeMemoryRegistry
-import pro.liliya.core.runtime.intelligence.knowledge.integration.DefaultRuntimeKnowledgeMemory
+import pro.liliya.core.runtime.intelligence.knowledge.integration.RuntimeKnowledgeMemory
 
-class DefaultRuntimeMemoryProviderInstaller :
-    RuntimeMemoryProviderInstaller {
+class DefaultRuntimeMemoryProviderInstaller(
+    private val knowledgeMemory: RuntimeKnowledgeMemory
+) : RuntimeMemoryProviderInstaller {
 
     override fun install(
         registry: RuntimeMemoryRegistry
@@ -15,7 +16,7 @@ class DefaultRuntimeMemoryProviderInstaller :
         registry.register(
             RuntimeMemoryType.SEMANTIC,
             RuntimeKnowledgeMemoryAdapter(
-                DefaultRuntimeKnowledgeMemory()
+                knowledgeMemory
             ),
             setOf(
                 RuntimeMemoryCapability.READ,

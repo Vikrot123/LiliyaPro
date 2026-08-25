@@ -1,6 +1,7 @@
 package pro.liliya.core
 
 import kotlin.test.Test
+import pro.liliya.core.runtime.intelligence.knowledge.integration.DefaultRuntimeKnowledgeMemory
 import kotlin.test.assertNotNull
 
 import pro.liliya.core.runtime.intelligence.memory.api.RuntimeMemoryType
@@ -16,7 +17,7 @@ class RuntimeMemoryProviderInstallerDuplicateContractTest {
             DefaultRuntimeMemoryRegistry()
 
         val installer =
-            DefaultRuntimeMemoryProviderInstaller()
+            DefaultRuntimeMemoryProviderInstaller(DefaultRuntimeKnowledgeMemory())
 
         installer.install(registry)
         installer.install(registry)

@@ -10,6 +10,10 @@ import pro.liliya.core.runtime.intelligence.memory.service.DefaultRuntimeMemoryS
 import pro.liliya.core.runtime.intelligence.memory.service.RuntimeMemoryService
 import pro.liliya.core.runtime.intelligence.memory.lifecycle.DefaultRuntimeMemoryLifecycleController
 import pro.liliya.core.runtime.intelligence.memory.lifecycle.RuntimeMemoryLifecycleController
+import pro.liliya.core.runtime.intelligence.knowledge.integration.DefaultRuntimeKnowledgeMemory
+import pro.liliya.core.runtime.intelligence.knowledge.integration.RuntimeKnowledgeMemory
+import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.state.DefaultRuntimeKnowledgeLifecycleStateStore
+import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.state.RuntimeKnowledgeLifecycleStateStore
 
 class DefaultRuntimeMemoryComposition :
     RuntimeMemoryComposition {
@@ -30,8 +34,19 @@ class DefaultRuntimeMemoryComposition :
     private val lifecycle: RuntimeMemoryLifecycleController =
         DefaultRuntimeMemoryLifecycleController()
 
+    private val knowledgeLifecycleStateStore:
+        RuntimeKnowledgeLifecycleStateStore =
+        DefaultRuntimeKnowledgeLifecycleStateStore()
+
+    private val knowledgeMemory: RuntimeKnowledgeMemory =
+        DefaultRuntimeKnowledgeMemory(
+            lifecycleStateStore = knowledgeLifecycleStateStore
+        )
+
     private val providerInstaller: RuntimeMemoryProviderInstaller =
-        DefaultRuntimeMemoryProviderInstaller()
+        DefaultRuntimeMemoryProviderInstaller(
+            knowledgeMemory
+        )
 
     init {
         providerInstaller.install(
@@ -53,5 +68,14 @@ class DefaultRuntimeMemoryComposition :
 
     override fun lifecycle(): RuntimeMemoryLifecycleController {
         return lifecycle
+    }
+
+    override fun knowledgeMemory(): RuntimeKnowledgeMemory {
+        return knowledgeMemory
+    }
+
+    override fun knowledgeLifecycleStateStore():
+        RuntimeKnowledgeLifecycleStateStore {
+        return knowledgeLifecycleStateStore
     }
 }

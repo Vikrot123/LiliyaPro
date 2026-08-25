@@ -1,11 +1,19 @@
 package pro.liliya.core.runtime.intelligence.knowledge.lifecycle.composition
 
-class DefaultRuntimeKnowledgeLifecycleCompositionHolder :
-    RuntimeKnowledgeLifecycleCompositionHolder {
+import pro.liliya.core.runtime.intelligence.knowledge.integration.RuntimeKnowledgeMemory
+import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.state.RuntimeKnowledgeLifecycleStateStore
+
+class DefaultRuntimeKnowledgeLifecycleCompositionHolder(
+    private val knowledgeMemory: RuntimeKnowledgeMemory,
+    private val knowledgeLifecycleStateStore: RuntimeKnowledgeLifecycleStateStore
+) : RuntimeKnowledgeLifecycleCompositionHolder {
 
     private var currentComposition:
         RuntimeKnowledgeLifecycleComposition =
-        DefaultRuntimeKnowledgeLifecycleComposition()
+        DefaultRuntimeKnowledgeLifecycleComposition(
+            knowledgeMemory,
+            knowledgeLifecycleStateStore
+        )
 
     override fun composition():
         RuntimeKnowledgeLifecycleComposition {
@@ -14,6 +22,9 @@ class DefaultRuntimeKnowledgeLifecycleCompositionHolder :
 
     override fun reset() {
         currentComposition =
-            DefaultRuntimeKnowledgeLifecycleComposition()
+            DefaultRuntimeKnowledgeLifecycleComposition(
+                knowledgeMemory,
+                knowledgeLifecycleStateStore
+            )
     }
 }
