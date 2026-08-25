@@ -111,4 +111,42 @@ class RuntimeCompositionKnowledgeLifecycleMemoryContractTest {
         )
     }
 
+    @Test
+    fun composition_preserves_shared_knowledge_memory_identity() {
+        val composition = DefaultRuntimeComposition()
+
+        val memoryComposition =
+            composition.memoryComposition()
+
+        val lifecycleMemory =
+            composition
+                .knowledgeLifecycleComposition()
+                .lifecycleMemory()
+
+        assertSame(
+            memoryComposition.knowledgeMemory(),
+            lifecycleMemory.memory()
+        )
+    }
+
+    @Test
+    fun prepare_preserves_shared_knowledge_memory_identity() {
+        val composition = DefaultRuntimeComposition()
+
+        val before =
+            composition
+                .memoryComposition()
+                .knowledgeMemory()
+
+        composition.prepareRuntime()
+
+        val after =
+            composition
+                .knowledgeLifecycleComposition()
+                .lifecycleMemory()
+                .memory()
+
+        assertSame(before, after)
+    }
+
 }
