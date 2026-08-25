@@ -2,6 +2,7 @@ package pro.liliya.core
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.RuntimeKnowledgeLifecycleState
 import pro.liliya.core.runtime.intelligence.knowledge.RuntimeKnowledge
 import pro.liliya.core.runtime.intelligence.knowledge.RuntimeKnowledgeSource
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.state.DefaultRuntimeKnowledgeLifecycleStateStore
@@ -99,5 +100,6 @@ class DefaultRuntimeKnowledgeLifecycleCompositionContractTest {
         assertSame(historyQuery, afterResetQuery)
         assertEquals(2, afterResetQuery.transitionCount(knowledge))
     }
+
 
 }

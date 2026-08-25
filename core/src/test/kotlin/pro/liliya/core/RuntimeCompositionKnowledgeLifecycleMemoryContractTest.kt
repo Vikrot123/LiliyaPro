@@ -86,4 +86,29 @@ class RuntimeCompositionKnowledgeLifecycleMemoryContractTest {
             memory.memory().getLifecycleState(knowledge)
         )
     }
+    @Test
+    fun composition_reset_preserves_knowledge_lifecycle_state() {
+        val composition = DefaultRuntimeComposition()
+        val lifecycle = composition.knowledgeLifecycleComposition()
+        val knowledge = knowledge()
+
+        lifecycle.lifecycleMemory().create(knowledge)
+
+        assertEquals(
+            RuntimeKnowledgeLifecycleState.ACTIVE,
+            lifecycle.lifecycleMemory()
+                .memory()
+                .getLifecycleState(knowledge)
+        )
+
+        lifecycle.reset()
+
+        assertEquals(
+            RuntimeKnowledgeLifecycleState.ACTIVE,
+            lifecycle.lifecycleMemory()
+                .memory()
+                .getLifecycleState(knowledge)
+        )
+    }
+
 }
