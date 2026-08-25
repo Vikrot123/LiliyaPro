@@ -7,207 +7,148 @@ import kotlin.test.assertTrue
 import pro.liliya.core.runtime.intelligence.context.cognitive.CognitiveContextSnapshot
 import pro.liliya.core.runtime.intelligence.context.cognitive.CognitiveContextSource
 import pro.liliya.core.runtime.intelligence.context.cognitive.CognitiveContextType
-import pro.liliya.core.runtime.intelligence.context.cognitive.composition.DefaultCognitiveContextComposition
+import pro.liliya.core.runtime.intelligence.context.cognitive.builder.DefaultCognitiveContextBuilder
+import pro.liliya.core.runtime.intelligence.context.cognitive.pipeline.DefaultCognitiveContextPipeline
+import pro.liliya.core.runtime.intelligence.context.cognitive.selection.DefaultCognitiveContextSelector
 
 class CognitiveContextSourceFailureIsolationContractTest {
 
     @Test
-    fun failing_source_should_not_prevent_other_sources_from_contributing() {
-        val composition = DefaultCognitiveContextComposition()
+    fun failed_source_should_not_block_later_sources() {
+        val pipeline = pipeline()
 
-        val healthySource = source(
-            "healthy",
-            "available"
-        )
-
-        val failingSource = failingSource()
-
-        assertTrue(
-            composition.service().registerSource(healthySource)
-        )
-
-        assertTrue(
-            composition.service().registerSource(failingSource)
-        )
-
-        val snapshot = composition
-            .service()
-            .snapshot(CognitiveContextType.WORKING)
-
-        assertEquals(
-            "available",
-            snapshot.values["healthy"]
-        )
-
-        assertTrue(
-            snapshot.values.containsKey("runtimeState")
-        )
-    }
-
-    @Test
-    fun failing_source_should_not_prevent_sources_registered_after_it() {
-        val composition = DefaultCognitiveContextComposition()
-
-        val firstHealthy = source(
-            "first",
-            "one"
-        )
-
-        val failing = failingSource()
-
-        val secondHealthy = source(
-            "second",
-            "two"
-        )
-
-        assertTrue(
-            composition.service().registerSource(firstHealthy)
-        )
-
-        assertTrue(
-            composition.service().registerSource(failing)
-        )
-
-        assertTrue(
-            composition.service().registerSource(secondHealthy)
-        )
-
-        val snapshot = composition
-            .service()
-            .snapshot(CognitiveContextType.TASK)
-
-        assertEquals(
-            "one",
-            snapshot.values["first"]
-        )
-
-        assertEquals(
-            "two",
-            snapshot.values["second"]
-        )
-
-        assertTrue(
-            snapshot.values.containsKey("runtimeState")
-        )
-    }
-
-    @Test
-    fun multiple_failing_sources_should_not_destroy_healthy_context() {
-        val composition = DefaultCognitiveContextComposition()
-
-        assertTrue(
-            composition.service().registerSource(
-                source("first", "one")
+        val result = pipeline.process(
+            type = CognitiveContextType.TASK,
+            sources = listOf(
+                source("FIRST"),
+                failingSource(),
+                source("THIRD")
             )
         )
 
-        assertTrue(
-            composition.service().registerSource(
+        assertEquals(
+            listOf("source_0", "source_2"),
+            result.values.keys.toList()
+        )
+
+        assertEquals(
+            "FIRST",
+            snapshotValue(result.values["source_0"])
+        )
+
+        assertEquals(
+            "THIRD",
+            snapshotValue(result.values["source_2"])
+        )
+
+        assertEquals(2, result.selectedCount)
+        assertEquals(0, result.rejectedCount)
+    }
+
+    @Test
+    fun failed_source_should_not_be_replaced_by_another_source_key() {
+        val pipeline = pipeline()
+
+        val result = pipeline.process(
+            type = CognitiveContextType.TASK,
+            sources = listOf(
+                source("A"),
+                failingSource(),
+                source("C"),
+                source("D")
+            )
+        )
+
+        assertEquals(
+            listOf("source_0", "source_2", "source_3"),
+            result.values.keys.toList()
+        )
+
+        assertTrue("source_1" !in result.values)
+
+        assertEquals("A", snapshotValue(result.values["source_0"]))
+        assertEquals("C", snapshotValue(result.values["source_2"]))
+        assertEquals("D", snapshotValue(result.values["source_3"]))
+    }
+
+    @Test
+    fun multiple_failed_sources_should_not_destroy_successful_sources() {
+        val pipeline = pipeline()
+
+        val result = pipeline.process(
+            type = CognitiveContextType.TASK,
+            sources = listOf(
+                failingSource(),
+                source("B"),
+                failingSource(),
+                source("D"),
                 failingSource()
             )
         )
 
-        assertTrue(
-            composition.service().registerSource(
+        assertEquals(
+            listOf("source_1", "source_3"),
+            result.values.keys.toList()
+        )
+
+        assertEquals("B", snapshotValue(result.values["source_1"]))
+        assertEquals("D", snapshotValue(result.values["source_3"]))
+
+        assertEquals(2, result.selectedCount)
+        assertEquals(0, result.rejectedCount)
+    }
+
+    @Test
+    fun all_failed_sources_should_produce_empty_selection() {
+        val pipeline = pipeline()
+
+        val result = pipeline.process(
+            type = CognitiveContextType.TASK,
+            sources = listOf(
+                failingSource(),
+                failingSource(),
                 failingSource()
             )
         )
 
-        assertTrue(
-            composition.service().registerSource(
-                source("last", "two")
-            )
-        )
-
-        val snapshot = composition
-            .service()
-            .snapshot(CognitiveContextType.PROCESSOR)
-
         assertEquals(
-            "one",
-            snapshot.values["first"]
+            emptyMap<String, Any?>(),
+            result.values
         )
 
-        assertEquals(
-            "two",
-            snapshot.values["last"]
-        )
-
-        assertTrue(
-            snapshot.values.containsKey("runtimeState")
-        )
+        assertEquals(0, result.selectedCount)
+        assertEquals(0, result.rejectedCount)
     }
 
     @Test
-    fun failing_source_should_not_remove_already_aggregated_values() {
-        val composition = DefaultCognitiveContextComposition()
+    fun source_failure_should_not_change_successful_source_snapshot() {
+        val pipeline = pipeline()
 
-        val first = source(
-            "beforeFailure",
-            "preserved"
-        )
-
-        assertTrue(
-            composition.service().registerSource(first)
-        )
-
-        assertTrue(
-            composition.service().registerSource(
-                failingSource()
+        val result = pipeline.process(
+            type = CognitiveContextType.TASK,
+            sources = listOf(
+                source("STABLE_A"),
+                failingSource(),
+                source("STABLE_C")
             )
         )
 
-        val snapshot = composition
-            .service()
-            .snapshot(CognitiveContextType.GLOBAL)
+        val first = result.values["source_0"] as? CognitiveContextSnapshot
+        val third = result.values["source_2"] as? CognitiveContextSnapshot
 
-        assertEquals(
-            "preserved",
-            snapshot.values["beforeFailure"]
-        )
+        assertEquals("STABLE_A", first?.values?.get("payload"))
+        assertEquals("STABLE_C", third?.values?.get("payload"))
     }
 
-    @Test
-    fun source_failure_should_be_isolated_to_the_failing_source() {
-        val composition = DefaultCognitiveContextComposition()
-
-        val healthy = source(
-            "healthy",
-            "ok"
-        )
-
-        val failing = failingSource()
-
-        assertTrue(
-            composition.service().registerSource(healthy)
-        )
-
-        assertTrue(
-            composition.service().registerSource(failing)
-        )
-
-        val snapshot = composition
-            .service()
-            .snapshot(CognitiveContextType.TEMPORARY)
-
-        assertEquals(
-            CognitiveContextType.TEMPORARY,
-            snapshot.type
-        )
-
-        assertEquals(
-            "ok",
-            snapshot.values["healthy"]
-        )
-
-        assertTrue(
-            snapshot.values.keys.contains("runtimeState")
+    private fun pipeline(): DefaultCognitiveContextPipeline {
+        return DefaultCognitiveContextPipeline(
+            builder = DefaultCognitiveContextBuilder(),
+            selector = DefaultCognitiveContextSelector()
         )
     }
 
     private fun source(
-        key: String,
-        value: Any?
+        value: String
     ): CognitiveContextSource {
         return object : CognitiveContextSource {
             override fun snapshot(
@@ -215,9 +156,7 @@ class CognitiveContextSourceFailureIsolationContractTest {
             ): CognitiveContextSnapshot {
                 return CognitiveContextSnapshot(
                     type = type,
-                    values = mapOf(
-                        key to value
-                    )
+                    values = mapOf("payload" to value)
                 )
             }
         }
@@ -228,10 +167,16 @@ class CognitiveContextSourceFailureIsolationContractTest {
             override fun snapshot(
                 type: CognitiveContextType
             ): CognitiveContextSnapshot {
-                throw IllegalStateException(
-                    "intentional cognitive source failure"
-                )
+                throw IllegalStateException("intentional cognitive source failure")
             }
         }
+    }
+
+    private fun snapshotValue(
+        value: Any?
+    ): Any? {
+        return (value as? CognitiveContextSnapshot)
+            ?.values
+            ?.get("payload")
     }
 }
