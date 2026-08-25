@@ -10,6 +10,15 @@ import pro.liliya.core.runtime.intelligence.knowledge.RuntimeKnowledgeSource
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.service.RuntimeKnowledgeLifecycleProcessingStatus
 
 class RuntimeCompositionKnowledgeLifecycleExecutionContractTest {
+    private fun knowledge(): RuntimeKnowledge {
+        return RuntimeKnowledge(
+            statement = "post-reset execution knowledge",
+            confidence = 0.8,
+            source = RuntimeKnowledgeSource.EXPERIENCE,
+            createdAt = System.currentTimeMillis()
+        )
+    }
+
 
     @Test
     fun composition_knowledge_service_processes_knowledge() {
@@ -36,4 +45,32 @@ class RuntimeCompositionKnowledgeLifecycleExecutionContractTest {
             result.status
         )
     }
+    @Test
+    fun service_processes_knowledge_after_reset() {
+        val composition = DefaultRuntimeComposition()
+        val lifecycle = composition.knowledgeLifecycleComposition()
+
+        val beforeReset = lifecycle
+            .lifecycleService()
+            .processKnowledge(knowledge())
+
+        assertNotNull(beforeReset)
+        assertNotEquals(
+            RuntimeKnowledgeLifecycleProcessingStatus.FAILED,
+            beforeReset.status
+        )
+
+        lifecycle.reset()
+
+        val afterReset = lifecycle
+            .lifecycleService()
+            .processKnowledge(knowledge())
+
+        assertNotNull(afterReset)
+        assertNotEquals(
+            RuntimeKnowledgeLifecycleProcessingStatus.FAILED,
+            afterReset.status
+        )
+    }
+
 }
