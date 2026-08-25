@@ -114,9 +114,20 @@ class CognitiveContextServiceContractTest {
             cognitiveSourceRegistry = DefaultCognitiveContextSourceRegistry()
         )
 
+        val contextSnapshot = context.snapshot(CognitiveContextType.WORKING)
+        val serviceSnapshot = service.snapshot(CognitiveContextType.WORKING)
+
         assertEquals(
-            context.snapshot(CognitiveContextType.WORKING),
-            service.snapshot(CognitiveContextType.WORKING)
+            contextSnapshot.type,
+            serviceSnapshot.type
+        )
+        assertEquals(
+            contextSnapshot.values,
+            serviceSnapshot.values
+        )
+        assertEquals(
+            contextSnapshot.metadata,
+            serviceSnapshot.metadata
         )
     }
 }
