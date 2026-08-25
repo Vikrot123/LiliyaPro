@@ -45,4 +45,23 @@ class DefaultRuntimeKnowledgeLifecycleCompositionContractTest {
             second
         )
     }
+    @Test
+    fun composition_reset_preserves_memory_and_history_query_identity() {
+        val composition = DefaultRuntimeKnowledgeLifecycleComposition(
+            DefaultRuntimeKnowledgeMemory(),
+            DefaultRuntimeKnowledgeLifecycleStateStore()
+        )
+
+        val beforeMemory = composition.lifecycleMemory()
+        val beforeHistoryQuery = composition.lifecycleHistoryQuery()
+
+        composition.reset()
+
+        val afterMemory = composition.lifecycleMemory()
+        val afterHistoryQuery = composition.lifecycleHistoryQuery()
+
+        assertSame(beforeMemory, afterMemory)
+        assertSame(beforeHistoryQuery, afterHistoryQuery)
+    }
+
 }
