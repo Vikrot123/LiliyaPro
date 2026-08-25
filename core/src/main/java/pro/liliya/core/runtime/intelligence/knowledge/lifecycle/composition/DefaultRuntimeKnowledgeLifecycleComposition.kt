@@ -81,6 +81,7 @@ class DefaultRuntimeKnowledgeLifecycleComposition(
         RuntimeKnowledgeLifecycleMemory =
         DefaultRuntimeKnowledgeLifecycleMemory(
             stateStore = stateStore,
+            historyStore = historyStore,
             transitionManager = transitionManager,
             knowledgeMemory = knowledgeMemory
         )

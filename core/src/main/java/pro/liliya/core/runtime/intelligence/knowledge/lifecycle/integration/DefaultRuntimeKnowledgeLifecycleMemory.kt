@@ -5,6 +5,8 @@ import pro.liliya.core.runtime.intelligence.knowledge.integration.DefaultRuntime
 import pro.liliya.core.runtime.intelligence.knowledge.integration.RuntimeKnowledgeMemory
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.DefaultRuntimeKnowledgeLifecycleManager
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.RuntimeKnowledgeLifecycleState
+import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.history.RuntimeKnowledgeLifecycleHistoryStore
+import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.history.DefaultRuntimeKnowledgeLifecycleHistoryStore
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.query.DefaultRuntimeKnowledgeLifecycleStateQuery
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.state.DefaultRuntimeKnowledgeLifecycleStateStore
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.state.RuntimeKnowledgeLifecycleStateStore
@@ -14,12 +16,15 @@ import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.transition.Runti
 class DefaultRuntimeKnowledgeLifecycleMemory(
     private val stateStore: RuntimeKnowledgeLifecycleStateStore =
         DefaultRuntimeKnowledgeLifecycleStateStore(),
+    private val historyStore: RuntimeKnowledgeLifecycleHistoryStore =
+        DefaultRuntimeKnowledgeLifecycleHistoryStore(),
     private val transitionManager: RuntimeKnowledgeLifecycleTransitionManager =
         DefaultRuntimeKnowledgeLifecycleTransitionManager(
             DefaultRuntimeKnowledgeLifecycleStateQuery(
                 stateStore
             ),
-            stateStore
+            stateStore,
+            historyStore
         ),
     private val knowledgeMemory: RuntimeKnowledgeMemory =
         DefaultRuntimeKnowledgeMemory(

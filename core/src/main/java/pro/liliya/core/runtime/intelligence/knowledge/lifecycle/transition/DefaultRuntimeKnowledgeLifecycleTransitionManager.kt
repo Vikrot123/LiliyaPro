@@ -4,15 +4,13 @@ import pro.liliya.core.runtime.intelligence.knowledge.RuntimeKnowledge
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.RuntimeKnowledgeLifecycleState
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.history.RuntimeKnowledgeLifecycleHistoryEntry
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.history.RuntimeKnowledgeLifecycleHistoryStore
-import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.history.DefaultRuntimeKnowledgeLifecycleHistoryStore
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.query.RuntimeKnowledgeLifecycleStateQuery
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.state.RuntimeKnowledgeLifecycleStateStore
 
 class DefaultRuntimeKnowledgeLifecycleTransitionManager(
     private val stateQuery: RuntimeKnowledgeLifecycleStateQuery,
     private val stateStore: RuntimeKnowledgeLifecycleStateStore,
-    private val historyStore: RuntimeKnowledgeLifecycleHistoryStore =
-        DefaultRuntimeKnowledgeLifecycleHistoryStore()
+    private val historyStore: RuntimeKnowledgeLifecycleHistoryStore
 ) : RuntimeKnowledgeLifecycleTransitionManager {
 
     override fun transition(

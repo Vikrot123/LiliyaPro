@@ -6,6 +6,8 @@ import kotlin.test.assertTrue
 import pro.liliya.core.runtime.intelligence.knowledge.RuntimeKnowledge
 import pro.liliya.core.runtime.intelligence.knowledge.RuntimeKnowledgeSource
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.RuntimeKnowledgeLifecycleState
+import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.history.DefaultRuntimeKnowledgeLifecycleHistoryStore
+import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.history.RuntimeKnowledgeLifecycleHistoryStore
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.query.DefaultRuntimeKnowledgeLifecycleStateQuery
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.state.DefaultRuntimeKnowledgeLifecycleStateStore
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.transition.DefaultRuntimeKnowledgeLifecycleTransitionManager
@@ -25,11 +27,13 @@ class DefaultRuntimeKnowledgeLifecycleTransitionManagerContractTest {
     fun allows_valid_lifecycle_transition() {
 
         val store = DefaultRuntimeKnowledgeLifecycleStateStore()
+        val historyStore = DefaultRuntimeKnowledgeLifecycleHistoryStore()
 
         val manager =
             DefaultRuntimeKnowledgeLifecycleTransitionManager(
                 DefaultRuntimeKnowledgeLifecycleStateQuery(store),
-                store
+                store,
+                historyStore,
             )
 
         assertTrue(
@@ -44,12 +48,14 @@ class DefaultRuntimeKnowledgeLifecycleTransitionManagerContractTest {
     fun blocks_invalid_active_to_archived_transition() {
 
         val store = DefaultRuntimeKnowledgeLifecycleStateStore()
+        val historyStore = DefaultRuntimeKnowledgeLifecycleHistoryStore()
         val knowledge = knowledge()
 
         val manager =
             DefaultRuntimeKnowledgeLifecycleTransitionManager(
                 DefaultRuntimeKnowledgeLifecycleStateQuery(store),
-                store
+                store,
+                historyStore,
             )
 
         manager.transition(
@@ -69,12 +75,14 @@ class DefaultRuntimeKnowledgeLifecycleTransitionManagerContractTest {
     fun allows_review_to_archived_transition() {
 
         val store = DefaultRuntimeKnowledgeLifecycleStateStore()
+        val historyStore = DefaultRuntimeKnowledgeLifecycleHistoryStore()
         val knowledge = knowledge()
 
         val manager =
             DefaultRuntimeKnowledgeLifecycleTransitionManager(
                 DefaultRuntimeKnowledgeLifecycleStateQuery(store),
-                store
+                store,
+                historyStore,
             )
 
         manager.transition(
@@ -99,12 +107,14 @@ class DefaultRuntimeKnowledgeLifecycleTransitionManagerContractTest {
     fun blocks_archived_to_active_transition() {
 
         val store = DefaultRuntimeKnowledgeLifecycleStateStore()
+        val historyStore = DefaultRuntimeKnowledgeLifecycleHistoryStore()
         val knowledge = knowledge()
 
         val manager =
             DefaultRuntimeKnowledgeLifecycleTransitionManager(
                 DefaultRuntimeKnowledgeLifecycleStateQuery(store),
-                store
+                store,
+                historyStore,
             )
 
         manager.transition(

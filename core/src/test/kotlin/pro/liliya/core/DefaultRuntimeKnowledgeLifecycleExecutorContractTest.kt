@@ -5,6 +5,7 @@ import kotlin.test.assertTrue
 import pro.liliya.core.runtime.intelligence.knowledge.RuntimeKnowledge
 import pro.liliya.core.runtime.intelligence.knowledge.RuntimeKnowledgeSource
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.RuntimeKnowledgeLifecycleState
+import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.history.DefaultRuntimeKnowledgeLifecycleHistoryStore
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.decision.RuntimeKnowledgeLifecycleDecision
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.decision.RuntimeKnowledgeLifecycleDecisionQuery
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.executor.DefaultRuntimeKnowledgeLifecycleExecutor
@@ -30,11 +31,13 @@ class DefaultRuntimeKnowledgeLifecycleExecutorContractTest {
 
         val stateStore =
             DefaultRuntimeKnowledgeLifecycleStateStore()
+            val historyStore = DefaultRuntimeKnowledgeLifecycleHistoryStore()
 
         val transitionManager =
             DefaultRuntimeKnowledgeLifecycleTransitionManager(
                 DefaultRuntimeKnowledgeLifecycleStateQuery(stateStore),
-                stateStore
+                stateStore,
+                historyStore
             )
 
         val executor =
@@ -67,11 +70,13 @@ class DefaultRuntimeKnowledgeLifecycleExecutorContractTest {
 
         val stateStore =
             DefaultRuntimeKnowledgeLifecycleStateStore()
+            val historyStore = DefaultRuntimeKnowledgeLifecycleHistoryStore()
 
         val transitionManager =
             DefaultRuntimeKnowledgeLifecycleTransitionManager(
                 DefaultRuntimeKnowledgeLifecycleStateQuery(stateStore),
-                stateStore
+                stateStore,
+                historyStore
             )
 
         val executor =
@@ -110,11 +115,13 @@ class DefaultRuntimeKnowledgeLifecycleExecutorContractTest {
 
         val stateStore =
             DefaultRuntimeKnowledgeLifecycleStateStore()
+            val historyStore = DefaultRuntimeKnowledgeLifecycleHistoryStore()
 
         val transitionManager =
             DefaultRuntimeKnowledgeLifecycleTransitionManager(
                 DefaultRuntimeKnowledgeLifecycleStateQuery(stateStore),
-                stateStore
+                stateStore,
+                historyStore
             )
 
         val executor =
