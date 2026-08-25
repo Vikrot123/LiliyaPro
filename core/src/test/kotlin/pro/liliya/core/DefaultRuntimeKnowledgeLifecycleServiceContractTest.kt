@@ -195,4 +195,91 @@ class DefaultRuntimeKnowledgeLifecycleServiceContractTest {
         )
     }
 
+    @Test
+    fun service_preserves_pipeline_result_when_executed() {
+        val pipelineResult =
+            RuntimeKnowledgeLifecyclePipelineResult(
+                RuntimeKnowledgeLifecycleOrchestrationResult(
+                    RuntimeKnowledgeLifecycleExecutionResult(
+                        executed = true
+                    )
+                )
+            )
+
+        val service =
+            DefaultRuntimeKnowledgeLifecycleService(
+                object : RuntimeKnowledgeLifecyclePipeline {
+                    override fun process(
+                        knowledge: RuntimeKnowledge
+                    ): RuntimeKnowledgeLifecyclePipelineResult {
+                        return pipelineResult
+                    }
+                }
+            )
+
+        val result = service.processKnowledge(knowledge())
+
+        assertTrue(
+            result.status ==
+                RuntimeKnowledgeLifecycleProcessingStatus.EXECUTED
+        )
+        assertTrue(result.pipelineResult === pipelineResult)
+        assertTrue(result.error == null)
+    }
+
+    @Test
+    fun service_preserves_pipeline_result_when_skipped() {
+        val pipelineResult =
+            RuntimeKnowledgeLifecyclePipelineResult(
+                RuntimeKnowledgeLifecycleOrchestrationResult(
+                    RuntimeKnowledgeLifecycleExecutionResult(
+                        executed = false
+                    )
+                )
+            )
+
+        val service =
+            DefaultRuntimeKnowledgeLifecycleService(
+                object : RuntimeKnowledgeLifecyclePipeline {
+                    override fun process(
+                        knowledge: RuntimeKnowledge
+                    ): RuntimeKnowledgeLifecyclePipelineResult {
+                        return pipelineResult
+                    }
+                }
+            )
+
+        val result = service.processKnowledge(knowledge())
+
+        assertTrue(
+            result.status ==
+                RuntimeKnowledgeLifecycleProcessingStatus.SKIPPED
+        )
+        assertTrue(result.pipelineResult === pipelineResult)
+        assertTrue(result.error == null)
+    }
+
+    @Test
+    fun service_clears_pipeline_result_when_processing_fails() {
+        val service =
+            DefaultRuntimeKnowledgeLifecycleService(
+                object : RuntimeKnowledgeLifecyclePipeline {
+                    override fun process(
+                        knowledge: RuntimeKnowledge
+                    ): RuntimeKnowledgeLifecyclePipelineResult {
+                        throw IllegalStateException("pipeline failed")
+                    }
+                }
+            )
+
+        val result = service.processKnowledge(knowledge())
+
+        assertTrue(
+            result.status ==
+                RuntimeKnowledgeLifecycleProcessingStatus.FAILED
+        )
+        assertTrue(result.pipelineResult == null)
+        assertTrue(result.error != null)
+    }
+
 }
