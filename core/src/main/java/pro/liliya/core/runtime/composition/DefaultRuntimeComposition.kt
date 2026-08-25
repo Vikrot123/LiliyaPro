@@ -412,12 +412,20 @@ class DefaultRuntimeComposition :
             .lifecycle()
             .reset()
 
+        cognitiveContextComposition
+            .lifecycle()
+            .reset()
+
         setRuntimeState(CoreRuntimeState.STARTING)
     }
 
     override fun startRuntimeLifecycle(): ModuleManager {
 
         memoryComposition()
+            .lifecycle()
+            .start()
+
+        cognitiveContextComposition
             .lifecycle()
             .start()
 
@@ -439,6 +447,10 @@ class DefaultRuntimeComposition :
         clearModuleRuntime()
 
         memoryComposition()
+            .lifecycle()
+            .stop()
+
+        cognitiveContextComposition
             .lifecycle()
             .stop()
 
@@ -1116,6 +1128,9 @@ class DefaultRuntimeComposition :
         resetRuntimeCapabilities()
         lifecycleRecorder.reset()
         resetRuntimeHistory()
+        cognitiveContextComposition
+            .lifecycle()
+            .reset()
         resetRuntimeServiceRegistry()
     }
 
