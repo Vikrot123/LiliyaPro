@@ -13,9 +13,20 @@ class DefaultCognitiveContextSelector(
         val maximumAgeMillis = criteria.maximumAgeMillis
 
         if (maximumAgeMillis != null) {
-            val ageMillis = nowProvider() - snapshot.timestamp
+            val now = nowProvider()
+            var ageOverflowed = false
+            val ageMillis = if (snapshot.timestamp >= now) {
+                0L
+            } else {
+                try {
+                    Math.subtractExact(now, snapshot.timestamp)
+                } catch (_: ArithmeticException) {
+                    ageOverflowed = true
+                    Long.MAX_VALUE
+                }
+            }
 
-            if (ageMillis > maximumAgeMillis) {
+            if (ageOverflowed || ageMillis > maximumAgeMillis) {
                 return CognitiveContextSelection(
                     values = emptyMap(),
                     selectedCount = 0,
