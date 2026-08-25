@@ -60,15 +60,27 @@ class DefaultCognitiveContextComposition(
 
     private val context: CognitiveContext =
         object : CognitiveContext {
-
             override fun snapshot(
                 type: CognitiveContextType
             ): CognitiveContextSnapshot {
-                return CognitiveContextSnapshot(type)
+                val values = linkedMapOf<String, Any?>()
+
+                sourceRegistry.sources().forEach { source ->
+                    val snapshot = source.snapshot(type)
+
+                    if (snapshot != null) {
+                        values.putAll(snapshot.values)
+                    }
+                }
+
+                return CognitiveContextSnapshot(
+                    type = type,
+                    values = values
+                )
             }
 
             override fun sources(): List<CognitiveContextSource> {
-                return emptyList()
+                return sourceRegistry.sources()
             }
         }
 
