@@ -2,25 +2,42 @@ package pro.liliya.core.runtime.intelligence.context.cognitive.selection
 
 import pro.liliya.core.runtime.intelligence.context.cognitive.CognitiveContextSnapshot
 
-class DefaultCognitiveContextSelector :
-    CognitiveContextSelector {
+class DefaultCognitiveContextSelector : CognitiveContextSelector {
 
     override fun select(
         snapshot: CognitiveContextSnapshot,
         criteria: CognitiveContextSelectionCriteria
     ): CognitiveContextSelection {
+        if (snapshot.metadata.isEmpty()) {
+            return CognitiveContextSelection(
+                values = snapshot.values,
+                selectedCount = snapshot.values.size,
+                rejectedCount = 0
+            )
+        }
 
-        /*
-         * The foundation does not impose a scoring algorithm yet.
-         *
-         * Selection metadata will be introduced by concrete context
-         * sources without coupling this selector to Memory, Knowledge,
-         * Conversation, or any particular model.
-         */
+        val selected = linkedMapOf<String, Any?>()
+        var rejectedCount = 0
+
+        snapshot.values.forEach { (key, value) ->
+            val metadata = snapshot.metadata[key]
+
+            val accepted = metadata != null &&
+                metadata.relevance >= criteria.minimumRelevance &&
+                metadata.importance >= criteria.minimumImportance &&
+                metadata.confidence >= criteria.minimumConfidence
+
+            if (accepted) {
+                selected[key] = value
+            } else {
+                rejectedCount++
+            }
+        }
+
         return CognitiveContextSelection(
-            values = snapshot.values,
-            selectedCount = snapshot.values.size,
-            rejectedCount = 0
+            values = selected,
+            selectedCount = selected.size,
+            rejectedCount = rejectedCount
         )
     }
 }
