@@ -2,12 +2,28 @@ package pro.liliya.core.runtime.intelligence.context.cognitive.selection
 
 import pro.liliya.core.runtime.intelligence.context.cognitive.CognitiveContextSnapshot
 
-class DefaultCognitiveContextSelector : CognitiveContextSelector {
+class DefaultCognitiveContextSelector(
+    private val nowProvider: () -> Long = { System.currentTimeMillis() }
+) : CognitiveContextSelector {
 
     override fun select(
         snapshot: CognitiveContextSnapshot,
         criteria: CognitiveContextSelectionCriteria
     ): CognitiveContextSelection {
+        val maximumAgeMillis = criteria.maximumAgeMillis
+
+        if (maximumAgeMillis != null) {
+            val ageMillis = nowProvider() - snapshot.timestamp
+
+            if (ageMillis > maximumAgeMillis) {
+                return CognitiveContextSelection(
+                    values = emptyMap(),
+                    selectedCount = 0,
+                    rejectedCount = snapshot.values.size
+                )
+            }
+        }
+
         if (snapshot.metadata.isEmpty()) {
             return CognitiveContextSelection(
                 values = snapshot.values,
@@ -22,10 +38,11 @@ class DefaultCognitiveContextSelector : CognitiveContextSelector {
         snapshot.values.forEach { (key, value) ->
             val metadata = snapshot.metadata[key]
 
-            val accepted = metadata != null &&
-                metadata.relevance >= criteria.minimumRelevance &&
-                metadata.importance >= criteria.minimumImportance &&
-                metadata.confidence >= criteria.minimumConfidence
+            val accepted =
+                metadata != null &&
+                    metadata.relevance >= criteria.minimumRelevance &&
+                    metadata.importance >= criteria.minimumImportance &&
+                    metadata.confidence >= criteria.minimumConfidence
 
             if (accepted) {
                 selected[key] = value
