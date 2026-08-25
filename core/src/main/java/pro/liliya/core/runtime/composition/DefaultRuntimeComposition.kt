@@ -1140,6 +1140,9 @@ class DefaultRuntimeComposition :
         cognitiveContextComposition
             .lifecycle()
             .reset()
+        knowledgeLifecycleCompositionHolder
+            .composition()
+            .reset()
         resetRuntimeServiceRegistry()
     }
 
