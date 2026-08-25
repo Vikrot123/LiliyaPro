@@ -1,6 +1,9 @@
 package pro.liliya.core
 
 import kotlin.test.Test
+import kotlin.test.assertEquals
+import pro.liliya.core.runtime.intelligence.knowledge.RuntimeKnowledge
+import pro.liliya.core.runtime.intelligence.knowledge.RuntimeKnowledgeSource
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.state.DefaultRuntimeKnowledgeLifecycleStateStore
 import pro.liliya.core.runtime.intelligence.knowledge.integration.DefaultRuntimeKnowledgeMemory
 import kotlin.test.assertNotSame
@@ -62,6 +65,39 @@ class DefaultRuntimeKnowledgeLifecycleCompositionContractTest {
 
         assertSame(beforeMemory, afterMemory)
         assertSame(beforeHistoryQuery, afterHistoryQuery)
+    }
+
+    @Test
+    fun composition_reset_preserves_history_continuity() {
+        val composition = DefaultRuntimeKnowledgeLifecycleComposition(
+            DefaultRuntimeKnowledgeMemory(),
+            DefaultRuntimeKnowledgeLifecycleStateStore()
+        )
+
+        val knowledge = RuntimeKnowledge(
+            statement = "composition history continuity",
+            confidence = 0.9,
+            source = RuntimeKnowledgeSource.EXPERIENCE,
+            createdAt = 1L
+        )
+
+        val memory = composition.lifecycleMemory()
+        val historyQuery = composition.lifecycleHistoryQuery()
+
+        memory.create(knowledge)
+        memory.revise(knowledge)
+
+        assertSame(historyQuery, composition.lifecycleHistoryQuery())
+
+        val beforeResetCount = historyQuery.transitionCount(knowledge)
+        assertEquals(2, beforeResetCount)
+
+        composition.reset()
+
+        val afterResetQuery = composition.lifecycleHistoryQuery()
+
+        assertSame(historyQuery, afterResetQuery)
+        assertEquals(2, afterResetQuery.transitionCount(knowledge))
     }
 
 }
