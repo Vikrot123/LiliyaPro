@@ -66,12 +66,17 @@ class DefaultCognitiveContextComposition(
                 val values = linkedMapOf<String, Any?>()
 
                 sourceRegistry.sources().forEach { source ->
-                    val snapshot = source.snapshot(type)
+                    try {
+                        val snapshot = source.snapshot(type)
 
-                    if (snapshot != null) {
-                        snapshot.values.forEach { (key, value) ->
-                            values.putIfAbsent(key, value)
+                        if (snapshot != null) {
+                            snapshot.values.forEach { (key, value) ->
+                                values.putIfAbsent(key, value)
+                            }
                         }
+                    } catch (_: Exception) {
+                        // A failing source must not prevent other sources
+                        // from contributing to the cognitive snapshot.
                     }
                 }
 
