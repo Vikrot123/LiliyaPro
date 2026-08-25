@@ -69,7 +69,9 @@ class DefaultCognitiveContextComposition(
                     val snapshot = source.snapshot(type)
 
                     if (snapshot != null) {
-                        values.putAll(snapshot.values)
+                        snapshot.values.forEach { (key, value) ->
+                            values.putIfAbsent(key, value)
+                        }
                     }
                 }
 
