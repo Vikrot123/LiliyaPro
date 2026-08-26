@@ -84,6 +84,11 @@ class RuntimeKnowledgeMemoryAdapterContractTest {
             rememberCount++
         }
 
+        override fun forget(
+            knowledge: RuntimeKnowledge
+        ) {
+        }
+
         override fun associate(
             source: RuntimeKnowledge,
             target: RuntimeKnowledge,
@@ -108,6 +113,11 @@ class RuntimeKnowledgeMemoryAdapterContractTest {
         RuntimeKnowledgeMemory {
 
         override fun remember(
+            knowledge: RuntimeKnowledge
+        ) {
+        }
+
+        override fun forget(
             knowledge: RuntimeKnowledge
         ) {
         }

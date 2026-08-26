@@ -44,12 +44,33 @@ class DefaultRuntimeKnowledgeLifecycleMemory(
             knowledge
         )
 
-        transitionManager.transition(
-            knowledge,
-            lifecycle.create(
-                knowledge
-            ).state
-        )
+        try {
+            val transitioned =
+                transitionManager.transition(
+                    knowledge,
+                    lifecycle.create(
+                        knowledge
+                    ).state
+                )
+
+            if (!transitioned) {
+                memory.forget(
+                    knowledge
+                )
+            }
+        } catch (error: Throwable) {
+            try {
+                memory.forget(
+                    knowledge
+                )
+            } catch (rollbackError: Throwable) {
+                error.addSuppressed(
+                    rollbackError
+                )
+            }
+
+            throw error
+        }
     }
 
     override fun activate(

@@ -8,5 +8,9 @@ interface RuntimeKnowledgeStore {
         knowledge: RuntimeKnowledge
     )
 
+    fun removeLast(
+        knowledge: RuntimeKnowledge
+    )
+
     fun knowledge(): List<RuntimeKnowledge>
 }

@@ -70,6 +70,14 @@ class DefaultRuntimeKnowledgeMemory(
         )
     }
 
+    override fun forget(
+        knowledge: RuntimeKnowledge
+    ) {
+        knowledgeStore.removeLast(
+            knowledge
+        )
+    }
+
     override fun associate(
         source: RuntimeKnowledge,
         target: RuntimeKnowledge,

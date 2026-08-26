@@ -11,6 +11,10 @@ interface RuntimeKnowledgeMemory {
         knowledge: RuntimeKnowledge
     )
 
+    fun forget(
+        knowledge: RuntimeKnowledge
+    )
+
     fun associate(
         source: RuntimeKnowledge,
         target: RuntimeKnowledge,
