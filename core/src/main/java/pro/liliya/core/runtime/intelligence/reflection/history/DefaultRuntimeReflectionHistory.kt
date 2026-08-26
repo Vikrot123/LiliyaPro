@@ -2,7 +2,8 @@ package pro.liliya.core.runtime.intelligence.reflection.history
 
 import pro.liliya.core.runtime.intelligence.reflection.RuntimeReflectionSnapshot
 
-class DefaultRuntimeReflectionHistory : RuntimeReflectionHistory {
+class DefaultRuntimeReflectionHistory :
+    RuntimeReflectionHistory {
 
     private val history =
         mutableListOf<RuntimeReflectionSnapshot>()
@@ -10,10 +11,14 @@ class DefaultRuntimeReflectionHistory : RuntimeReflectionHistory {
     override fun record(
         snapshot: RuntimeReflectionSnapshot
     ) {
-        history += snapshot
+        synchronized(history) {
+            history += snapshot
+        }
     }
 
     override fun snapshots(): List<RuntimeReflectionSnapshot> {
-        return history.toList()
+        return synchronized(history) {
+            history.toList()
+        }
     }
 }
