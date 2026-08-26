@@ -172,13 +172,6 @@ authorityLevel = policyResult.authorityLevel,
     }
 
     private fun createStatus(): RuntimeStatusSnapshot {
-        return runtimeComposition.createRuntimeStatus(
-            report = runtimeComposition.createHealthReport(
-                state = runtimeComposition.runtimeState(),
-                telemetry = runtimeComposition.telemetryObserver().snapshot(),
-                failure = runtimeComposition.failureTracker().snapshot(),
-                recovery = runtimeComposition.recoveryTracker().snapshot()
-            )
-        )
+        return runtimeComposition.runtimeStatusSnapshot()
     }
 }

@@ -18,14 +18,7 @@ class DefaultRuntimeControl(
             runtimeComposition.runtimeState()
 
         val status =
-            runtimeComposition.createRuntimeStatus(
-                report = runtimeComposition.createHealthReport(
-                    state = runtimeComposition.runtimeState(),
-                    telemetry = runtimeComposition.telemetryObserver().snapshot(),
-                    failure = runtimeComposition.failureTracker().snapshot(),
-                    recovery = runtimeComposition.recoveryTracker().snapshot()
-                )
-            )
+            runtimeComposition.runtimeStatusSnapshot()
 
         return when (command) {
 

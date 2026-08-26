@@ -1382,14 +1382,7 @@ class DefaultRuntimeComposition :
             runtimeServiceFailures = runtimeServiceFailures(),
             runtimeServiceHealth = runtimeServiceHealth(),
             runtimeRecoverySnapshot = runtimeServiceRecoverySnapshot(),
-            runtimeStatusSnapshot = createRuntimeStatus(
-                report = healthReportProvider.createReport(
-                    state = runtimeState(),
-                    telemetry = telemetryObserver().snapshot(),
-                    failure = failureTracker().snapshot(),
-                    recovery = recoveryTracker().snapshot()
-                )
-            ),
+            runtimeStatusSnapshot = runtimeStatusSnapshot(),
             failureReason = failureReason()
         )
     }
