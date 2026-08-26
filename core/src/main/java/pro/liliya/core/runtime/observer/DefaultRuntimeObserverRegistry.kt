@@ -8,20 +8,34 @@ class DefaultRuntimeObserverRegistry :
     private val observers =
         mutableListOf<RuntimeObserver>()
 
-    override fun subscribe(observer: RuntimeObserver) {
-        if (!observers.contains(observer)) {
-            observers.add(observer)
+    override fun subscribe(
+        observer: RuntimeObserver
+    ) {
+        synchronized(observers) {
+            if (!observers.contains(observer)) {
+                observers.add(observer)
+            }
         }
     }
 
-    override fun unsubscribe(observer: RuntimeObserver) {
-        observers.remove(observer)
+    override fun unsubscribe(
+        observer: RuntimeObserver
+    ) {
+        synchronized(observers) {
+            observers.remove(observer)
+        }
     }
 
-    fun publish(event: RuntimeEvent) {
-        observers.toList()
-            .forEach { observer ->
-                observer.onRuntimeEvent(event)
+    fun publish(
+        event: RuntimeEvent
+    ) {
+        val snapshot =
+            synchronized(observers) {
+                observers.toList()
             }
+
+        snapshot.forEach { observer ->
+            observer.onRuntimeEvent(event)
+        }
     }
 }
