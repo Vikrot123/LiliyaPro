@@ -16,8 +16,6 @@ import pro.liliya.core.CoreDiagnosticSnapshot
 import pro.liliya.core.CoreDiagnosticSource
 import pro.liliya.core.CoreRuntimeStateHolder
 import pro.liliya.core.CoreRuntimeState
-import pro.liliya.core.CoreRuntimeDiagnosticsService
-import pro.liliya.core.DefaultCoreRuntimeDiagnosticsService
 import pro.liliya.core.CoreDiagnosticProvider
 import pro.liliya.core.CoreRuntimeContext
 import pro.liliya.core.module.ModuleProvider
@@ -167,14 +165,8 @@ class DefaultRuntimeComposition :
 
 
 
-    private val diagnosticsService: CoreRuntimeDiagnosticsService =
-        DefaultCoreRuntimeDiagnosticsService(
-            diagnosticSource
-        )
-
-
     private val context = CoreRuntimeContext(
-        diagnosticService = diagnosticsService
+        diagnosticSource = diagnosticSource
     )
 
 
@@ -448,10 +440,6 @@ class DefaultRuntimeComposition :
 
     private val moduleDependencyResolver =
         ModuleDependencyResolver()
-
-    override fun diagnosticsService(): CoreRuntimeDiagnosticsService {
-        return diagnosticsService
-    }
 
     override fun context(): CoreRuntimeContext {
         return context

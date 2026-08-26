@@ -9,6 +9,8 @@ class CoreRuntimeSnapshotContractTest {
     @Test
     fun runtimeSnapshotExposesCurrentRuntimeState() {
 
+        CoreRuntime.stop()
+
         val snapshot = CoreRuntime.snapshot()
 
         assertEquals(
@@ -21,18 +23,22 @@ class CoreRuntimeSnapshotContractTest {
             snapshot.moduleStates
         )
     }
+
     @Test
     fun runtimeSnapshotContainsRunningModulesAfterStart() {
 
+        CoreRuntime.stop()
         CoreRuntime.start()
 
-        val snapshot = CoreRuntime.snapshot()
+        try {
+            val snapshot = CoreRuntime.snapshot()
 
-        assertEquals(
-            CoreRuntimeState.RUNNING,
-            snapshot.runtimeState
-        )
-
-        CoreRuntime.stop()
+            assertEquals(
+                CoreRuntimeState.RUNNING,
+                snapshot.runtimeState
+            )
+        } finally {
+            CoreRuntime.stop()
+        }
     }
 }

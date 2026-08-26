@@ -8,7 +8,7 @@ class DefaultRuntimeMonitor(
 
     override fun snapshot(): RuntimeMonitorSnapshot {
         val diagnostics =
-            runtimeComposition.diagnosticsService().snapshot()
+            runtimeComposition.createDiagnosticSnapshot()
 
         val lifecycleRecorder =
             runtimeComposition.lifecycleRecorder()
@@ -18,7 +18,7 @@ class DefaultRuntimeMonitor(
 
         return RuntimeMonitorSnapshot(
             diagnostics = diagnostics,
-            healthy = diagnostics.serviceHealth.values.all { it.healthy },
+            healthy = diagnostics.runtimeServiceHealth.values.all { it.healthy },
             lastLifecycleEvent = lifecycleRecorder.last(),
             lifecycleHistory = lifecycleHistory
         )

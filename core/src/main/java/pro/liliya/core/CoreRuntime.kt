@@ -44,8 +44,8 @@ object CoreRuntime {
         return runtimeComposition.createDiagnosticSnapshot()
     }
 
-    fun diagnostics(): CoreRuntimeDiagnosticsSnapshot {
-        return runtimeComposition.diagnosticsService().snapshot()
+    fun diagnostics(): CoreDiagnosticSnapshot {
+        return snapshot()
     }
 
     fun monitor(): pro.liliya.core.runtime.monitor.RuntimeMonitorSnapshot {

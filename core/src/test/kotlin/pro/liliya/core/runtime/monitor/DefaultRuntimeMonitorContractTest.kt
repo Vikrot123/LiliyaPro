@@ -5,8 +5,7 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 import kotlin.test.assertEquals
 import pro.liliya.core.CoreRuntimeState
-import pro.liliya.core.CoreRuntimeDiagnosticsSnapshot
-import pro.liliya.core.CoreRuntimeDiagnosticsService
+import pro.liliya.core.CoreDiagnosticSnapshot
 import pro.liliya.core.runtime.RuntimeServiceHealth
 import pro.liliya.core.runtime.RuntimeServiceState
 import pro.liliya.core.runtime.composition.DefaultRuntimeComposition
@@ -15,15 +14,15 @@ import pro.liliya.core.runtime.composition.RuntimeComposition
 class DefaultRuntimeMonitorContractTest {
 
     private fun composition(
-        diagnostics: CoreRuntimeDiagnosticsService
+        diagnostics: CoreDiagnosticSnapshot
     ): RuntimeComposition {
 
         val base = DefaultRuntimeComposition()
 
         return object : RuntimeComposition by base {
 
-            override fun diagnosticsService():
-                CoreRuntimeDiagnosticsService {
+            override fun createDiagnosticSnapshot():
+                CoreDiagnosticSnapshot {
                 return diagnostics
             }
         }
@@ -34,27 +33,21 @@ class DefaultRuntimeMonitorContractTest {
 
         val monitor = DefaultRuntimeMonitor(
             composition(
-                object : CoreRuntimeDiagnosticsService {
-                    override fun snapshot():
-                        CoreRuntimeDiagnosticsSnapshot {
-
-                        return CoreRuntimeDiagnosticsSnapshot(
+                CoreDiagnosticSnapshot(
                             runtimeState = CoreRuntimeState.RUNNING,
                             moduleStates = emptyMap(),
-                            serviceStates = emptyMap(),
-                            serviceFailures = emptyList(),
-                            serviceHealth = mapOf(
+                            runtimeServiceStates = emptyMap(),
+                            runtimeServiceFailures = emptyList(),
+                            runtimeServiceHealth = mapOf(
                                 "service" to RuntimeServiceHealth(
                                     name = "service",
                                     state = RuntimeServiceState.RUNNING,
                                     healthy = true
                                 )
                             ),
-                            recoverySnapshot = null,
+                            runtimeRecoverySnapshot = null,
                             failureReason = null
                         )
-                    }
-                }
             )
         )
 
@@ -74,27 +67,21 @@ class DefaultRuntimeMonitorContractTest {
 
         val monitor = DefaultRuntimeMonitor(
             composition(
-                object : CoreRuntimeDiagnosticsService {
-                    override fun snapshot():
-                        CoreRuntimeDiagnosticsSnapshot {
-
-                        return CoreRuntimeDiagnosticsSnapshot(
+                CoreDiagnosticSnapshot(
                             runtimeState = CoreRuntimeState.RUNNING,
                             moduleStates = emptyMap(),
-                            serviceStates = emptyMap(),
-                            serviceFailures = emptyList(),
-                            serviceHealth = mapOf(
+                            runtimeServiceStates = emptyMap(),
+                            runtimeServiceFailures = emptyList(),
+                            runtimeServiceHealth = mapOf(
                                 "failed-service" to RuntimeServiceHealth(
                                     name = "failed-service",
                                     state = RuntimeServiceState.FAILED,
                                     healthy = false
                                 )
                             ),
-                            recoverySnapshot = null,
+                            runtimeRecoverySnapshot = null,
                             failureReason = "service failed"
                         )
-                    }
-                }
             )
         )
 

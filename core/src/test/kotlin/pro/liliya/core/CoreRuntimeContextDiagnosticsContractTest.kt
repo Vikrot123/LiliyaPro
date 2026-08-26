@@ -6,12 +6,12 @@ import org.junit.jupiter.api.Test
 class CoreRuntimeContextDiagnosticsContractTest {
 
     @Test
-    fun contextDiagnosticServiceReturnsRuntimeSnapshot() {
+    fun contextDiagnosticSourceReturnsRuntimeSnapshot() {
         val context = CoreRuntimeContext()
 
         CoreRuntime.stop()
 
-        val snapshot = context.diagnosticService.snapshot()
+        val snapshot = context.diagnosticSource.snapshot()
 
         assertEquals(
             CoreRuntimeState.STOPPED,
