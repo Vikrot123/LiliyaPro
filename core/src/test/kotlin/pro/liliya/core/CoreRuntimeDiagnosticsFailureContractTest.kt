@@ -18,8 +18,7 @@ class CoreRuntimeDiagnosticsFailureContractTest {
             CoreRuntime.start()
         }
 
-        val diagnostics = CoreRuntimeDiagnostics()
-        val snapshot = diagnostics.snapshot()
+        val snapshot = CoreRuntime.diagnostics()
 
         assertEquals(
             CoreRuntimeState.FAILED,

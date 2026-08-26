@@ -8,27 +8,25 @@ class CoreRuntimeDiagnosticsLifecycleContractTest {
     @Test
     fun diagnosticsFollowsRuntimeLifecycle() {
 
-        val diagnostics = CoreRuntimeDiagnostics()
-
         CoreRuntime.stop()
 
         assertEquals(
             CoreRuntimeState.STOPPED,
-            diagnostics.snapshot().runtimeState
+            CoreRuntime.diagnostics().runtimeState
         )
 
         CoreRuntime.start()
 
         assertEquals(
             CoreRuntimeState.RUNNING,
-            diagnostics.snapshot().runtimeState
+            CoreRuntime.diagnostics().runtimeState
         )
 
         CoreRuntime.stop()
 
         assertEquals(
             CoreRuntimeState.STOPPED,
-            diagnostics.snapshot().runtimeState
+            CoreRuntime.diagnostics().runtimeState
         )
     }
 }

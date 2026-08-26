@@ -18,7 +18,6 @@ import pro.liliya.core.CoreDiagnosticSnapshot
 import pro.liliya.core.CoreDiagnosticSource
 import pro.liliya.core.CoreRuntimeStateHolder
 import pro.liliya.core.CoreRuntimeState
-import pro.liliya.core.CoreRuntimeDiagnostics
 import pro.liliya.core.CoreRuntimeDiagnosticsService
 import pro.liliya.core.DefaultCoreRuntimeDiagnosticsService
 import pro.liliya.core.CoreDiagnosticProvider
