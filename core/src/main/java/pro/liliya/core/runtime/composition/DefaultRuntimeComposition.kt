@@ -6,8 +6,6 @@ import pro.liliya.core.logging.Logger
 import pro.liliya.core.logging.LoggerFactory
 import pro.liliya.core.logging.LogConfig
 
-import pro.liliya.core.CoreDiagnosticEvent
-import pro.liliya.core.CoreDiagnosticEventType
 
 import pro.liliya.core.RuntimeEventBus
 import pro.liliya.core.RuntimeEvent
@@ -22,7 +20,6 @@ import pro.liliya.core.CoreRuntimeDiagnosticsService
 import pro.liliya.core.DefaultCoreRuntimeDiagnosticsService
 import pro.liliya.core.CoreDiagnosticProvider
 import pro.liliya.core.CoreRuntimeContext
-import pro.liliya.core.CoreDiagnosticEventBus
 import pro.liliya.core.module.ModuleProvider
 import pro.liliya.core.module.ModuleExceptionHandler
 import pro.liliya.core.module.ModuleDependencyResolver
@@ -177,7 +174,6 @@ class DefaultRuntimeComposition :
 
 
     private val context = CoreRuntimeContext(
-        diagnosticEventBus = CoreDiagnosticEventBus(),
         diagnosticService = diagnosticsService
     )
 
@@ -457,10 +453,6 @@ class DefaultRuntimeComposition :
         return diagnosticsService
     }
 
-    fun diagnosticEventBus(): CoreDiagnosticEventBus {
-        return context.diagnosticEventBus
-    }
-
     override fun context(): CoreRuntimeContext {
         return context
     }
@@ -575,7 +567,6 @@ class DefaultRuntimeComposition :
         try {
             startRuntimeLifecycle()
             recordRuntimeStarted()
-            publishRuntimeStartedDiagnostic()
             markRuntimeRecovered()
             publishRuntimeReady()
             logRuntimeStartupSuccess()
@@ -606,7 +597,6 @@ class DefaultRuntimeComposition :
                 failureReason()
             )
 
-            publishRuntimeFailedDiagnostic()
 
             publishRuntimeFailed(
                 error.message ?: "unknown"
@@ -670,7 +660,6 @@ class DefaultRuntimeComposition :
             failureReason()
         )
 
-        publishRuntimeFailedDiagnostic()
 
         publishRuntimeFailed(
             error.message ?: "unknown"
@@ -697,7 +686,6 @@ class DefaultRuntimeComposition :
         setFailureReason(null)
         setModuleStates(emptyMap())
 
-        publishRuntimeStoppedDiagnostic()
         publishSystemStop()
 
     }
@@ -1085,33 +1073,6 @@ class DefaultRuntimeComposition :
     override fun uninstallModuleEventBridge() {
         moduleEventBridge.uninstall()
         runtimeModuleBridgeStateHolder.reset()
-    }
-
-    override fun publishRuntimeStartedDiagnostic() {
-        diagnosticEventBus().publish(
-            CoreDiagnosticEvent(
-                type = CoreDiagnosticEventType.RUNTIME_STARTED,
-                snapshot = createDiagnosticSnapshot()
-            )
-        )
-    }
-
-    override fun publishRuntimeFailedDiagnostic() {
-        diagnosticEventBus().publish(
-            CoreDiagnosticEvent(
-                type = CoreDiagnosticEventType.RUNTIME_FAILED,
-                snapshot = createDiagnosticSnapshot()
-            )
-        )
-    }
-
-    override fun publishRuntimeStoppedDiagnostic() {
-        diagnosticEventBus().publish(
-            CoreDiagnosticEvent(
-                type = CoreDiagnosticEventType.RUNTIME_STOPPED,
-                snapshot = createDiagnosticSnapshot()
-            )
-        )
     }
 
     override fun resetRuntimeHealth() {

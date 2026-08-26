@@ -11,10 +11,6 @@ class CoreRuntimeContextContractTest {
         val context = CoreRuntimeContext()
 
         assertNotNull(
-            context.diagnosticEventBus
-        )
-
-        assertNotNull(
             context.diagnosticService
         )
     }

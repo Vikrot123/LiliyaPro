@@ -277,12 +277,6 @@ interface RuntimeComposition {
 
     fun uninstallModuleEventBridge()
 
-    fun publishRuntimeStartedDiagnostic()
-
-    fun publishRuntimeFailedDiagnostic()
-
-    fun publishRuntimeStoppedDiagnostic()
-
     fun resetRuntimeHealth()
 
     fun markRuntimeRecovered()
