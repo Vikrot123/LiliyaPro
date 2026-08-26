@@ -302,4 +302,60 @@ class RuntimeCompositionKnowledgeLifecyclePrepareIsolationContractTest {
         assertSame(oldResult, oldObserver.lastProcessedResult())
     }
 
+    @Test
+    fun prepare_twice_preserves_lifecycle_state_and_history_identity() {
+        val composition = DefaultRuntimeComposition()
+        val lifecycle = composition.knowledgeLifecycleComposition()
+
+        val memory = lifecycle.lifecycleMemory()
+        val history = lifecycle.lifecycleHistoryQuery()
+
+        val knowledge = RuntimeKnowledge(
+            statement = "repeated prepare continuity",
+            confidence = 0.9,
+            source = RuntimeKnowledgeSource.EXPERIENCE,
+            createdAt = 1L
+        )
+
+        memory.create(knowledge)
+        memory.revise(knowledge)
+
+        assertEquals(2, history.transitionCount(knowledge))
+
+        val serviceBeforeFirstPrepare = lifecycle.lifecycleService()
+
+        composition.prepareRuntime()
+
+        val serviceAfterFirstPrepare = lifecycle.lifecycleService()
+
+        assertSame(lifecycle, composition.knowledgeLifecycleComposition())
+        assertSame(memory, lifecycle.lifecycleMemory())
+        assertSame(history, lifecycle.lifecycleHistoryQuery())
+        assertNotSame(serviceBeforeFirstPrepare, serviceAfterFirstPrepare)
+
+        assertEquals(2, history.transitionCount(knowledge))
+        assertEquals(
+            RuntimeKnowledgeLifecycleState.REVIEW,
+            memory.memory().getLifecycleState(knowledge)
+        )
+
+        val serviceBeforeSecondPrepare = lifecycle.lifecycleService()
+
+        composition.prepareRuntime()
+
+        val serviceAfterSecondPrepare = lifecycle.lifecycleService()
+
+        assertSame(lifecycle, composition.knowledgeLifecycleComposition())
+        assertSame(memory, lifecycle.lifecycleMemory())
+        assertSame(history, lifecycle.lifecycleHistoryQuery())
+        assertNotSame(serviceBeforeSecondPrepare, serviceAfterSecondPrepare)
+        assertNotSame(serviceAfterFirstPrepare, serviceAfterSecondPrepare)
+
+        assertEquals(2, history.transitionCount(knowledge))
+        assertEquals(
+            RuntimeKnowledgeLifecycleState.REVIEW,
+            memory.memory().getLifecycleState(knowledge)
+        )
+    }
+
 }
