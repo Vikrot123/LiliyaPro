@@ -6,12 +6,15 @@ import pro.liliya.core.runtime.intelligence.experience.consolidation.RuntimeExpe
 import pro.liliya.core.runtime.intelligence.experience.pipeline.RuntimeExperiencePipeline
 import pro.liliya.core.runtime.intelligence.experience.store.RuntimeExperienceStore
 import pro.liliya.core.runtime.intelligence.knowledge.pipeline.RuntimeKnowledgePipeline
+import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.integration.RuntimeKnowledgeLifecycleMemory
 
 class DefaultRuntimeExperienceKnowledgePipeline(
     private val experiencePipeline: RuntimeExperiencePipeline,
     private val experienceConsolidator: RuntimeExperienceConsolidator,
     private val knowledgePipeline: RuntimeKnowledgePipeline,
-    private val experienceStore: RuntimeExperienceStore? = null
+    private val experienceStore: RuntimeExperienceStore? = null,
+    private val knowledgeLifecycleMemory:
+        RuntimeKnowledgeLifecycleMemory? = null
 ) : RuntimeExperienceKnowledgePipeline {
 
     override fun process(
@@ -36,6 +39,10 @@ class DefaultRuntimeExperienceKnowledgePipeline(
 
             val knowledgeResult =
                 knowledgePipeline.process(consolidation)
+
+            knowledgeLifecycleMemory?.create(
+                knowledgeResult.knowledge
+            )
 
             return RuntimeExperienceKnowledgePipelineResult(
                 experienceResult = experienceResult,

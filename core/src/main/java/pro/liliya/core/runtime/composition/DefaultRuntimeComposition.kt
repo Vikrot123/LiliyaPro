@@ -278,25 +278,6 @@ class DefaultRuntimeComposition :
     private val knowledgeComposition =
         DefaultRuntimeKnowledgeComposition()
 
-    private val experienceKnowledgePipeline:
-        RuntimeExperienceKnowledgePipeline =
-        DefaultRuntimeExperienceKnowledgePipeline(
-            experiencePipeline =
-                experienceComposition.experiencePipeline(),
-            experienceConsolidator =
-                experienceComposition.experienceConsolidator(),
-            knowledgePipeline =
-                knowledgeComposition.knowledgePipeline(),
-            experienceStore =
-                experienceComposition.experienceStore()
-        )
-
-    private val experienceKnowledgeOrchestrator:
-        RuntimeExperienceKnowledgeOrchestrator =
-        DefaultRuntimeExperienceKnowledgeOrchestrator(
-            pipeline = experienceKnowledgePipeline
-        )
-
     private val knowledgeLifecycleCompositionHolder =
         DefaultRuntimeKnowledgeLifecycleCompositionHolder(
             knowledgeMemory =
@@ -307,6 +288,29 @@ class DefaultRuntimeComposition :
                 memoryCompositionHolder
                     .composition()
                     .knowledgeLifecycleStateStore()
+        )
+
+    private val experienceKnowledgePipeline:
+        RuntimeExperienceKnowledgePipeline =
+        DefaultRuntimeExperienceKnowledgePipeline(
+            experiencePipeline =
+                experienceComposition.experiencePipeline(),
+            experienceConsolidator =
+                experienceComposition.experienceConsolidator(),
+            knowledgePipeline =
+                knowledgeComposition.knowledgePipeline(),
+            experienceStore =
+                experienceComposition.experienceStore(),
+            knowledgeLifecycleMemory =
+                knowledgeLifecycleCompositionHolder
+                    .composition()
+                    .lifecycleMemory()
+        )
+
+    private val experienceKnowledgeOrchestrator:
+        RuntimeExperienceKnowledgeOrchestrator =
+        DefaultRuntimeExperienceKnowledgeOrchestrator(
+            pipeline = experienceKnowledgePipeline
         )
 
 
