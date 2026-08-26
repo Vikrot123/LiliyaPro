@@ -15,33 +15,43 @@ object RuntimeEventBus {
     fun subscribe(
         listener: (RuntimeEvent) -> Unit
     ) {
-        listeners.add(listener)
+        synchronized(listeners) {
+            listeners.add(listener)
+        }
     }
 
     fun unsubscribe(
         listener: (RuntimeEvent) -> Unit
     ) {
-        listeners.remove(listener)
+        synchronized(listeners) {
+            listeners.remove(listener)
+        }
     }
 
     fun publish(
         event: RuntimeEvent
     ) {
-        listeners.toList()
-            .forEach { listener ->
-                try {
-                    listener(event)
-                } catch (e: Exception) {
-                    runtimeEventBusLogger().error(
-                        pro.liliya.core.logging.LoggerMarkers.ERROR,
-                        "Runtime event listener failed",
-                        e
-                    )
-                }
+        val snapshot =
+            synchronized(listeners) {
+                listeners.toList()
             }
+
+        snapshot.forEach { listener ->
+            try {
+                listener(event)
+            } catch (e: Exception) {
+                runtimeEventBusLogger().error(
+                    pro.liliya.core.logging.LoggerMarkers.ERROR,
+                    "Runtime event listener failed",
+                    e
+                )
+            }
+        }
     }
 
     fun clear() {
-        listeners.clear()
+        synchronized(listeners) {
+            listeners.clear()
+        }
     }
 }
