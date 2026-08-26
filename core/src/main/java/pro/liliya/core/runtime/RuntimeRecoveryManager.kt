@@ -5,6 +5,11 @@ import pro.liliya.core.RuntimeEventBus
 import pro.liliya.core.runtime.recovery.RuntimeRecoveryEvent
 import pro.liliya.core.runtime.recovery.RuntimeRecoveryEventBus
 
+private data class RecoveryOwnershipKey(
+    val registry: RuntimeServiceRegistry?,
+    val serviceName: String
+)
+
 class RuntimeRecoveryManager(
     private val supervisor: RuntimeSupervisor,
     private val registry: RuntimeServiceRegistry? = null,
@@ -17,7 +22,8 @@ class RuntimeRecoveryManager(
     private var lastRecoverySuccessful: Boolean? = null
 
     private companion object {
-    val globalRecoveringServices = mutableSetOf<String>()
+    val globalRecoveringServices =
+            mutableSetOf<RecoveryOwnershipKey>()
     val installedOwners = mutableSetOf<RuntimeServiceRegistry?>()
 }
 
@@ -29,22 +35,46 @@ class RuntimeRecoveryManager(
                 registry == null ||
                 sourceRegistry === registry
             ) {
-                val acquired = synchronized(globalRecoveringServices) {
-                    globalRecoveringServices.add(event.serviceName)
-                }
+                val recoveryKey =
+                    RecoveryOwnershipKey(
+                        registry = registry,
+                        serviceName = event.serviceName
+                    )
+
+                val acquired =
+                    synchronized(globalRecoveringServices) {
+                        globalRecoveringServices.add(
+                            recoveryKey
+                        )
+                    }
 
                 if (acquired) {
                     try {
-                        val recovered = supervisor.recover(event.serviceName)
+                        val recovered =
+                            supervisor.recover(
+                                event.serviceName
+                            )
 
-                        lastRecoveredService = event.serviceName
-                        lastRecoverySuccessful = recovered
+                        lastRecoveredService =
+                            event.serviceName
+
+                        lastRecoverySuccessful =
+                            recovered
+
                     } catch (error: Throwable) {
-                        lastRecoveredService = event.serviceName
-                        lastRecoverySuccessful = false
+                        lastRecoveredService =
+                            event.serviceName
+
+                        lastRecoverySuccessful =
+                            false
+
                     } finally {
-                        synchronized(globalRecoveringServices) {
-                            globalRecoveringServices.remove(event.serviceName)
+                        synchronized(
+                            globalRecoveringServices
+                        ) {
+                            globalRecoveringServices.remove(
+                                recoveryKey
+                            )
                         }
                     }
                 }
@@ -132,7 +162,9 @@ class RuntimeRecoveryManager(
         uninstall()
 
         synchronized(globalRecoveringServices) {
-            globalRecoveringServices.clear()
+            globalRecoveringServices.removeAll { key ->
+                key.registry === registry
+            }
         }
 
         synchronized(installedOwners) {
