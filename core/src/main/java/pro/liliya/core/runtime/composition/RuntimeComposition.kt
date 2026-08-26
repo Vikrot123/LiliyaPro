@@ -21,6 +21,7 @@ import pro.liliya.core.module.ModuleState
 import pro.liliya.core.runtime.lifecycle.RuntimeLifecycleRecorder
 import pro.liliya.core.runtime.lifecycle.RuntimeLifecycleRecorderHolder
 import pro.liliya.core.runtime.intelligence.experience.composition.RuntimeExperienceComposition
+import pro.liliya.core.runtime.intelligence.knowledge.composition.RuntimeKnowledgeComposition
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.composition.RuntimeKnowledgeLifecycleComposition
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.composition.RuntimeKnowledgeLifecycleCompositionHolder
 import pro.liliya.core.runtime.intelligence.memory.composition.RuntimeMemoryComposition
@@ -199,6 +200,9 @@ interface RuntimeComposition {
 
     fun experienceComposition():
         RuntimeExperienceComposition
+
+    fun knowledgeComposition():
+        RuntimeKnowledgeComposition
 
     fun memoryComposition():
         RuntimeMemoryComposition

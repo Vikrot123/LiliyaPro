@@ -113,6 +113,8 @@ import pro.liliya.core.runtime.RuntimeRecoverySnapshot
 import pro.liliya.core.runtime.RuntimeServiceRegistry
 import pro.liliya.core.runtime.intelligence.experience.composition.DefaultRuntimeExperienceComposition
 import pro.liliya.core.runtime.intelligence.experience.composition.RuntimeExperienceComposition
+import pro.liliya.core.runtime.intelligence.knowledge.composition.DefaultRuntimeKnowledgeComposition
+import pro.liliya.core.runtime.intelligence.knowledge.composition.RuntimeKnowledgeComposition
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.composition.DefaultRuntimeKnowledgeLifecycleCompositionHolder
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.composition.RuntimeKnowledgeLifecycleComposition
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.composition.RuntimeKnowledgeLifecycleCompositionHolder
@@ -264,6 +266,9 @@ class DefaultRuntimeComposition :
 
     private val experienceComposition =
         DefaultRuntimeExperienceComposition()
+
+    private val knowledgeComposition =
+        DefaultRuntimeKnowledgeComposition()
 
     private val knowledgeLifecycleCompositionHolder =
         DefaultRuntimeKnowledgeLifecycleCompositionHolder(
@@ -818,6 +823,12 @@ class DefaultRuntimeComposition :
         RuntimeExperienceComposition {
         return experienceComposition
     }
+
+    override fun knowledgeComposition():
+        RuntimeKnowledgeComposition {
+        return knowledgeComposition
+    }
+
 
     override fun knowledgeLifecycleComposition():
         RuntimeKnowledgeLifecycleComposition {
