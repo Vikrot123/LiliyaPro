@@ -12,21 +12,30 @@ class DefaultRuntimeKnowledgeLifecycleObserverRegistry :
     override fun register(
         observer: RuntimeKnowledgeLifecycleObserver
     ) {
-        if (!observers.contains(observer)) {
-            observers += observer
+        synchronized(observers) {
+            if (!observers.contains(observer)) {
+                observers += observer
+            }
         }
     }
 
     override fun unregister(
         observer: RuntimeKnowledgeLifecycleObserver
     ) {
-        observers.remove(observer)
+        synchronized(observers) {
+            observers.remove(observer)
+        }
     }
 
     override fun notify(
         result: RuntimeKnowledgeLifecycleServiceResult
     ) {
-        observers.forEach { observer ->
+        val snapshot =
+            synchronized(observers) {
+                observers.toList()
+            }
+
+        snapshot.forEach { observer ->
             try {
                 observer.onProcessed(result)
             } catch (_: Throwable) {
