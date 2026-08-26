@@ -7,44 +7,53 @@ import pro.liliya.core.runtime.intelligence.memory.capability.RuntimeMemoryCapab
 class DefaultRuntimeMemoryRegistry :
     RuntimeMemoryRegistry {
 
-    private data class Registration(
-        val provider: RuntimeMemoryProvider,
-        val capabilities: Set<RuntimeMemoryCapability>
-    )
-
     private val memories =
-        mutableMapOf<RuntimeMemoryType, Registration>()
+        mutableMapOf<RuntimeMemoryType, RuntimeMemoryRegistration>()
 
     override fun register(
         type: RuntimeMemoryType,
         provider: RuntimeMemoryProvider,
         capabilities: Set<RuntimeMemoryCapability>
     ) {
-        if (!memories.containsKey(type)) {
-            memories[type] =
-                Registration(
-                    provider,
-                    capabilities
-                )
+        synchronized(memories) {
+            if (!memories.containsKey(type)) {
+                memories[type] =
+                    RuntimeMemoryRegistration(
+                        provider = provider,
+                        capabilities = capabilities.toSet()
+                    )
+            }
         }
     }
 
     override fun unregister(
         type: RuntimeMemoryType
     ) {
-        memories.remove(type)
+        synchronized(memories) {
+            memories.remove(type)
+        }
+    }
+
+    override fun registration(
+        type: RuntimeMemoryType
+    ): RuntimeMemoryRegistration? {
+        return synchronized(memories) {
+            memories[type]
+        }
     }
 
     override fun provider(
         type: RuntimeMemoryType
     ): RuntimeMemoryProvider? {
-        return memories[type]?.provider
+        return registration(type)
+            ?.provider
     }
 
     override fun capabilities(
         type: RuntimeMemoryType
     ): Set<RuntimeMemoryCapability> {
-        return memories[type]?.capabilities
+        return registration(type)
+            ?.capabilities
             ?: emptySet()
     }
 }

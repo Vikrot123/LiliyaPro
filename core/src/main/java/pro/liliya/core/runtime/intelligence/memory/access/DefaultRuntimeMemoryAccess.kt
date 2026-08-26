@@ -13,40 +13,42 @@ class DefaultRuntimeMemoryAccess(
         type: RuntimeMemoryType,
         entry: RuntimeMemoryEntry
     ) {
+        val registration =
+            registry.registration(type)
+                ?: return
+
         if (
-            !registry
-                .capabilities(type)
-                .contains(
-                    RuntimeMemoryCapability.WRITE
-                )
+            !registration.capabilities.contains(
+                RuntimeMemoryCapability.WRITE
+            )
         ) {
             return
         }
 
-        registry
-            .provider(type)
-            ?.store(entry)
+        registration.provider.store(
+            entry
+        )
     }
-
 
     override fun search(
         type: RuntimeMemoryType,
         query: String
     ): List<RuntimeMemoryEntry> {
 
+        val registration =
+            registry.registration(type)
+                ?: return emptyList()
+
         if (
-            !registry
-                .capabilities(type)
-                .contains(
-                    RuntimeMemoryCapability.READ
-                )
+            !registration.capabilities.contains(
+                RuntimeMemoryCapability.READ
+            )
         ) {
             return emptyList()
         }
 
-        return registry
-            .provider(type)
-            ?.search(query)
-            ?: emptyList()
+        return registration.provider.search(
+            query
+        )
     }
 }

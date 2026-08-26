@@ -16,6 +16,10 @@ interface RuntimeMemoryRegistry {
         type: RuntimeMemoryType
     )
 
+    fun registration(
+        type: RuntimeMemoryType
+    ): RuntimeMemoryRegistration?
+
     fun provider(
         type: RuntimeMemoryType
     ): RuntimeMemoryProvider?
