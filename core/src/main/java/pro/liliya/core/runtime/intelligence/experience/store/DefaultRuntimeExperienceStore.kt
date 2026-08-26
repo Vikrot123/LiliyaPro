@@ -2,7 +2,8 @@ package pro.liliya.core.runtime.intelligence.experience.store
 
 import pro.liliya.core.runtime.intelligence.experience.RuntimeExperience
 
-class DefaultRuntimeExperienceStore : RuntimeExperienceStore {
+class DefaultRuntimeExperienceStore :
+    RuntimeExperienceStore {
 
     private val experiences =
         mutableListOf<RuntimeExperience>()
@@ -10,10 +11,14 @@ class DefaultRuntimeExperienceStore : RuntimeExperienceStore {
     override fun append(
         experience: RuntimeExperience
     ) {
-        experiences += experience
+        synchronized(experiences) {
+            experiences += experience
+        }
     }
 
     override fun experiences(): List<RuntimeExperience> {
-        return experiences.toList()
+        return synchronized(experiences) {
+            experiences.toList()
+        }
     }
 }
