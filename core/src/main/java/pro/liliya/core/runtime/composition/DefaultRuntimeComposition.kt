@@ -111,6 +111,10 @@ import pro.liliya.core.runtime.telemetry.RuntimeTelemetrySnapshot
 import pro.liliya.core.runtime.RuntimeServiceProviderHolder
 import pro.liliya.core.runtime.RuntimeRecoverySnapshot
 import pro.liliya.core.runtime.RuntimeServiceRegistry
+import pro.liliya.core.runtime.intelligence.decision.DefaultRuntimeDecisionEngine
+import pro.liliya.core.runtime.intelligence.decision.RuntimeDecisionEngine
+import pro.liliya.core.runtime.intelligence.decision.DefaultRuntimeDecisionActionRequestFactory
+import pro.liliya.core.runtime.intelligence.decision.RuntimeDecisionActionRequestFactory
 import pro.liliya.core.runtime.intelligence.experience.composition.DefaultRuntimeExperienceComposition
 import pro.liliya.core.runtime.intelligence.experience.composition.RuntimeExperienceComposition
 import pro.liliya.core.runtime.intelligence.experience.knowledge.DefaultRuntimeExperienceKnowledgePipeline
@@ -391,6 +395,13 @@ class DefaultRuntimeComposition :
 
     private val meaningEngine: RuntimeMeaningEngine =
         DefaultRuntimeMeaningEngine()
+
+    private val decisionEngine: RuntimeDecisionEngine =
+        DefaultRuntimeDecisionEngine()
+
+    private val decisionActionRequestFactory:
+        RuntimeDecisionActionRequestFactory =
+        DefaultRuntimeDecisionActionRequestFactory()
 
     private val intelligenceOrchestrator: RuntimeIntelligenceOrchestrator =
         DefaultRuntimeIntelligenceOrchestrator(
@@ -911,6 +922,15 @@ class DefaultRuntimeComposition :
     override fun intelligenceOrchestrator():
         RuntimeIntelligenceOrchestrator {
         return intelligenceOrchestrator
+    }
+
+    override fun decisionEngine(): RuntimeDecisionEngine {
+        return decisionEngine
+    }
+
+    override fun decisionActionRequestFactory():
+        RuntimeDecisionActionRequestFactory {
+        return decisionActionRequestFactory
     }
 
 
