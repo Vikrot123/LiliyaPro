@@ -167,10 +167,6 @@ class RuntimeRecoveryManager(
             }
         }
 
-        synchronized(installedOwners) {
-            installedOwners.remove(registry)
-        }
-
         lastRecoveredService = null
         lastRecoverySuccessful = null
     }
