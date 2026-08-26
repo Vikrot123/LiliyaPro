@@ -11,23 +11,29 @@ class DefaultRuntimeKnowledgeAssociationStore :
     override fun append(
         association: RuntimeKnowledgeAssociation
     ) {
-        associations += association
+        synchronized(associations) {
+            associations += association
+        }
     }
 
     override fun removeLast(
         association: RuntimeKnowledgeAssociation
     ) {
-        if (associations.lastOrNull() != association) {
-            return
-        }
+        synchronized(associations) {
+            if (associations.lastOrNull() != association) {
+                return
+            }
 
-        associations.removeAt(
-            associations.lastIndex
-        )
+            associations.removeAt(
+                associations.lastIndex
+            )
+        }
     }
 
     override fun associations():
         List<RuntimeKnowledgeAssociation> {
-        return associations.toList()
+        return synchronized(associations) {
+            associations.toList()
+        }
     }
 }
