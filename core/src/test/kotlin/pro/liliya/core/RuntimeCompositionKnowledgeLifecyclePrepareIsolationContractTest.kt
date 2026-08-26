@@ -111,4 +111,80 @@ class RuntimeCompositionKnowledgeLifecyclePrepareIsolationContractTest {
         )
     }
 
+    @Test
+    fun prepare_preserves_history_for_new_lifecycle_composition() {
+        val composition = DefaultRuntimeComposition()
+        val lifecycleBefore = composition.knowledgeLifecycleComposition()
+
+        val knowledge = RuntimeKnowledge(
+            statement = "prepare history continuity",
+            confidence = 0.9,
+            source = RuntimeKnowledgeSource.EXPERIENCE,
+            createdAt = 1L
+        )
+
+        lifecycleBefore.lifecycleMemory()
+            .create(knowledge)
+
+        lifecycleBefore.lifecycleMemory()
+            .revise(knowledge)
+
+        assertEquals(
+            2,
+            lifecycleBefore.lifecycleHistoryQuery()
+                .transitionCount(knowledge)
+        )
+
+        composition.prepareRuntime()
+
+        val lifecycleAfter = composition.knowledgeLifecycleComposition()
+
+        assertEquals(
+            2,
+            lifecycleAfter.lifecycleHistoryQuery()
+                .transitionCount(knowledge)
+        )
+
+        assertEquals(
+            RuntimeKnowledgeLifecycleState.REVIEW,
+            lifecycleAfter.lifecycleMemory()
+                .memory()
+                .getLifecycleState(knowledge)
+        )
+    }
+
+    @Test
+    fun prepare_preserves_lifecycle_composition_identity() {
+        val composition = DefaultRuntimeComposition()
+
+        val lifecycleBefore =
+            composition.knowledgeLifecycleComposition()
+
+        val memoryBefore =
+            lifecycleBefore.lifecycleMemory()
+
+        val historyBefore =
+            lifecycleBefore.lifecycleHistoryQuery()
+
+        composition.prepareRuntime()
+
+        val lifecycleAfter =
+            composition.knowledgeLifecycleComposition()
+
+        assertSame(
+            lifecycleBefore,
+            lifecycleAfter
+        )
+
+        assertSame(
+            memoryBefore,
+            lifecycleAfter.lifecycleMemory()
+        )
+
+        assertSame(
+            historyBefore,
+            lifecycleAfter.lifecycleHistoryQuery()
+        )
+    }
+
 }
