@@ -11,14 +11,21 @@ class DefaultRuntimeCapabilityDiscoveryRegistry :
     override fun register(
         discovery: RuntimeCapabilityDiscovery
     ) {
-        discoveries.add(discovery)
+        synchronized(discoveries) {
+            discoveries.add(discovery)
+        }
     }
 
     override fun discover(
         module: LiliyaModule
     ): RuntimeCapabilityProvider? {
 
-        return discoveries.firstNotNullOfOrNull { discovery ->
+        val snapshot =
+            synchronized(discoveries) {
+                discoveries.toList()
+            }
+
+        return snapshot.firstNotNullOfOrNull { discovery ->
             discovery.discover(module)
         }
     }
