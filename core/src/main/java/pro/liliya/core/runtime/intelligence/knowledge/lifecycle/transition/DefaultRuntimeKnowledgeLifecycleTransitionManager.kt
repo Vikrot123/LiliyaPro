@@ -45,19 +45,37 @@ class DefaultRuntimeKnowledgeLifecycleTransitionManager(
             return false
         }
 
-        stateStore.setState(
-            knowledge,
-            target
-        )
-
-        historyStore.append(
-            knowledge,
+        val historyEntry =
             RuntimeKnowledgeLifecycleHistoryEntry(
                 from = current,
                 to = target,
                 timestamp = System.currentTimeMillis()
             )
+
+        historyStore.append(
+            knowledge,
+            historyEntry
         )
+
+        try {
+            stateStore.setState(
+                knowledge,
+                target
+            )
+        } catch (error: Throwable) {
+            try {
+                historyStore.removeLast(
+                    knowledge,
+                    historyEntry
+                )
+            } catch (rollbackError: Throwable) {
+                error.addSuppressed(
+                    rollbackError
+                )
+            }
+
+            throw error
+        }
 
         return true
     }

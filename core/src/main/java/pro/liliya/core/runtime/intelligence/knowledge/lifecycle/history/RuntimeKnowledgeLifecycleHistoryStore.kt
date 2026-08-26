@@ -12,4 +12,9 @@ interface RuntimeKnowledgeLifecycleHistoryStore {
     fun history(
         knowledge: RuntimeKnowledge
     ): List<RuntimeKnowledgeLifecycleHistoryEntry>
+
+    fun removeLast(
+        knowledge: RuntimeKnowledge,
+        entry: RuntimeKnowledgeLifecycleHistoryEntry
+    )
 }

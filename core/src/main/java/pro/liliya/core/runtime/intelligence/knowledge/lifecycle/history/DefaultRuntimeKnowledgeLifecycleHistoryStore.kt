@@ -30,4 +30,25 @@ class DefaultRuntimeKnowledgeLifecycleHistoryStore :
             ?.toList()
             ?: emptyList()
     }
+
+    override fun removeLast(
+        knowledge: RuntimeKnowledge,
+        entry: RuntimeKnowledgeLifecycleHistoryEntry
+    ) {
+        val entries =
+            history[knowledge]
+                ?: return
+
+        if (entries.lastOrNull() != entry) {
+            return
+        }
+
+        entries.removeAt(
+            entries.lastIndex
+        )
+
+        if (entries.isEmpty()) {
+            history.remove(knowledge)
+        }
+    }
 }
