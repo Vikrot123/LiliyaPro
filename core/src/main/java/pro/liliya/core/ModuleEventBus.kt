@@ -15,19 +15,28 @@ object ModuleEventBus {
     fun subscribe(
         listener: (ModuleEvent) -> Unit
     ) {
-        listeners.add(listener)
+        synchronized(listeners) {
+            listeners.add(listener)
+        }
     }
 
     fun unsubscribe(
         listener: (ModuleEvent) -> Unit
     ) {
-        listeners.remove(listener)
+        synchronized(listeners) {
+            listeners.remove(listener)
+        }
     }
 
     fun publish(
         event: ModuleEvent
     ) {
-        listeners.toList().forEach { listener ->
+        val snapshot =
+            synchronized(listeners) {
+                listeners.toList()
+            }
+
+        snapshot.forEach { listener ->
             try {
                 listener(event)
             } catch (e: Exception) {
@@ -41,10 +50,14 @@ object ModuleEventBus {
     }
 
     fun clear() {
-        listeners.clear()
+        synchronized(listeners) {
+            listeners.clear()
+        }
     }
 
     fun hasListeners(): Boolean {
-        return listeners.isNotEmpty()
+        return synchronized(listeners) {
+            listeners.isNotEmpty()
+        }
     }
 }
