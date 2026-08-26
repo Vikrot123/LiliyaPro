@@ -17,7 +17,7 @@ class DefaultRuntimeKnowledgeLifecycleTransitionManager(
         knowledge: RuntimeKnowledge,
         target: RuntimeKnowledgeLifecycleState
     ): Boolean {
-        return synchronized(this) {
+        return synchronized(stateStore) {
 
             val current = stateQuery.getState(knowledge)
 
