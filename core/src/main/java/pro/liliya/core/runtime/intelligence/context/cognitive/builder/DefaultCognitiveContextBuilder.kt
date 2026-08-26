@@ -4,6 +4,13 @@ import pro.liliya.core.runtime.intelligence.context.cognitive.CognitiveContextSn
 import pro.liliya.core.runtime.intelligence.context.cognitive.CognitiveContextSource
 import pro.liliya.core.runtime.intelligence.context.cognitive.CognitiveContextType
 
+private fun cognitiveContextBuilderLogger() =
+    pro.liliya.core.logging.LoggerFactory.create(
+        module = "CORE",
+        component = "DefaultCognitiveContextBuilder",
+        method = "build"
+    )
+
 class DefaultCognitiveContextBuilder :
     CognitiveContextBuilder {
 
@@ -21,7 +28,13 @@ class DefaultCognitiveContextBuilder :
                 if (snapshot != null) {
                     values["source_$index"] = snapshot
                 }
-            } catch (_: Exception) {
+            } catch (error: Exception) {
+                cognitiveContextBuilderLogger().error(
+                    pro.liliya.core.logging.LoggerMarkers.ERROR,
+                    "Cognitive context builder source failed",
+                    error
+                )
+
                 // A failing source must not prevent later sources
                 // from contributing to the cognitive context.
             }

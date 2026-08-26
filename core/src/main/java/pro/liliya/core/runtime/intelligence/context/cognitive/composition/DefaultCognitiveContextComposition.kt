@@ -24,6 +24,13 @@ import pro.liliya.core.runtime.intelligence.context.cognitive.registry.Cognitive
 import pro.liliya.core.runtime.intelligence.context.cognitive.registry.DefaultCognitiveContextSourceRegistry
 import pro.liliya.core.runtime.intelligence.context.cognitive.source.DefaultRuntimeCognitiveContextSource
 
+private fun cognitiveContextCompositionLogger() =
+    pro.liliya.core.logging.LoggerFactory.create(
+        module = "CORE",
+        component = "DefaultCognitiveContextComposition",
+        method = "snapshot"
+    )
+
 class DefaultCognitiveContextComposition(
     private val runtimeContextProvider: RuntimeContextProvider =
         DefaultRuntimeContextProvider(
@@ -74,7 +81,13 @@ class DefaultCognitiveContextComposition(
                                 values.putIfAbsent(key, value)
                             }
                         }
-                    } catch (_: Exception) {
+                    } catch (error: Exception) {
+                        cognitiveContextCompositionLogger().error(
+                            pro.liliya.core.logging.LoggerMarkers.ERROR,
+                            "Cognitive context source failed",
+                            error
+                        )
+
                         // A failing source must not prevent other sources
                         // from contributing to the cognitive snapshot.
                     }
