@@ -88,6 +88,12 @@ class DefaultRuntimeExperiencePipelineContractTest {
             stored += experience
         }
 
+        override fun remove(
+            experience: RuntimeExperience
+        ): Boolean {
+            return stored.remove(experience)
+        }
+
         override fun experiences(): List<RuntimeExperience> {
             return stored.toList()
         }

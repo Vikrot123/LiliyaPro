@@ -16,6 +16,24 @@ class DefaultRuntimeExperienceStore :
         }
     }
 
+    override fun remove(
+        experience: RuntimeExperience
+    ): Boolean {
+        return synchronized(experiences) {
+            val index =
+                experiences.indexOfLast { stored ->
+                    stored === experience
+                }
+
+            if (index < 0) {
+                false
+            } else {
+                experiences.removeAt(index)
+                true
+            }
+        }
+    }
+
     override fun experiences(): List<RuntimeExperience> {
         return synchronized(experiences) {
             experiences.toList()

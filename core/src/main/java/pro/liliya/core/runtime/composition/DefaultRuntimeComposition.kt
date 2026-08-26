@@ -286,7 +286,9 @@ class DefaultRuntimeComposition :
             experienceConsolidator =
                 experienceComposition.experienceConsolidator(),
             knowledgePipeline =
-                knowledgeComposition.knowledgePipeline()
+                knowledgeComposition.knowledgePipeline(),
+            experienceStore =
+                experienceComposition.experienceStore()
         )
 
     private val experienceKnowledgeOrchestrator:

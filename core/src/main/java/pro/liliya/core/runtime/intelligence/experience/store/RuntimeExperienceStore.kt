@@ -8,5 +8,9 @@ interface RuntimeExperienceStore {
         experience: RuntimeExperience
     )
 
+    fun remove(
+        experience: RuntimeExperience
+    ): Boolean
+
     fun experiences(): List<RuntimeExperience>
 }
