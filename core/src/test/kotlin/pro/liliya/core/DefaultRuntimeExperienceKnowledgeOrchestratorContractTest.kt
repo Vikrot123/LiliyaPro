@@ -105,6 +105,6 @@ class DefaultRuntimeExperienceKnowledgeOrchestratorContractTest {
 
         val result = orchestrator.process(context)
 
-        assertSame(pipelineResult, result)
+        assertSame(pipelineResult, result.pipelineResult)
     }
 }
