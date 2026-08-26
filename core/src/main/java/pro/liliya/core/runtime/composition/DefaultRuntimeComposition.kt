@@ -584,7 +584,12 @@ class DefaultRuntimeComposition :
             moduleManager()?.let {
                 try {
                     stopModuleRuntime(it)
-                } catch (_: Exception) {
+                } catch (cleanupError: Exception) {
+                    logger().error(
+                        pro.liliya.core.logging.LoggerMarkers.ERROR,
+                        "Runtime startup cleanup failed: ${cleanupError.message}",
+                        cleanupError
+                    )
                 }
             }
 
