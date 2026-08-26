@@ -8,5 +8,9 @@ interface RuntimeKnowledgeAssociationStore {
         association: RuntimeKnowledgeAssociation
     )
 
+    fun removeLast(
+        association: RuntimeKnowledgeAssociation
+    )
+
     fun associations(): List<RuntimeKnowledgeAssociation>
 }

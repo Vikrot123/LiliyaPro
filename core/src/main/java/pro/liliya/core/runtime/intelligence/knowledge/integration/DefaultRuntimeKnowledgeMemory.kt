@@ -4,6 +4,7 @@ import pro.liliya.core.runtime.intelligence.knowledge.RuntimeKnowledge
 import pro.liliya.core.runtime.intelligence.knowledge.association.RuntimeKnowledgeAssociationType
 import pro.liliya.core.runtime.intelligence.knowledge.association.DefaultRuntimeKnowledgeAssociator
 import pro.liliya.core.runtime.intelligence.knowledge.association.store.DefaultRuntimeKnowledgeAssociationStore
+import pro.liliya.core.runtime.intelligence.knowledge.association.store.RuntimeKnowledgeAssociationStore
 import pro.liliya.core.runtime.intelligence.knowledge.graph.DefaultRuntimeKnowledgeGraphBuilder
 import pro.liliya.core.runtime.intelligence.knowledge.graph.RuntimeKnowledgeGraphNode
 import pro.liliya.core.runtime.intelligence.knowledge.graph.query.DefaultRuntimeKnowledgeGraphQueryEngine
@@ -11,6 +12,7 @@ import pro.liliya.core.runtime.intelligence.knowledge.graph.query.RuntimeKnowled
 import pro.liliya.core.runtime.intelligence.knowledge.graph.ranking.DefaultRuntimeKnowledgeGraphRanker
 import pro.liliya.core.runtime.intelligence.knowledge.graph.ranking.RuntimeKnowledgeGraphRankingResult
 import pro.liliya.core.runtime.intelligence.knowledge.graph.store.DefaultRuntimeKnowledgeGraphStore
+import pro.liliya.core.runtime.intelligence.knowledge.graph.store.RuntimeKnowledgeGraphStore
 import pro.liliya.core.runtime.intelligence.knowledge.store.DefaultRuntimeKnowledgeStore
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.RuntimeKnowledgeLifecycleState
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.integration.query.DefaultRuntimeKnowledgeLifecycleMemoryQuery
@@ -37,17 +39,15 @@ class DefaultRuntimeKnowledgeMemory(
             DefaultRuntimeKnowledgeLifecycleStateQuery(
                 lifecycleStateStore
             )
-        )
+        ),
+    private val associationStore: RuntimeKnowledgeAssociationStore =
+        DefaultRuntimeKnowledgeAssociationStore(),
+    private val graphStore: RuntimeKnowledgeGraphStore =
+        DefaultRuntimeKnowledgeGraphStore()
 ) : RuntimeKnowledgeMemory {
 
     private val knowledgeStore =
         DefaultRuntimeKnowledgeStore()
-
-    private val associationStore =
-        DefaultRuntimeKnowledgeAssociationStore()
-
-    private val graphStore =
-        DefaultRuntimeKnowledgeGraphStore()
 
     private val associator =
         DefaultRuntimeKnowledgeAssociator()
@@ -83,21 +83,41 @@ class DefaultRuntimeKnowledgeMemory(
         target: RuntimeKnowledge,
         type: RuntimeKnowledgeAssociationType
     ) {
-        associationStore.append(
+        val association =
             associator.associate(
                 source,
                 target,
                 type
             )
-        )
 
-        graphStore.append(
+        val edge =
             graphBuilder.connect(
                 source,
                 target,
                 type
             )
+
+        associationStore.append(
+            association
         )
+
+        try {
+            graphStore.append(
+                edge
+            )
+        } catch (error: Throwable) {
+            try {
+                associationStore.removeLast(
+                    association
+                )
+            } catch (rollbackError: Throwable) {
+                error.addSuppressed(
+                    rollbackError
+                )
+            }
+
+            throw error
+        }
     }
 
 

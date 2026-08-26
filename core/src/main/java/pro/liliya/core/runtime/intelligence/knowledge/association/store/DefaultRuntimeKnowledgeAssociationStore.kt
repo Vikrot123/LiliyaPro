@@ -14,6 +14,18 @@ class DefaultRuntimeKnowledgeAssociationStore :
         associations += association
     }
 
+    override fun removeLast(
+        association: RuntimeKnowledgeAssociation
+    ) {
+        if (associations.lastOrNull() != association) {
+            return
+        }
+
+        associations.removeAt(
+            associations.lastIndex
+        )
+    }
+
     override fun associations():
         List<RuntimeKnowledgeAssociation> {
         return associations.toList()
