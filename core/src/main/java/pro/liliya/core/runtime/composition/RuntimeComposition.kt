@@ -72,6 +72,7 @@ import pro.liliya.core.runtime.health.RuntimeHealthSnapshot
 import pro.liliya.core.runtime.telemetry.RuntimeTelemetrySnapshot
 
 import pro.liliya.core.runtime.intelligence.context.cognitive.composition.CognitiveContextComposition
+import pro.liliya.core.runtime.intelligence.orchestration.RuntimeIntelligenceOrchestrator
 
 interface RuntimeComposition {
     
@@ -79,6 +80,8 @@ interface RuntimeComposition {
 
 
     fun cognitiveContextComposition(): CognitiveContextComposition
+
+    fun intelligenceOrchestrator(): RuntimeIntelligenceOrchestrator
 
     fun context(): CoreRuntimeContext
     fun diagnosticSource(): CoreDiagnosticSource

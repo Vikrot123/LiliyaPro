@@ -131,6 +131,19 @@ import pro.liliya.core.runtime.intelligence.memory.lifecycle.RuntimeMemoryLifecy
 
 
 import pro.liliya.core.runtime.intelligence.context.DefaultRuntimeContextProvider
+import pro.liliya.core.runtime.intelligence.context.RuntimeContextMetadata
+import pro.liliya.core.runtime.intelligence.selfmodel.DefaultRuntimeSelfModelProvider
+import pro.liliya.core.runtime.intelligence.selfmodel.RuntimeSelfModelProvider
+import pro.liliya.core.runtime.intelligence.reflection.DefaultRuntimeReflection
+import pro.liliya.core.runtime.intelligence.reflection.RuntimeReflection
+import pro.liliya.core.runtime.intelligence.reflection.history.DefaultRuntimeReflectionHistory
+import pro.liliya.core.runtime.intelligence.reflection.history.RuntimeReflectionHistory
+import pro.liliya.core.runtime.intelligence.reflection.trend.DefaultRuntimeReflectionTrendAnalyzer
+import pro.liliya.core.runtime.intelligence.reflection.trend.RuntimeReflectionTrendAnalyzer
+import pro.liliya.core.runtime.intelligence.meaning.DefaultRuntimeMeaningEngine
+import pro.liliya.core.runtime.intelligence.meaning.RuntimeMeaningEngine
+import pro.liliya.core.runtime.intelligence.orchestration.DefaultRuntimeIntelligenceOrchestrator
+import pro.liliya.core.runtime.intelligence.orchestration.RuntimeIntelligenceOrchestrator
 import pro.liliya.core.runtime.intelligence.context.cognitive.composition.DefaultCognitiveContextComposition
 
 import pro.liliya.core.runtime.intelligence.context.cognitive.composition.CognitiveContextComposition
@@ -353,6 +366,41 @@ class DefaultRuntimeComposition :
     private val cognitiveContextComposition =
         DefaultCognitiveContextComposition(
             runtimeContextProvider
+        )
+
+    private val selfModelProvider: RuntimeSelfModelProvider =
+        DefaultRuntimeSelfModelProvider(
+            contextProvider = runtimeContextProvider,
+            metadataProvider = {
+                RuntimeContextMetadata(
+                    runtimeVersion = "unknown",
+                    recoveryAvailable = true,
+                    diagnosticsAvailable = true
+                )
+            }
+        )
+
+    private val reflection: RuntimeReflection =
+        DefaultRuntimeReflection()
+
+    private val reflectionHistory: RuntimeReflectionHistory =
+        DefaultRuntimeReflectionHistory()
+
+    private val trendAnalyzer: RuntimeReflectionTrendAnalyzer =
+        DefaultRuntimeReflectionTrendAnalyzer()
+
+    private val meaningEngine: RuntimeMeaningEngine =
+        DefaultRuntimeMeaningEngine()
+
+    private val intelligenceOrchestrator: RuntimeIntelligenceOrchestrator =
+        DefaultRuntimeIntelligenceOrchestrator(
+            selfModelProvider = selfModelProvider,
+            reflection = reflection,
+            reflectionHistory = reflectionHistory,
+            trendAnalyzer = trendAnalyzer,
+            meaningEngine = meaningEngine,
+            experienceKnowledgeOrchestrator =
+                experienceKnowledgeOrchestrator
         )
 
     private val runtimeSupervisor =
@@ -858,6 +906,11 @@ class DefaultRuntimeComposition :
     override fun experienceKnowledgeOrchestrator():
         RuntimeExperienceKnowledgeOrchestrator {
         return experienceKnowledgeOrchestrator
+    }
+
+    override fun intelligenceOrchestrator():
+        RuntimeIntelligenceOrchestrator {
+        return intelligenceOrchestrator
     }
 
 
