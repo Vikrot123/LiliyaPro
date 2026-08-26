@@ -7,18 +7,25 @@ class DefaultRuntimeKnowledgeLifecycleStateStore :
     RuntimeKnowledgeLifecycleStateStore {
 
     private val states =
-        mutableMapOf<RuntimeKnowledge, RuntimeKnowledgeLifecycleState>()
+        mutableMapOf<
+            RuntimeKnowledge,
+            RuntimeKnowledgeLifecycleState
+        >()
 
     override fun setState(
         knowledge: RuntimeKnowledge,
         state: RuntimeKnowledgeLifecycleState
     ) {
-        states[knowledge] = state
+        synchronized(states) {
+            states[knowledge] = state
+        }
     }
 
     override fun getState(
         knowledge: RuntimeKnowledge
     ): RuntimeKnowledgeLifecycleState? {
-        return states[knowledge]
+        return synchronized(states) {
+            states[knowledge]
+        }
     }
 }
