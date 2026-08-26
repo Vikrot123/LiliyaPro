@@ -24,10 +24,12 @@ class DefaultRuntimeIntelligenceOrchestrator(
 
         val reflectionSnapshot = reflection.analyze(selfModel)
 
-        reflectionHistory.record(reflectionSnapshot)
+        val trendHistory =
+            reflectionHistory.snapshots() +
+                reflectionSnapshot
 
         val trend = trendAnalyzer.analyze(
-            reflectionHistory.snapshots()
+            trendHistory
         )
 
         val meaning = meaningEngine.interpret(
@@ -45,6 +47,10 @@ class DefaultRuntimeIntelligenceOrchestrator(
                     meaning = meaning
                 )
             )
+
+        reflectionHistory.record(
+            reflectionSnapshot
+        )
 
         return RuntimeIntelligenceOrchestrationResult(
             selfModel = selfModel,
