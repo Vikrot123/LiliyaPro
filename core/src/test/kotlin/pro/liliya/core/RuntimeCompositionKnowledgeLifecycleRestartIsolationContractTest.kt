@@ -92,4 +92,92 @@ class RuntimeCompositionKnowledgeLifecycleRestartIsolationContractTest {
         composition.stopRuntime()
     }
 
+    @Test
+    fun prepare_then_start_preserves_knowledge_lifecycle_state_and_history() {
+        val composition = DefaultRuntimeComposition()
+        val lifecycle = composition.knowledgeLifecycleComposition()
+
+        val memory = lifecycle.lifecycleMemory()
+        val history = lifecycle.lifecycleHistoryQuery()
+
+        val knowledge = RuntimeKnowledge(
+            statement = "prepare start lifecycle continuity",
+            confidence = 0.9,
+            source = RuntimeKnowledgeSource.EXPERIENCE,
+            createdAt = 1L
+        )
+
+        memory.create(knowledge)
+        memory.revise(knowledge)
+
+        assertEquals(
+            RuntimeKnowledgeLifecycleState.REVIEW,
+            memory.memory().getLifecycleState(knowledge)
+        )
+
+        assertEquals(
+            2,
+            history.transitionCount(knowledge)
+        )
+
+        composition.prepareRuntime()
+
+        assertSame(
+            lifecycle,
+            composition.knowledgeLifecycleComposition()
+        )
+
+        assertSame(
+            memory,
+            lifecycle.lifecycleMemory()
+        )
+
+        assertSame(
+            history,
+            lifecycle.lifecycleHistoryQuery()
+        )
+
+        assertEquals(
+            RuntimeKnowledgeLifecycleState.REVIEW,
+            memory.memory().getLifecycleState(knowledge)
+        )
+
+        assertEquals(
+            2,
+            history.transitionCount(knowledge)
+        )
+
+        composition.startRuntime()
+
+        assertSame(
+            lifecycle,
+            composition.knowledgeLifecycleComposition()
+        )
+
+        assertSame(
+            memory,
+            lifecycle.lifecycleMemory()
+        )
+
+        assertSame(
+            history,
+            lifecycle.lifecycleHistoryQuery()
+        )
+
+        assertEquals(
+            RuntimeKnowledgeLifecycleState.REVIEW,
+            lifecycle.lifecycleMemory()
+                .memory()
+                .getLifecycleState(knowledge)
+        )
+
+        assertEquals(
+            2,
+            lifecycle.lifecycleHistoryQuery()
+                .transitionCount(knowledge)
+        )
+
+        composition.stopRuntime()
+    }
+
 }
