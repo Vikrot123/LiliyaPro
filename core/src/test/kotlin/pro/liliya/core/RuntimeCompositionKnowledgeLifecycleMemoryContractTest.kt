@@ -149,4 +149,48 @@ class RuntimeCompositionKnowledgeLifecycleMemoryContractTest {
         assertSame(before, after)
     }
 
+    @Test
+    fun composition_preserves_knowledge_lifecycle_state_store_identity() {
+        val composition = DefaultRuntimeComposition()
+
+        val memoryStore = composition
+            .memoryComposition()
+            .knowledgeLifecycleStateStore()
+
+        val lifecycleMemory = composition
+            .knowledgeLifecycleComposition()
+            .lifecycleMemory()
+
+        val state = RuntimeKnowledge(
+            statement = "state store identity",
+            confidence = 0.9,
+            source = RuntimeKnowledgeSource.EXPERIENCE,
+            createdAt = 1L
+        )
+
+        lifecycleMemory.create(state)
+
+        assertSame(
+            RuntimeKnowledgeLifecycleState.ACTIVE,
+            memoryStore.getState(state)
+        )
+    }
+
+    @Test
+    fun prepare_preserves_knowledge_lifecycle_state_store_identity() {
+        val composition = DefaultRuntimeComposition()
+
+        val before = composition
+            .memoryComposition()
+            .knowledgeLifecycleStateStore()
+
+        composition.prepareRuntime()
+
+        val after = composition
+            .memoryComposition()
+            .knowledgeLifecycleStateStore()
+
+        assertSame(before, after)
+    }
+
 }
