@@ -4,6 +4,7 @@ import kotlin.test.Test
 import kotlin.test.assertNotSame
 import kotlin.test.assertSame
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 import pro.liliya.core.runtime.composition.DefaultRuntimeComposition
 import pro.liliya.core.runtime.intelligence.knowledge.RuntimeKnowledge
@@ -246,6 +247,36 @@ class RuntimeCompositionKnowledgeLifecycleMemoryContractTest {
         assertEquals(
             2,
             afterHistory.transitionCount(knowledge)
+        )
+    }
+
+    @Test
+    fun lifecycle_created_knowledge_is_visible_through_shared_memory_query() {
+        val composition = DefaultRuntimeComposition()
+
+        val lifecycleMemory = composition
+            .knowledgeLifecycleComposition()
+            .lifecycleMemory()
+
+        val knowledgeMemory = composition
+            .memoryComposition()
+            .knowledgeMemory()
+
+        val knowledge = RuntimeKnowledge(
+            statement = "shared memory query visibility",
+            confidence = 0.9,
+            source = RuntimeKnowledgeSource.EXPERIENCE,
+            createdAt = 1L
+        )
+
+        lifecycleMemory.create(knowledge)
+
+        val results = knowledgeMemory.query(
+            "shared memory query visibility"
+        )
+
+        assertTrue(
+            results.any { it.result.node.knowledge == knowledge }
         )
     }
 
