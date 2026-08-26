@@ -232,4 +232,74 @@ class RuntimeCompositionKnowledgeLifecyclePrepareIsolationContractTest {
         )
     }
 
+    @Test
+    fun prepare_preserves_full_lifecycle_boundary() {
+        val composition = DefaultRuntimeComposition()
+        val lifecycleBefore = composition.knowledgeLifecycleComposition()
+        val memoryBefore = lifecycleBefore.lifecycleMemory()
+        val historyBefore = lifecycleBefore.lifecycleHistoryQuery()
+        val serviceBefore = lifecycleBefore.lifecycleService()
+
+        val oldObserver = DefaultRuntimeKnowledgeLifecycleObserver()
+        lifecycleBefore.registerLifecycleObserver(oldObserver)
+
+        val knowledge = RuntimeKnowledge(
+            statement = "full lifecycle prepare boundary",
+            confidence = 0.9,
+            source = RuntimeKnowledgeSource.EXPERIENCE,
+            createdAt = 1L
+        )
+
+        serviceBefore.processKnowledge(knowledge)
+
+        assertNotNull(oldObserver.lastProcessedResult())
+
+        lifecycleBefore.lifecycleMemory()
+            .create(knowledge)
+
+        lifecycleBefore.lifecycleMemory()
+            .revise(knowledge)
+
+        assertEquals(
+            2,
+            historyBefore.transitionCount(knowledge)
+        )
+
+        composition.prepareRuntime()
+
+        val lifecycleAfter = composition.knowledgeLifecycleComposition()
+        val serviceAfter = lifecycleAfter.lifecycleService()
+
+        assertSame(lifecycleBefore, lifecycleAfter)
+        assertSame(memoryBefore, lifecycleAfter.lifecycleMemory())
+        assertSame(historyBefore, lifecycleAfter.lifecycleHistoryQuery())
+        assertNotSame(serviceBefore, serviceAfter)
+
+        assertEquals(
+            2,
+            lifecycleAfter.lifecycleHistoryQuery()
+                .transitionCount(knowledge)
+        )
+
+        assertEquals(
+            RuntimeKnowledgeLifecycleState.REVIEW,
+            lifecycleAfter.lifecycleMemory()
+                .memory()
+                .getLifecycleState(knowledge)
+        )
+
+        val oldResult = oldObserver.lastProcessedResult()
+
+        serviceAfter.processKnowledge(
+            RuntimeKnowledge(
+                statement = "full lifecycle prepare boundary after reset",
+                confidence = 0.8,
+                source = RuntimeKnowledgeSource.EXPERIENCE,
+                createdAt = 2L
+            )
+        )
+
+        assertSame(oldResult, oldObserver.lastProcessedResult())
+    }
+
 }
