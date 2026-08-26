@@ -8,22 +8,36 @@ class RuntimeActionHandlerRegistry {
     fun register(
         handler: RuntimeActionHandler
     ) {
-        if (!handlers.contains(handler)) {
-            handlers.add(handler)
+        synchronized(handlers) {
+            if (!handlers.contains(handler)) {
+                handlers.add(handler)
+            }
         }
     }
 
     fun find(
         predicate: (RuntimeActionHandler) -> Boolean
     ): RuntimeActionHandler? {
-        return handlers.firstOrNull(predicate)
+
+        val snapshot =
+            synchronized(handlers) {
+                handlers.toList()
+            }
+
+        return snapshot.firstOrNull(
+            predicate
+        )
     }
 
     fun snapshot(): List<RuntimeActionHandler> {
-        return handlers.toList()
+        return synchronized(handlers) {
+            handlers.toList()
+        }
     }
 
     fun clear() {
-        handlers.clear()
+        synchronized(handlers) {
+            handlers.clear()
+        }
     }
 }
