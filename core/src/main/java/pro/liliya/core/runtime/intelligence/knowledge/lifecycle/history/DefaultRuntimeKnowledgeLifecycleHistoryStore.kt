@@ -15,40 +15,48 @@ class DefaultRuntimeKnowledgeLifecycleHistoryStore :
         knowledge: RuntimeKnowledge,
         entry: RuntimeKnowledgeLifecycleHistoryEntry
     ) {
-        val entries =
-            history.getOrPut(knowledge) {
-                mutableListOf()
-            }
+        synchronized(history) {
+            val entries =
+                history.getOrPut(knowledge) {
+                    mutableListOf()
+                }
 
-        entries += entry
+            entries += entry
+        }
     }
 
     override fun history(
         knowledge: RuntimeKnowledge
     ): List<RuntimeKnowledgeLifecycleHistoryEntry> {
-        return history[knowledge]
-            ?.toList()
-            ?: emptyList()
+        return synchronized(history) {
+            history[knowledge]
+                ?.toList()
+                ?: emptyList()
+        }
     }
 
     override fun removeLast(
         knowledge: RuntimeKnowledge,
         entry: RuntimeKnowledgeLifecycleHistoryEntry
     ) {
-        val entries =
-            history[knowledge]
-                ?: return
+        synchronized(history) {
+            val entries =
+                history[knowledge]
+                    ?: return
 
-        if (entries.lastOrNull() != entry) {
-            return
-        }
+            if (entries.lastOrNull() != entry) {
+                return
+            }
 
-        entries.removeAt(
-            entries.lastIndex
-        )
+            entries.removeAt(
+                entries.lastIndex
+            )
 
-        if (entries.isEmpty()) {
-            history.remove(knowledge)
+            if (entries.isEmpty()) {
+                history.remove(
+                    knowledge
+                )
+            }
         }
     }
 }
