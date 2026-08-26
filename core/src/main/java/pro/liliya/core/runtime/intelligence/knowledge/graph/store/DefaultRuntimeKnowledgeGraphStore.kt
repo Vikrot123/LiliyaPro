@@ -11,11 +11,14 @@ class DefaultRuntimeKnowledgeGraphStore :
     override fun append(
         edge: RuntimeKnowledgeGraphEdge
     ) {
-        edges += edge
+        synchronized(edges) {
+            edges += edge
+        }
     }
 
-    override fun edges():
-        List<RuntimeKnowledgeGraphEdge> {
-        return edges.toList()
+    override fun edges(): List<RuntimeKnowledgeGraphEdge> {
+        return synchronized(edges) {
+            edges.toList()
+        }
     }
 }
