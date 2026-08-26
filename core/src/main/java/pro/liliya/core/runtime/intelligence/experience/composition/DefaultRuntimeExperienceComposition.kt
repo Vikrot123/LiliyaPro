@@ -8,6 +8,8 @@ import pro.liliya.core.runtime.intelligence.experience.decision.DefaultRuntimeEx
 import pro.liliya.core.runtime.intelligence.experience.decision.RuntimeExperienceDecisionEngine
 import pro.liliya.core.runtime.intelligence.experience.store.DefaultRuntimeExperienceStore
 import pro.liliya.core.runtime.intelligence.experience.store.RuntimeExperienceStore
+import pro.liliya.core.runtime.intelligence.experience.pipeline.DefaultRuntimeExperiencePipeline
+import pro.liliya.core.runtime.intelligence.experience.pipeline.RuntimeExperiencePipeline
 
 class DefaultRuntimeExperienceComposition : RuntimeExperienceComposition {
 
@@ -22,6 +24,13 @@ class DefaultRuntimeExperienceComposition : RuntimeExperienceComposition {
 
     private val experienceConsolidator: RuntimeExperienceConsolidator =
         DefaultRuntimeExperienceConsolidator()
+
+    private val experiencePipeline: RuntimeExperiencePipeline =
+        DefaultRuntimeExperiencePipeline(
+            experienceEngine = experienceEngine,
+            decisionEngine = experienceDecisionEngine,
+            experienceStore = experienceStore
+        )
 
     override fun experienceEngine(): RuntimeExperienceEngine {
         return experienceEngine
@@ -38,4 +47,9 @@ class DefaultRuntimeExperienceComposition : RuntimeExperienceComposition {
     override fun experienceConsolidator(): RuntimeExperienceConsolidator {
         return experienceConsolidator
     }
+
+    override fun experiencePipeline(): RuntimeExperiencePipeline {
+        return experiencePipeline
+    }
+
 }
