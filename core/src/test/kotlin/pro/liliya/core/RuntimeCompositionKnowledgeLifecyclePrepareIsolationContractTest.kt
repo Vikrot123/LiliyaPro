@@ -2,6 +2,7 @@ package pro.liliya.core
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 import kotlin.test.assertNotSame
 import kotlin.test.assertSame
 import kotlin.test.assertSame
@@ -10,6 +11,7 @@ import pro.liliya.core.runtime.composition.DefaultRuntimeComposition
 import pro.liliya.core.runtime.intelligence.knowledge.RuntimeKnowledge
 import pro.liliya.core.runtime.intelligence.knowledge.RuntimeKnowledgeSource
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.RuntimeKnowledgeLifecycleState
+import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.observer.DefaultRuntimeKnowledgeLifecycleObserver
 
 class RuntimeCompositionKnowledgeLifecyclePrepareIsolationContractTest {
 
@@ -184,6 +186,49 @@ class RuntimeCompositionKnowledgeLifecyclePrepareIsolationContractTest {
         assertSame(
             historyBefore,
             lifecycleAfter.lifecycleHistoryQuery()
+        )
+    }
+
+    @Test
+    fun prepare_detaches_old_lifecycle_observer_delivery() {
+        val composition = DefaultRuntimeComposition()
+        val lifecycle = composition.knowledgeLifecycleComposition()
+
+        val observer = DefaultRuntimeKnowledgeLifecycleObserver()
+
+        lifecycle.registerLifecycleObserver(observer)
+
+        lifecycle
+            .lifecycleService()
+            .processKnowledge(
+                RuntimeKnowledge(
+                    statement = "prepare observer detachment",
+                    confidence = 0.9,
+                    source = RuntimeKnowledgeSource.EXPERIENCE,
+                    createdAt = 1L
+                )
+            )
+
+        val beforePrepare = observer.lastProcessedResult()
+
+        assertNotNull(beforePrepare)
+
+        composition.prepareRuntime()
+
+        lifecycle
+            .lifecycleService()
+            .processKnowledge(
+                RuntimeKnowledge(
+                    statement = "prepare observer detachment after reset",
+                    confidence = 0.8,
+                    source = RuntimeKnowledgeSource.EXPERIENCE,
+                    createdAt = 2L
+                )
+            )
+
+        assertSame(
+            beforePrepare,
+            observer.lastProcessedResult()
         )
     }
 
