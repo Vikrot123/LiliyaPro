@@ -193,4 +193,60 @@ class RuntimeCompositionKnowledgeLifecycleMemoryContractTest {
         assertSame(before, after)
     }
 
+    @Test
+    fun reset_preserves_shared_state_and_history_wiring() {
+        val composition = DefaultRuntimeComposition()
+        val lifecycle = composition.knowledgeLifecycleComposition()
+
+        val knowledge = RuntimeKnowledge(
+            statement = "reset shared state wiring",
+            confidence = 0.9,
+            source = RuntimeKnowledgeSource.EXPERIENCE,
+            createdAt = 1L
+        )
+
+        val memory = lifecycle.lifecycleMemory()
+        val history = lifecycle.lifecycleHistoryQuery()
+        val stateStore = composition
+            .memoryComposition()
+            .knowledgeLifecycleStateStore()
+
+        memory.create(knowledge)
+
+        assertSame(
+            RuntimeKnowledgeLifecycleState.ACTIVE,
+            stateStore.getState(knowledge)
+        )
+
+        assertEquals(
+            1,
+            history.transitionCount(knowledge)
+        )
+
+        lifecycle.reset()
+
+        val afterMemory = lifecycle.lifecycleMemory()
+        val afterHistory = lifecycle.lifecycleHistoryQuery()
+
+        assertSame(memory, afterMemory)
+        assertSame(history, afterHistory)
+
+        assertSame(
+            RuntimeKnowledgeLifecycleState.ACTIVE,
+            stateStore.getState(knowledge)
+        )
+
+        afterMemory.revise(knowledge)
+
+        assertSame(
+            RuntimeKnowledgeLifecycleState.REVIEW,
+            stateStore.getState(knowledge)
+        )
+
+        assertEquals(
+            2,
+            afterHistory.transitionCount(knowledge)
+        )
+    }
+
 }

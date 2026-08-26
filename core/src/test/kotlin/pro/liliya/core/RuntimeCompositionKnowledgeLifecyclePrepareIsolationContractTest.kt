@@ -9,6 +9,7 @@ import kotlin.test.assertSame
 import pro.liliya.core.runtime.composition.DefaultRuntimeComposition
 import pro.liliya.core.runtime.intelligence.knowledge.RuntimeKnowledge
 import pro.liliya.core.runtime.intelligence.knowledge.RuntimeKnowledgeSource
+import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.RuntimeKnowledgeLifecycleState
 
 class RuntimeCompositionKnowledgeLifecyclePrepareIsolationContractTest {
 
@@ -61,6 +62,47 @@ class RuntimeCompositionKnowledgeLifecyclePrepareIsolationContractTest {
         assertNotSame(beforeService, afterService)
         assertSame(memory, lifecycle.lifecycleMemory())
         assertSame(historyQuery, lifecycle.lifecycleHistoryQuery())
+
+        assertEquals(
+            2,
+            lifecycle.lifecycleHistoryQuery()
+                .transitionCount(knowledge)
+        )
+    }
+
+    @Test
+    fun prepare_preserves_history_wiring_for_new_transition() {
+        val composition = DefaultRuntimeComposition()
+        val lifecycle = composition.knowledgeLifecycleComposition()
+
+        val knowledge = RuntimeKnowledge(
+            statement = "prepare history wiring",
+            confidence = 0.9,
+            source = RuntimeKnowledgeSource.EXPERIENCE,
+            createdAt = 1L
+        )
+
+        val memory = lifecycle.lifecycleMemory()
+
+        memory.create(knowledge)
+
+        assertEquals(
+            1,
+            lifecycle.lifecycleHistoryQuery()
+                .transitionCount(knowledge)
+        )
+
+        composition.prepareRuntime()
+
+        lifecycle.lifecycleMemory()
+            .revise(knowledge)
+
+        assertEquals(
+            RuntimeKnowledgeLifecycleState.REVIEW,
+            lifecycle.lifecycleMemory()
+                .memory()
+                .getLifecycleState(knowledge)
+        )
 
         assertEquals(
             2,
