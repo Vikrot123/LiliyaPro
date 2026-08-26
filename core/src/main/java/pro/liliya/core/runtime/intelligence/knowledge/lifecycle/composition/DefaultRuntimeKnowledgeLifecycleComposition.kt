@@ -22,6 +22,13 @@ import pro.liliya.core.runtime.intelligence.knowledge.integration.RuntimeKnowled
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.state.RuntimeKnowledgeLifecycleStateStore
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.service.provider.DefaultRuntimeKnowledgeLifecycleObserverProvider
 
+private fun knowledgeLifecycleCompositionLogger() =
+    pro.liliya.core.logging.LoggerFactory.create(
+        module = "CORE",
+        component = "DefaultRuntimeKnowledgeLifecycleComposition",
+        method = "registerObserver"
+    )
+
 class DefaultRuntimeKnowledgeLifecycleComposition(
     private val knowledgeMemory: RuntimeKnowledgeMemory,
     private val knowledgeLifecycleStateStore:
@@ -120,7 +127,10 @@ class DefaultRuntimeKnowledgeLifecycleComposition(
     override fun registerLifecycleObserver(
         observer: RuntimeKnowledgeLifecycleObserver
     ) {
-        println("REGISTER_OBSERVER_CALL")
+        knowledgeLifecycleCompositionLogger().debug(
+            pro.liliya.core.logging.LoggerMarkers.METHOD_ENTER,
+            "REGISTER_OBSERVER_CALL"
+        )
 
         observerRegistryHolder
             .registry()

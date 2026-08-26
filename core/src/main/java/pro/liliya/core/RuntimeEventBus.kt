@@ -1,5 +1,12 @@
 package pro.liliya.core
 
+private fun runtimeEventBusLogger() =
+    pro.liliya.core.logging.LoggerFactory.create(
+        module = "CORE",
+        component = "RuntimeEventBus",
+        method = "publish"
+    )
+
 object RuntimeEventBus {
 
     private val listeners =
@@ -24,7 +31,12 @@ object RuntimeEventBus {
             .forEach { listener ->
                 try {
                     listener(event)
-                } catch (_: Exception) {
+                } catch (e: Exception) {
+                    runtimeEventBusLogger().error(
+                        pro.liliya.core.logging.LoggerMarkers.ERROR,
+                        "Runtime event listener failed",
+                        e
+                    )
                 }
             }
     }

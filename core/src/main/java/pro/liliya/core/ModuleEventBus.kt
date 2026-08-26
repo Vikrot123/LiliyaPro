@@ -1,5 +1,12 @@
 package pro.liliya.core
 
+private fun moduleEventBusLogger() =
+    pro.liliya.core.logging.LoggerFactory.create(
+        module = "CORE",
+        component = "ModuleEventBus",
+        method = "publish"
+    )
+
 object ModuleEventBus {
 
     private val listeners =
@@ -23,7 +30,12 @@ object ModuleEventBus {
         listeners.toList().forEach { listener ->
             try {
                 listener(event)
-            } catch (_: Exception) {
+            } catch (e: Exception) {
+                moduleEventBusLogger().error(
+                    pro.liliya.core.logging.LoggerMarkers.ERROR,
+                    "Module event listener failed",
+                    e
+                )
             }
         }
     }

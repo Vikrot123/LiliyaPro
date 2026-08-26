@@ -1,5 +1,12 @@
 package pro.liliya.core.runtime
 
+private fun runtimeSupervisorLogger() =
+    pro.liliya.core.logging.LoggerFactory.create(
+        module = "CORE",
+        component = "RuntimeSupervisor",
+        method = "recover"
+    )
+
 class RuntimeSupervisor(
     private val registryProvider: () -> RuntimeServiceRegistry,
     private val policy: RuntimeRecoveryPolicy = RuntimeRecoveryPolicy()
@@ -21,8 +28,14 @@ class RuntimeSupervisor(
 
     fun recover(serviceName: String): Boolean {
 
-        println("SUPERVISOR RECOVER REQUEST = $serviceName")
-        println("SUPERVISOR BEFORE COUNTS = $restartCounters")
+        runtimeSupervisorLogger().debug(
+            pro.liliya.core.logging.LoggerMarkers.METHOD_ENTER,
+            "SUPERVISOR RECOVER REQUEST = $serviceName"
+        )
+        runtimeSupervisorLogger().debug(
+            pro.liliya.core.logging.LoggerMarkers.DATA_RECEIVED,
+            "SUPERVISOR BEFORE COUNTS = $restartCounters"
+        )
 
         val currentRetries =
             restartCounters[serviceName] ?: 0
@@ -36,7 +49,10 @@ class RuntimeSupervisor(
 
         return try {
             registry().restart(serviceName)
-            println("SUPERVISOR RECOVER SUCCESS = $serviceName")
+            runtimeSupervisorLogger().info(
+                pro.liliya.core.logging.LoggerMarkers.STATE_CHANGED,
+                "SUPERVISOR RECOVER SUCCESS = $serviceName"
+            )
             true
         } catch (error: Exception) {
             throw IllegalStateException(

@@ -3,6 +3,13 @@ package pro.liliya.core.runtime
 import pro.liliya.core.RuntimeEvent
 import pro.liliya.core.RuntimeEventBus
 
+private fun runtimeServiceRegistryLogger() =
+    pro.liliya.core.logging.LoggerFactory.create(
+        module = "CORE",
+        component = "RuntimeServiceRegistry",
+        method = "recovery"
+    )
+
 class RuntimeServiceRegistry {
 
     private val services = mutableMapOf<String, RuntimeService>()
@@ -133,8 +140,14 @@ class RuntimeServiceRegistry {
     }
 
     fun restart(serviceName: String) {
-        println("RECOVERY RESTART REQUEST: $serviceName")
-        println("RECOVERY REGISTERED SERVICES: ${services.keys}")
+        runtimeServiceRegistryLogger().debug(
+            pro.liliya.core.logging.LoggerMarkers.METHOD_ENTER,
+            "RECOVERY RESTART REQUEST: $serviceName"
+        )
+        runtimeServiceRegistryLogger().debug(
+            pro.liliya.core.logging.LoggerMarkers.DATA_RECEIVED,
+            "RECOVERY REGISTERED SERVICES: ${services.keys}"
+        )
 
 
         val service = services[serviceName]

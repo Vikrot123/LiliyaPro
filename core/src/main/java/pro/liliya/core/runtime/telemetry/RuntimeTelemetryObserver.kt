@@ -3,6 +3,13 @@ package pro.liliya.core.runtime.telemetry
 import pro.liliya.core.RuntimeEvent
 import pro.liliya.core.runtime.observer.RuntimeObserver
 
+private fun runtimeTelemetryLogger() =
+    pro.liliya.core.logging.LoggerFactory.create(
+        module = "CORE",
+        component = "RuntimeTelemetryObserver",
+        method = "onRuntimeEvent"
+    )
+
 class RuntimeTelemetryObserver : RuntimeObserver {
 
     private var startedAt: Long? = null
@@ -14,7 +21,10 @@ class RuntimeTelemetryObserver : RuntimeObserver {
 
 
     override fun onRuntimeEvent(event: RuntimeEvent) {
-        println("TELEMETRY_RECEIVED=$event")
+        runtimeTelemetryLogger().debug(
+            pro.liliya.core.logging.LoggerMarkers.DATA_RECEIVED,
+            "TELEMETRY_RECEIVED=$event"
+        )
 
         eventCount++
         lastEvent = event

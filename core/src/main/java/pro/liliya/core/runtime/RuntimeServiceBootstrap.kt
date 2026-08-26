@@ -2,6 +2,13 @@ package pro.liliya.core.runtime
 
 import pro.liliya.core.runtime.recovery.RuntimeRecoveryEventBus
 
+private fun runtimeServiceBootstrapLogger() =
+    pro.liliya.core.logging.LoggerFactory.create(
+        module = "CORE",
+        component = "RuntimeServiceBootstrap",
+        method = "start"
+    )
+
 class RuntimeServiceBootstrap(
     private val providerHolder: RuntimeServiceProviderHolder,
     private val registry: RuntimeServiceRegistry,
@@ -74,8 +81,14 @@ class RuntimeServiceBootstrap(
 
     fun start() {
 
-        println("BOOTSTRAP START CALLED")
-        println("BOOTSTRAP REGISTERED BEFORE START = ${registeredServices.keys}")
+        runtimeServiceBootstrapLogger().debug(
+            pro.liliya.core.logging.LoggerMarkers.METHOD_ENTER,
+            "BOOTSTRAP START CALLED"
+        )
+        runtimeServiceBootstrapLogger().debug(
+            pro.liliya.core.logging.LoggerMarkers.DATA_RECEIVED,
+            "BOOTSTRAP REGISTERED BEFORE START = ${registeredServices.keys}"
+        )
 
         if (started) {
             return
@@ -89,11 +102,17 @@ class RuntimeServiceBootstrap(
             }
 
         registeredServices.values.forEach { service ->
-            println("BOOTSTRAP REGISTERING SERVICE = ${service.name}")
+            runtimeServiceBootstrapLogger().debug(
+                pro.liliya.core.logging.LoggerMarkers.STATE_CHANGED,
+                "BOOTSTRAP REGISTERING SERVICE = ${service.name}"
+            )
             registry.register(service)
         }
 
-        println("BOOTSTRAP STATES AFTER REGISTER = ${registry.getStates().keys}")
+        runtimeServiceBootstrapLogger().debug(
+            pro.liliya.core.logging.LoggerMarkers.STATE_CHANGED,
+            "BOOTSTRAP STATES AFTER REGISTER = ${registry.getStates().keys}"
+        )
 
         recoveryManager.install()
 
