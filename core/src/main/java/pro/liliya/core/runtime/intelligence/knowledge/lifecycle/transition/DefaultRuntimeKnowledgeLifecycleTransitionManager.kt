@@ -17,10 +17,11 @@ class DefaultRuntimeKnowledgeLifecycleTransitionManager(
         knowledge: RuntimeKnowledge,
         target: RuntimeKnowledgeLifecycleState
     ): Boolean {
+        return synchronized(this) {
 
-        val current = stateQuery.getState(knowledge)
+            val current = stateQuery.getState(knowledge)
 
-        val allowed = when {
+            val allowed = when {
             current == null &&
                 target == RuntimeKnowledgeLifecycleState.ACTIVE ->
                 true
@@ -41,9 +42,9 @@ class DefaultRuntimeKnowledgeLifecycleTransitionManager(
                 false
         }
 
-        if (!allowed) {
-            return false
-        }
+            if (!allowed) {
+                return@synchronized false
+            }
 
         val historyEntry =
             RuntimeKnowledgeLifecycleHistoryEntry(
@@ -77,6 +78,7 @@ class DefaultRuntimeKnowledgeLifecycleTransitionManager(
             throw error
         }
 
-        return true
+            true
+        }
     }
 }
