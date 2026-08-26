@@ -115,6 +115,8 @@ import pro.liliya.core.runtime.intelligence.experience.composition.DefaultRuntim
 import pro.liliya.core.runtime.intelligence.experience.composition.RuntimeExperienceComposition
 import pro.liliya.core.runtime.intelligence.experience.knowledge.DefaultRuntimeExperienceKnowledgePipeline
 import pro.liliya.core.runtime.intelligence.experience.knowledge.RuntimeExperienceKnowledgePipeline
+import pro.liliya.core.runtime.intelligence.experience.orchestration.DefaultRuntimeExperienceKnowledgeOrchestrator
+import pro.liliya.core.runtime.intelligence.experience.orchestration.RuntimeExperienceKnowledgeOrchestrator
 import pro.liliya.core.runtime.intelligence.knowledge.composition.DefaultRuntimeKnowledgeComposition
 import pro.liliya.core.runtime.intelligence.knowledge.composition.RuntimeKnowledgeComposition
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.composition.DefaultRuntimeKnowledgeLifecycleCompositionHolder
@@ -281,6 +283,12 @@ class DefaultRuntimeComposition :
                 experienceComposition.experienceConsolidator(),
             knowledgePipeline =
                 knowledgeComposition.knowledgePipeline()
+        )
+
+    private val experienceKnowledgeOrchestrator:
+        RuntimeExperienceKnowledgeOrchestrator =
+        DefaultRuntimeExperienceKnowledgeOrchestrator(
+            pipeline = experienceKnowledgePipeline
         )
 
     private val knowledgeLifecycleCompositionHolder =
@@ -845,6 +853,11 @@ class DefaultRuntimeComposition :
     override fun experienceKnowledgePipeline():
         RuntimeExperienceKnowledgePipeline {
         return experienceKnowledgePipeline
+    }
+
+    override fun experienceKnowledgeOrchestrator():
+        RuntimeExperienceKnowledgeOrchestrator {
+        return experienceKnowledgeOrchestrator
     }
 
 

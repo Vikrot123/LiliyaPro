@@ -22,6 +22,7 @@ import pro.liliya.core.runtime.lifecycle.RuntimeLifecycleRecorder
 import pro.liliya.core.runtime.lifecycle.RuntimeLifecycleRecorderHolder
 import pro.liliya.core.runtime.intelligence.experience.composition.RuntimeExperienceComposition
 import pro.liliya.core.runtime.intelligence.experience.knowledge.RuntimeExperienceKnowledgePipeline
+import pro.liliya.core.runtime.intelligence.experience.orchestration.RuntimeExperienceKnowledgeOrchestrator
 import pro.liliya.core.runtime.intelligence.knowledge.composition.RuntimeKnowledgeComposition
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.composition.RuntimeKnowledgeLifecycleComposition
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.composition.RuntimeKnowledgeLifecycleCompositionHolder
@@ -204,6 +205,9 @@ interface RuntimeComposition {
 
     fun experienceKnowledgePipeline():
         RuntimeExperienceKnowledgePipeline
+
+    fun experienceKnowledgeOrchestrator():
+        RuntimeExperienceKnowledgeOrchestrator
 
     fun knowledgeComposition():
         RuntimeKnowledgeComposition
