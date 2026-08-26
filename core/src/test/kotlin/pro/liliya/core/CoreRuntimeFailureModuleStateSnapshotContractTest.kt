@@ -4,8 +4,15 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 import pro.liliya.core.module.ModuleState
+import org.junit.jupiter.api.AfterEach
 
 class CoreRuntimeFailureModuleStateSnapshotContractTest {
+
+    @AfterEach
+    fun cleanupCoreRuntimeAfterTest() {
+        CoreRuntime.resetModuleProvider()
+        CoreRuntime.stop()
+    }
 
     @Test
     fun failedRuntimeSnapshotContainsFailedModuleState() {

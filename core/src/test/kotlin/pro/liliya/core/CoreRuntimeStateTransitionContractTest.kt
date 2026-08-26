@@ -2,8 +2,15 @@ package pro.liliya.core
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.AfterEach
 
 class CoreRuntimeStateTransitionContractTest {
+
+    @AfterEach
+    fun cleanupCoreRuntimeAfterTest() {
+        CoreRuntime.resetModuleProvider()
+        CoreRuntime.stop()
+    }
 
     @Test
     fun runtimeStartsOnlyThroughValidLifecycle() {

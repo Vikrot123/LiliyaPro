@@ -7,8 +7,15 @@ import org.junit.jupiter.api.Test
 import pro.liliya.core.logging.LogConfig
 import pro.liliya.core.logging.LogInitializer
 import java.io.File
+import org.junit.jupiter.api.AfterEach
 
 class CoreRuntimeFailureMustNotBecomeReadyContractTest {
+
+    @AfterEach
+    fun cleanupCoreRuntimeAfterTest() {
+        CoreRuntime.resetModuleProvider()
+        CoreRuntime.stop()
+    }
 
     @Test
     fun failedStartupMustNotReportRuntimeReady() {

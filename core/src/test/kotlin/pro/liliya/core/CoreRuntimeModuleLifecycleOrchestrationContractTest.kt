@@ -3,8 +3,15 @@ package pro.liliya.core
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import pro.liliya.core.module.*
+import org.junit.jupiter.api.AfterEach
 
 class CoreRuntimeModuleLifecycleOrchestrationContractTest {
+
+    @AfterEach
+    fun cleanupCoreRuntimeAfterTest() {
+        CoreRuntime.resetModuleProvider()
+        CoreRuntime.stop()
+    }
 
     @Test
     fun coreRuntimeMustOrchestrateFullModuleLifecycle() {
