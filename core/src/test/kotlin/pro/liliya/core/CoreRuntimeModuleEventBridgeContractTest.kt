@@ -12,6 +12,7 @@ class CoreRuntimeModuleEventBridgeContractTest {
         CoreRuntime.resetModuleProvider()
         CoreRuntime.stop()
         RuntimeEventBus.clear()
+        ModuleEventBus.clear()
     }
 
     @Test

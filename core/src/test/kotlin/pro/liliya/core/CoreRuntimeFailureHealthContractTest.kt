@@ -3,8 +3,15 @@ package pro.liliya.core
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.AfterEach
 
 class CoreRuntimeFailureHealthContractTest {
+
+    @AfterEach
+    fun cleanupCoreRuntimeAfterTest() {
+        CoreRuntime.stop()
+        ModuleEventBus.clear()
+    }
 
     @Test
     fun `runtime failure health captures module failure`() {
