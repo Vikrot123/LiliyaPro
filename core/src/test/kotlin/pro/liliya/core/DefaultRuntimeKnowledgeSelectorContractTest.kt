@@ -199,6 +199,57 @@ class DefaultRuntimeKnowledgeSelectorContractTest {
         )
     }
 
+
+    @Test
+    fun exactly_half_of_interpretation_tokens_is_relevant() {
+        val boundary =
+            knowledge(
+                "runtime maintains unrelated knowledge",
+                0.80,
+                1L
+            )
+
+        val strongerIrrelevant =
+            knowledge(
+                "network recovery completed",
+                0.99,
+                2L
+            )
+
+        assertEquals(
+            boundary,
+            selector.select(
+                listOf(boundary, strongerIrrelevant),
+                "runtime maintains stable operational"
+            )
+        )
+    }
+
+    @Test
+    fun below_half_of_interpretation_tokens_is_not_relevant() {
+        val belowThreshold =
+            knowledge(
+                "runtime maintains unrelated knowledge",
+                0.80,
+                1L
+            )
+
+        val fallbackWinner =
+            knowledge(
+                "network recovery completed",
+                0.99,
+                2L
+            )
+
+        assertEquals(
+            fallbackWinner,
+            selector.select(
+                listOf(belowThreshold, fallbackWinner),
+                "runtime maintains stable operational state"
+            )
+        )
+    }
+
     private fun knowledge(
         statement: String,
         confidence: Double,
