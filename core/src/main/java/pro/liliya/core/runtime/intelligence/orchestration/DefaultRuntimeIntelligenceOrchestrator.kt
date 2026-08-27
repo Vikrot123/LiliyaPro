@@ -1,6 +1,8 @@
 package pro.liliya.core.runtime.intelligence.orchestration
 
 import pro.liliya.core.runtime.intelligence.experience.RuntimeExperienceContext
+import pro.liliya.core.runtime.intelligence.context.cognitive.CognitiveContext
+import pro.liliya.core.runtime.intelligence.context.cognitive.CognitiveContextType
 import pro.liliya.core.runtime.intelligence.experience.orchestration.RuntimeExperienceKnowledgeOrchestrator
 import pro.liliya.core.runtime.intelligence.meaning.RuntimeMeaningContext
 import pro.liliya.core.runtime.intelligence.meaning.RuntimeMeaningEngine
@@ -16,7 +18,8 @@ class DefaultRuntimeIntelligenceOrchestrator(
     private val trendAnalyzer: RuntimeReflectionTrendAnalyzer,
     private val meaningEngine: RuntimeMeaningEngine,
     private val experienceKnowledgeOrchestrator:
-        RuntimeExperienceKnowledgeOrchestrator
+        RuntimeExperienceKnowledgeOrchestrator,
+    private val cognitiveContext: CognitiveContext? = null
 ) : RuntimeIntelligenceOrchestrator {
 
     override fun process(): RuntimeIntelligenceOrchestrationResult {
@@ -32,11 +35,17 @@ class DefaultRuntimeIntelligenceOrchestrator(
             trendHistory
         )
 
+        val cognitiveSnapshot =
+            cognitiveContext?.snapshot(
+                CognitiveContextType.WORKING
+            )
+
         val meaning = meaningEngine.interpret(
             RuntimeMeaningContext(
                 selfModel = selfModel,
                 reflection = reflectionSnapshot,
-                trend = trend
+                trend = trend,
+                cognitiveContext = cognitiveSnapshot
             )
         )
 

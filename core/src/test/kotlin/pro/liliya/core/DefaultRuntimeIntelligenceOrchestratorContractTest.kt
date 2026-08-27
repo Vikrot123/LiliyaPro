@@ -14,6 +14,10 @@ import pro.liliya.core.runtime.intelligence.experience.knowledge.RuntimeExperien
 import pro.liliya.core.runtime.intelligence.experience.orchestration.RuntimeExperienceKnowledgeOrchestrationResult
 import pro.liliya.core.runtime.intelligence.experience.orchestration.RuntimeExperienceKnowledgeOrchestrator
 import pro.liliya.core.runtime.intelligence.meaning.RuntimeMeaningContext
+import pro.liliya.core.runtime.intelligence.context.cognitive.CognitiveContext
+import pro.liliya.core.runtime.intelligence.context.cognitive.CognitiveContextSnapshot
+import pro.liliya.core.runtime.intelligence.context.cognitive.CognitiveContextSource
+import pro.liliya.core.runtime.intelligence.context.cognitive.CognitiveContextType
 import pro.liliya.core.runtime.intelligence.meaning.RuntimeMeaningEngine
 import pro.liliya.core.runtime.intelligence.meaning.RuntimeMeaningResult
 import pro.liliya.core.runtime.intelligence.meaning.RuntimeMeaningSignificance
@@ -244,4 +248,66 @@ class DefaultRuntimeIntelligenceOrchestratorContractTest {
             result.experienceKnowledge
         )
     }
+    @Test
+    fun orchestrator_passes_cognitive_snapshot_into_meaning_context() {
+        val cognitiveSnapshot =
+            CognitiveContextSnapshot(
+                type = CognitiveContextType.WORKING,
+                values = mapOf(
+                    "knowledge" to "shared cognitive value"
+                ),
+                timestamp = 10L
+            )
+
+        val cognitiveContext =
+            object : CognitiveContext {
+                override fun snapshot(
+                    type: CognitiveContextType
+                ): CognitiveContextSnapshot {
+                    assertEquals(
+                        CognitiveContextType.WORKING,
+                        type
+                    )
+
+                    return cognitiveSnapshot
+                }
+
+                override fun sources():
+                    List<CognitiveContextSource> {
+                    return emptyList()
+                }
+            }
+
+        val meaningEngine =
+            FakeMeaningEngine(meaning)
+
+        val orchestrator =
+            DefaultRuntimeIntelligenceOrchestrator(
+                selfModelProvider =
+                    FakeSelfModelProvider(selfModel),
+                reflection =
+                    FakeReflection(reflectionSnapshot),
+                reflectionHistory =
+                    FakeHistory(),
+                trendAnalyzer =
+                    FakeTrendAnalyzer(trend),
+                meaningEngine =
+                    meaningEngine,
+                experienceKnowledgeOrchestrator =
+                    FakeExperienceKnowledgeOrchestrator(
+                        experienceKnowledge
+                    ),
+                cognitiveContext =
+                    cognitiveContext
+            )
+
+        orchestrator.process()
+
+        assertSame(
+            cognitiveSnapshot,
+            meaningEngine.received?.cognitiveContext,
+            "meaning context must receive the exact cognitive snapshot"
+        )
+    }
+
 }

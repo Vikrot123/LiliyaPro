@@ -404,7 +404,9 @@ class DefaultRuntimeComposition :
             trendAnalyzer = trendAnalyzer,
             meaningEngine = meaningEngine,
             experienceKnowledgeOrchestrator =
-                experienceKnowledgeOrchestrator
+                experienceKnowledgeOrchestrator,
+            cognitiveContext =
+                cognitiveContextComposition.context()
         )
 
     private val runtimeSupervisor =
