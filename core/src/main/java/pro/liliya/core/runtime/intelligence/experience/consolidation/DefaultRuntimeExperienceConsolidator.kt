@@ -13,7 +13,19 @@ class DefaultRuntimeExperienceConsolidator :
             if (experiences.isEmpty()) {
                 "No experiences available for consolidation"
             } else {
-                "Consolidated ${experiences.size} runtime experiences"
+                val latest =
+                    experiences
+                        .withIndex()
+                        .maxWithOrNull(
+                            compareBy<IndexedValue<RuntimeExperience>> {
+                                it.value.createdAt
+                            }.thenBy {
+                                it.index
+                            }
+                        )!!
+                        .value
+
+                "Consolidated ${experiences.size} runtime experiences; latest: ${latest.description}"
             }
 
         return RuntimeExperienceConsolidation(

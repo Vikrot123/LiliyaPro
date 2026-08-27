@@ -3,6 +3,7 @@ package pro.liliya.core
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertSame
+import kotlin.test.assertTrue
 
 import pro.liliya.core.runtime.intelligence.experience.RuntimeExperience
 import pro.liliya.core.runtime.intelligence.experience.RuntimeExperienceImportance
@@ -56,9 +57,17 @@ class DefaultRuntimeExperienceCompositionConsolidationContractTest {
             result.processedCount
         )
 
-        assertEquals(
-            "Consolidated 2 runtime experiences",
-            result.summary
+        assertTrue(
+            result.summary.startsWith(
+                "Consolidated 2 runtime experiences"
+            )
+        )
+
+        assertTrue(
+            result.summary.contains(
+                "latest: second"
+            ),
+            "equal timestamps must preserve append order and select the last experience"
         )
     }
 }
