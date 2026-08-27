@@ -56,8 +56,11 @@ class DefaultRuntimeReasoningAnalyzer :
                 it.type
             }.toSet()
 
-        val missingRequiredStep =
+        val requiredTypes =
             requiredStepTypes(goal.state)
+
+        val missingRequiredStep =
+            requiredTypes
                 .any { required ->
                     required !in actualTypes
                 }
@@ -67,8 +70,24 @@ class DefaultRuntimeReasoningAnalyzer :
                 RuntimeReasoningIssue.REQUIRED_STEP_MISSING
         }
 
+        val unexpectedStep =
+            actualTypes
+                .any { actual ->
+                    actual !in requiredTypes
+                }
+
+        if (unexpectedStep) {
+            issues +=
+                RuntimeReasoningIssue.UNEXPECTED_STEP
+        }
+
         val actionabilityContradiction =
             when {
+                goal.actionable &&
+                    plan.steps.isNotEmpty() &&
+                    !plan.actionable ->
+                    true
+
                 !goal.actionable &&
                     plan.actionable ->
                     true
