@@ -133,6 +133,10 @@ import pro.liliya.core.runtime.intelligence.decision.quality.advisory.DefaultRun
 import pro.liliya.core.runtime.intelligence.decision.quality.advisory.RuntimeDecisionQualityAdvisoryRecorder
 import pro.liliya.core.runtime.intelligence.decision.quality.advisory.history.DefaultRuntimeDecisionQualityAdvisoryHistory
 import pro.liliya.core.runtime.intelligence.decision.quality.advisory.history.RuntimeDecisionQualityAdvisoryHistory
+import pro.liliya.core.runtime.intelligence.decision.quality.advisory.trend.DefaultRuntimeDecisionQualityAdvisoryTrendAnalyzer
+import pro.liliya.core.runtime.intelligence.decision.quality.advisory.trend.DefaultRuntimeDecisionQualityAdvisoryTrendQuery
+import pro.liliya.core.runtime.intelligence.decision.quality.advisory.trend.RuntimeDecisionQualityAdvisoryTrendAnalyzer
+import pro.liliya.core.runtime.intelligence.decision.quality.advisory.trend.RuntimeDecisionQualityAdvisoryTrendQuery
 import pro.liliya.core.runtime.intelligence.decision.reflection.DefaultRuntimeDecisionReflectionRecorder
 import pro.liliya.core.runtime.intelligence.decision.reflection.RuntimeDecisionReflectionRecorder
 import pro.liliya.core.runtime.intelligence.decision.reflection.history.DefaultRuntimeDecisionReflectionHistory
@@ -527,6 +531,17 @@ class DefaultRuntimeComposition :
         DefaultRuntimeDecisionQualityAdvisoryRecorder(
             query = decisionQualityAdvisoryQuery,
             history = decisionQualityAdvisoryHistory
+        )
+
+    private val decisionQualityAdvisoryTrendAnalyzer:
+        RuntimeDecisionQualityAdvisoryTrendAnalyzer =
+        DefaultRuntimeDecisionQualityAdvisoryTrendAnalyzer()
+
+    private val decisionQualityAdvisoryTrendQuery:
+        RuntimeDecisionQualityAdvisoryTrendQuery =
+        DefaultRuntimeDecisionQualityAdvisoryTrendQuery(
+            history = decisionQualityAdvisoryHistory,
+            analyzer = decisionQualityAdvisoryTrendAnalyzer
         )
 
     private val decisionExplanationHistory:
@@ -1147,6 +1162,16 @@ class DefaultRuntimeComposition :
     override fun decisionQualityAdvisoryRecorder():
         RuntimeDecisionQualityAdvisoryRecorder {
         return decisionQualityAdvisoryRecorder
+    }
+
+    override fun decisionQualityAdvisoryTrendAnalyzer():
+        RuntimeDecisionQualityAdvisoryTrendAnalyzer {
+        return decisionQualityAdvisoryTrendAnalyzer
+    }
+
+    override fun decisionQualityAdvisoryTrendQuery():
+        RuntimeDecisionQualityAdvisoryTrendQuery {
+        return decisionQualityAdvisoryTrendQuery
     }
 
     override fun decisionExplanationHistory():
