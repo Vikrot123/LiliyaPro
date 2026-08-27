@@ -1,14 +1,20 @@
 package pro.liliya.core.runtime.intelligence.knowledge.selection
 
 import pro.liliya.core.runtime.intelligence.knowledge.RuntimeKnowledge
+import pro.liliya.core.runtime.intelligence.knowledge.relevance.DefaultRuntimeKnowledgeRelevanceEvaluator
+import pro.liliya.core.runtime.intelligence.knowledge.relevance.RuntimeKnowledgeRelevanceEvaluator
 
-class DefaultRuntimeKnowledgeSelector :
-    RuntimeKnowledgeSelector {
+class DefaultRuntimeKnowledgeSelector(
+    private val relevanceEvaluator:
+        RuntimeKnowledgeRelevanceEvaluator =
+        DefaultRuntimeKnowledgeRelevanceEvaluator()
+) : RuntimeKnowledgeSelector {
 
     override fun select(
         knowledge: List<RuntimeKnowledge>,
         interpretation: String
     ): RuntimeKnowledge? {
+
         return selectResult(
             knowledge,
             interpretation
@@ -20,13 +26,23 @@ class DefaultRuntimeKnowledgeSelector :
         interpretation: String
     ): RuntimeKnowledgeSelectionResult {
 
-        val relevantKnowledge =
-            knowledge.filter { item ->
-                isRelevant(
-                    statement = item.statement,
-                    interpretation = interpretation
-                )
+        val evaluated =
+            knowledge.map { item ->
+                item to
+                    relevanceEvaluator.evaluate(
+                        statement = item.statement,
+                        interpretation = interpretation
+                    )
             }
+
+        val relevantKnowledge =
+            evaluated
+                .filter {
+                    it.second.relevant
+                }
+                .map {
+                    it.first
+                }
 
         val selectionPool =
             if (relevantKnowledge.isEmpty()) {
@@ -56,6 +72,22 @@ class DefaultRuntimeKnowledgeSelector :
                     RuntimeKnowledgeSelectionReason.FALLBACK_POOL
             }
 
+        val relevanceScore =
+            if (
+                selectionReason ==
+                    RuntimeKnowledgeSelectionReason.RELEVANT_POOL &&
+                selected != null
+            ) {
+                relevanceEvaluator
+                    .evaluate(
+                        statement = selected.statement,
+                        interpretation = interpretation
+                    )
+                    .score
+            } else {
+                0.0
+            }
+
         return RuntimeKnowledgeSelectionResult(
             knowledge = selected,
             relevantPoolUsed =
@@ -73,97 +105,7 @@ class DefaultRuntimeKnowledgeSelector :
                         "No knowledge available for selection"
                 },
             selectionReason = selectionReason,
-            relevanceScore =
-                if (
-                    selectionReason ==
-                        RuntimeKnowledgeSelectionReason.RELEVANT_POOL &&
-                    selected != null
-                ) {
-                    relevanceScore(
-                        statement = selected.statement,
-                        interpretation = interpretation
-                    )
-                } else {
-                    0.0
-                }
+            relevanceScore = relevanceScore
         )
-    }
-
-    private fun relevanceScore(
-        statement: String,
-        interpretation: String
-    ): Double {
-
-        if (
-            statement.contains(
-                interpretation,
-                ignoreCase = true
-            )
-        ) {
-            return 1.0
-        }
-
-        val interpretationTokens =
-            tokens(interpretation)
-
-        if (interpretationTokens.isEmpty()) {
-            return 0.0
-        }
-
-        val shared =
-            interpretationTokens.intersect(
-                tokens(statement)
-            )
-
-        return shared.size.toDouble() /
-            interpretationTokens.size.toDouble()
-    }
-
-    private fun isRelevant(
-        statement: String,
-        interpretation: String
-    ): Boolean {
-
-        if (
-            statement.contains(
-                interpretation,
-                ignoreCase = true
-            )
-        ) {
-            return true
-        }
-
-        val interpretationTokens =
-            tokens(interpretation)
-
-        val statementTokens =
-            tokens(statement)
-
-        if (interpretationTokens.isEmpty()) {
-            return false
-        }
-
-        val shared =
-            interpretationTokens.intersect(
-                statementTokens
-            )
-
-        return shared.size >= 2 &&
-            shared.size * 2 >= interpretationTokens.size
-    }
-
-    private fun tokens(
-        text: String
-    ): Set<String> {
-
-        return text
-            .lowercase()
-            .split(
-                Regex("[^a-z0-9]+")
-            )
-            .filter {
-                it.length >= 3
-            }
-            .toSet()
     }
 }
