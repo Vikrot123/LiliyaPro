@@ -21,6 +21,8 @@ import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.supersession.Def
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.supersession.RuntimeKnowledgeSupersessionHistory
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.supersession.query.DefaultRuntimeKnowledgeSupersessionQuery
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.supersession.query.RuntimeKnowledgeSupersessionQuery
+import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.supersession.integrity.DefaultRuntimeKnowledgeSupersessionIntegrityChecker
+import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.supersession.integrity.RuntimeKnowledgeSupersessionIntegrityChecker
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.observer.registry.DefaultRuntimeKnowledgeLifecycleObserverRegistryHolder
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.observer.RuntimeKnowledgeLifecycleObserver
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.observer.registry.RuntimeKnowledgeLifecycleObserverRegistryHolder
@@ -54,6 +56,12 @@ class DefaultRuntimeKnowledgeLifecycleComposition(
     private val supersessionQuery:
         RuntimeKnowledgeSupersessionQuery =
         DefaultRuntimeKnowledgeSupersessionQuery(
+            supersessionHistory
+        )
+
+    private val supersessionIntegrityChecker:
+        RuntimeKnowledgeSupersessionIntegrityChecker =
+        DefaultRuntimeKnowledgeSupersessionIntegrityChecker(
             supersessionHistory
         )
 
@@ -157,6 +165,11 @@ class DefaultRuntimeKnowledgeLifecycleComposition(
     override fun supersessionQuery():
         RuntimeKnowledgeSupersessionQuery {
         return supersessionQuery
+    }
+
+    override fun supersessionIntegrityChecker():
+        RuntimeKnowledgeSupersessionIntegrityChecker {
+        return supersessionIntegrityChecker
     }
 
     override fun lifecycleHistoryQuery():
