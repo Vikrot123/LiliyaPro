@@ -55,10 +55,40 @@ class DefaultRuntimeKnowledgeLifecycleMemory(
                 RuntimeKnowledgeHygieneAction.DUPLICATE_SUPPRESSED &&
                 hygiene.retainedKnowledge == knowledge
 
-        if (!added && !exactExistingDuplicate) {
-            return
-        }
+        val strongerConflictCandidate =
+            hygiene.action ==
+                RuntimeKnowledgeHygieneAction.CONFLICT_SUPPRESSED &&
+                hygiene.conflictResolution?.resolved == true &&
+                hygiene.conflictResolution.selectedKnowledge == knowledge
 
+        when {
+            added ->
+                createAddedKnowledge(
+                    knowledge
+                )
+
+            exactExistingDuplicate ->
+                transitionManager.transition(
+                    knowledge,
+                    lifecycle.create(
+                        knowledge
+                    ).state
+                )
+
+            strongerConflictCandidate ->
+                supersede(
+                    existing = hygiene.retainedKnowledge,
+                    candidate = knowledge
+                )
+
+            else ->
+                return
+        }
+    }
+
+    private fun createAddedKnowledge(
+        knowledge: RuntimeKnowledge
+    ) {
         try {
             val transitioned =
                 transitionManager.transition(
@@ -68,26 +98,207 @@ class DefaultRuntimeKnowledgeLifecycleMemory(
                     ).state
                 )
 
-            if (!transitioned && added) {
+            if (!transitioned) {
                 memory.forget(
                     knowledge
                 )
             }
         } catch (error: Throwable) {
-            if (added) {
-                try {
-                    memory.forget(
-                        knowledge
-                    )
-                } catch (rollbackError: Throwable) {
-                    error.addSuppressed(
-                        rollbackError
-                    )
-                }
+            try {
+                memory.forget(
+                    knowledge
+                )
+            } catch (rollbackError: Throwable) {
+                error.addSuppressed(
+                    rollbackError
+                )
             }
 
             throw error
         }
+    }
+
+    private fun supersede(
+        existing: RuntimeKnowledge,
+        candidate: RuntimeKnowledge
+    ) {
+        val originalState =
+            stateStore.getState(
+                existing
+            ) ?: return
+
+        if (
+            originalState ==
+                RuntimeKnowledgeLifecycleState.ARCHIVED
+        ) {
+            return
+        }
+
+        val originalHistorySize =
+            historyStore
+                .history(existing)
+                .size
+
+        var existingRemoved = false
+        var candidateAdded = false
+
+        try {
+            when (originalState) {
+                RuntimeKnowledgeLifecycleState.ACTIVE -> {
+                    if (
+                        !transitionManager.transition(
+                            existing,
+                            RuntimeKnowledgeLifecycleState.REVIEW
+                        )
+                    ) {
+                        return
+                    }
+
+                    if (
+                        !transitionManager.transition(
+                            existing,
+                            RuntimeKnowledgeLifecycleState.ARCHIVED
+                        )
+                    ) {
+                        rollbackExistingLifecycle(
+                            knowledge = existing,
+                            state = originalState,
+                            historySize = originalHistorySize
+                        )
+                        return
+                    }
+                }
+
+                RuntimeKnowledgeLifecycleState.REVIEW -> {
+                    if (
+                        !transitionManager.transition(
+                            existing,
+                            RuntimeKnowledgeLifecycleState.ARCHIVED
+                        )
+                    ) {
+                        return
+                    }
+                }
+
+                RuntimeKnowledgeLifecycleState.DEPRECATED ->
+                    return
+
+                RuntimeKnowledgeLifecycleState.ARCHIVED ->
+                    return
+            }
+
+            memory.forget(
+                existing
+            )
+            existingRemoved = true
+
+            val candidateHygiene =
+                memory.rememberWithHygiene(
+                    candidate
+                )
+
+            if (
+                candidateHygiene.action !=
+                    RuntimeKnowledgeHygieneAction.ADDED
+            ) {
+                rollbackSupersession(
+                    existing = existing,
+                    candidate = candidate,
+                    originalState = originalState,
+                    originalHistorySize = originalHistorySize,
+                    existingRemoved = existingRemoved,
+                    candidateAdded = false
+                )
+                return
+            }
+
+            candidateAdded = true
+
+            val activated =
+                transitionManager.transition(
+                    candidate,
+                    RuntimeKnowledgeLifecycleState.ACTIVE
+                )
+
+            if (!activated) {
+                rollbackSupersession(
+                    existing = existing,
+                    candidate = candidate,
+                    originalState = originalState,
+                    originalHistorySize = originalHistorySize,
+                    existingRemoved = existingRemoved,
+                    candidateAdded = candidateAdded
+                )
+            }
+        } catch (error: Throwable) {
+            try {
+                rollbackSupersession(
+                    existing = existing,
+                    candidate = candidate,
+                    originalState = originalState,
+                    originalHistorySize = originalHistorySize,
+                    existingRemoved = existingRemoved,
+                    candidateAdded = candidateAdded
+                )
+            } catch (rollbackError: Throwable) {
+                error.addSuppressed(
+                    rollbackError
+                )
+            }
+
+            throw error
+        }
+    }
+
+    private fun rollbackSupersession(
+        existing: RuntimeKnowledge,
+        candidate: RuntimeKnowledge,
+        originalState: RuntimeKnowledgeLifecycleState,
+        originalHistorySize: Int,
+        existingRemoved: Boolean,
+        candidateAdded: Boolean
+    ) {
+        if (candidateAdded) {
+            memory.forget(
+                candidate
+            )
+        }
+
+        if (existingRemoved) {
+            memory.remember(
+                existing
+            )
+        }
+
+        rollbackExistingLifecycle(
+            knowledge = existing,
+            state = originalState,
+            historySize = originalHistorySize
+        )
+    }
+
+    private fun rollbackExistingLifecycle(
+        knowledge: RuntimeKnowledge,
+        state: RuntimeKnowledgeLifecycleState,
+        historySize: Int
+    ) {
+        val appended =
+            historyStore
+                .history(knowledge)
+                .drop(historySize)
+                .asReversed()
+
+        appended.forEach { entry ->
+            historyStore.removeLast(
+                knowledge,
+                entry
+            )
+        }
+
+        stateStore.setState(
+            knowledge,
+            state
+        )
     }
 
     override fun activate(
