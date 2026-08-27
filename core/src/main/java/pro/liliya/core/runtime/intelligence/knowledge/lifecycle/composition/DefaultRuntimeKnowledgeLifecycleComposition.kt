@@ -23,6 +23,8 @@ import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.supersession.que
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.supersession.query.RuntimeKnowledgeSupersessionQuery
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.supersession.integrity.DefaultRuntimeKnowledgeSupersessionIntegrityChecker
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.supersession.integrity.RuntimeKnowledgeSupersessionIntegrityChecker
+import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.provenance.DefaultRuntimeKnowledgeProvenanceQuery
+import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.provenance.RuntimeKnowledgeProvenanceQuery
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.observer.registry.DefaultRuntimeKnowledgeLifecycleObserverRegistryHolder
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.observer.RuntimeKnowledgeLifecycleObserver
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.observer.registry.RuntimeKnowledgeLifecycleObserverRegistryHolder
@@ -73,6 +75,14 @@ class DefaultRuntimeKnowledgeLifecycleComposition(
     private val historyQuery =
         DefaultRuntimeKnowledgeLifecycleHistoryQuery(
             historyStore
+        )
+
+
+    private val provenanceQuery:
+        RuntimeKnowledgeProvenanceQuery =
+        DefaultRuntimeKnowledgeProvenanceQuery(
+            supersessionQuery = supersessionQuery,
+            lifecycleHistoryQuery = historyQuery
         )
 
     private val summaryQuery =
@@ -170,6 +180,11 @@ class DefaultRuntimeKnowledgeLifecycleComposition(
     override fun supersessionIntegrityChecker():
         RuntimeKnowledgeSupersessionIntegrityChecker {
         return supersessionIntegrityChecker
+    }
+
+    override fun provenanceQuery():
+        RuntimeKnowledgeProvenanceQuery {
+        return provenanceQuery
     }
 
     override fun lifecycleHistoryQuery():
