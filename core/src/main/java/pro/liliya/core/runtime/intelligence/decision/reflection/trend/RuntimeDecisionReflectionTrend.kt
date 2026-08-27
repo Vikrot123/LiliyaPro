@@ -8,5 +8,8 @@ data class RuntimeDecisionReflectionTrend(
     val averageConfidence: Double,
     val firstConfidence: Double?,
     val latestConfidence: Double?,
-    val confidenceDelta: Double
+    val confidenceDelta: Double,
+    val qualityTransitionCount: Int = 0,
+    val confidenceDirectionChanges: Int = 0,
+    val oscillating: Boolean = false
 )
