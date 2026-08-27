@@ -38,7 +38,19 @@ class DefaultRuntimeKnowledgeLifecycleMemory(
     private val lifecycle =
         DefaultRuntimeKnowledgeLifecycleManager()
 
+    private val mutationLock = Any()
+
     override fun create(
+        knowledge: RuntimeKnowledge
+    ) {
+        synchronized(mutationLock) {
+            createLocked(
+                knowledge
+            )
+        }
+    }
+
+    private fun createLocked(
         knowledge: RuntimeKnowledge
     ) {
         val hygiene =
