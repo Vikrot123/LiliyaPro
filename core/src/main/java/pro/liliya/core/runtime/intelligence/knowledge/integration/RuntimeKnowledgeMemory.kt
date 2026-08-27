@@ -1,6 +1,8 @@
 package pro.liliya.core.runtime.intelligence.knowledge.integration
 
 import pro.liliya.core.runtime.intelligence.knowledge.RuntimeKnowledge
+import pro.liliya.core.runtime.intelligence.knowledge.hygiene.RuntimeKnowledgeHygieneAction
+import pro.liliya.core.runtime.intelligence.knowledge.hygiene.RuntimeKnowledgeHygieneResult
 import pro.liliya.core.runtime.intelligence.knowledge.retrieval.RuntimeKnowledgeRetrievalResult
 import pro.liliya.core.runtime.intelligence.knowledge.association.RuntimeKnowledgeAssociationType
 import pro.liliya.core.runtime.intelligence.knowledge.graph.ranking.RuntimeKnowledgeGraphRankingResult
@@ -11,6 +13,18 @@ interface RuntimeKnowledgeMemory {
     fun remember(
         knowledge: RuntimeKnowledge
     )
+
+    fun rememberWithHygiene(
+        knowledge: RuntimeKnowledge
+    ): RuntimeKnowledgeHygieneResult {
+        remember(knowledge)
+
+        return RuntimeKnowledgeHygieneResult(
+            action = RuntimeKnowledgeHygieneAction.ADDED,
+            requestedKnowledge = knowledge,
+            retainedKnowledge = knowledge
+        )
+    }
 
     fun forget(
         knowledge: RuntimeKnowledge

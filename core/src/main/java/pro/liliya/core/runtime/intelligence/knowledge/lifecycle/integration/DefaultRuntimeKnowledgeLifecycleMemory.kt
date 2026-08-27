@@ -1,6 +1,7 @@
 package pro.liliya.core.runtime.intelligence.knowledge.lifecycle.integration
 
 import pro.liliya.core.runtime.intelligence.knowledge.RuntimeKnowledge
+import pro.liliya.core.runtime.intelligence.knowledge.hygiene.RuntimeKnowledgeHygieneAction
 import pro.liliya.core.runtime.intelligence.knowledge.integration.DefaultRuntimeKnowledgeMemory
 import pro.liliya.core.runtime.intelligence.knowledge.integration.RuntimeKnowledgeMemory
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.DefaultRuntimeKnowledgeLifecycleManager
@@ -40,9 +41,23 @@ class DefaultRuntimeKnowledgeLifecycleMemory(
     override fun create(
         knowledge: RuntimeKnowledge
     ) {
-        memory.remember(
-            knowledge
-        )
+        val hygiene =
+            memory.rememberWithHygiene(
+                knowledge
+            )
+
+        val added =
+            hygiene.action ==
+                RuntimeKnowledgeHygieneAction.ADDED
+
+        val exactExistingDuplicate =
+            hygiene.action ==
+                RuntimeKnowledgeHygieneAction.DUPLICATE_SUPPRESSED &&
+                hygiene.retainedKnowledge == knowledge
+
+        if (!added && !exactExistingDuplicate) {
+            return
+        }
 
         try {
             val transitioned =
@@ -53,20 +68,22 @@ class DefaultRuntimeKnowledgeLifecycleMemory(
                     ).state
                 )
 
-            if (!transitioned) {
+            if (!transitioned && added) {
                 memory.forget(
                     knowledge
                 )
             }
         } catch (error: Throwable) {
-            try {
-                memory.forget(
-                    knowledge
-                )
-            } catch (rollbackError: Throwable) {
-                error.addSuppressed(
-                    rollbackError
-                )
+            if (added) {
+                try {
+                    memory.forget(
+                        knowledge
+                    )
+                } catch (rollbackError: Throwable) {
+                    error.addSuppressed(
+                        rollbackError
+                    )
+                }
             }
 
             throw error

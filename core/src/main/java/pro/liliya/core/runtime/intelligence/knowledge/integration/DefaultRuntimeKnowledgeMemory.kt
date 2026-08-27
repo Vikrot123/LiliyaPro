@@ -1,6 +1,12 @@
 package pro.liliya.core.runtime.intelligence.knowledge.integration
 
 import pro.liliya.core.runtime.intelligence.knowledge.RuntimeKnowledge
+import pro.liliya.core.runtime.intelligence.knowledge.conflict.DefaultRuntimeKnowledgeConflictResolver
+import pro.liliya.core.runtime.intelligence.knowledge.conflict.RuntimeKnowledgeConflict
+import pro.liliya.core.runtime.intelligence.knowledge.conflict.RuntimeKnowledgeConflictType
+import pro.liliya.core.runtime.intelligence.knowledge.hygiene.DefaultRuntimeKnowledgeHygieneEvaluator
+import pro.liliya.core.runtime.intelligence.knowledge.hygiene.RuntimeKnowledgeHygieneAction
+import pro.liliya.core.runtime.intelligence.knowledge.hygiene.RuntimeKnowledgeHygieneResult
 import pro.liliya.core.runtime.intelligence.knowledge.association.RuntimeKnowledgeAssociationType
 import pro.liliya.core.runtime.intelligence.knowledge.association.DefaultRuntimeKnowledgeAssociator
 import pro.liliya.core.runtime.intelligence.knowledge.association.store.DefaultRuntimeKnowledgeAssociationStore
@@ -52,6 +58,12 @@ class DefaultRuntimeKnowledgeMemory(
     private val knowledgeStore =
         DefaultRuntimeKnowledgeStore()
 
+    private val hygieneEvaluator =
+        DefaultRuntimeKnowledgeHygieneEvaluator()
+
+    private val conflictResolver =
+        DefaultRuntimeKnowledgeConflictResolver()
+
     private val semanticRetriever =
         DefaultRuntimeKnowledgeRetriever()
 
@@ -71,9 +83,64 @@ class DefaultRuntimeKnowledgeMemory(
     override fun remember(
         knowledge: RuntimeKnowledge
     ) {
-        knowledgeStore.append(
+        rememberWithHygiene(
             knowledge
         )
+    }
+
+    override fun rememberWithHygiene(
+        knowledge: RuntimeKnowledge
+    ): RuntimeKnowledgeHygieneResult {
+
+        return synchronized(knowledgeStore) {
+            val existing =
+                hygieneEvaluator.findEquivalent(
+                    knowledge = knowledge,
+                    existing = knowledgeStore.knowledge()
+                )
+
+            if (existing == null) {
+                knowledgeStore.append(
+                    knowledge
+                )
+
+                RuntimeKnowledgeHygieneResult(
+                    action =
+                        RuntimeKnowledgeHygieneAction.ADDED,
+                    requestedKnowledge = knowledge,
+                    retainedKnowledge = knowledge
+                )
+            } else if (
+                existing.confidence == knowledge.confidence
+            ) {
+                RuntimeKnowledgeHygieneResult(
+                    action =
+                        RuntimeKnowledgeHygieneAction.DUPLICATE_SUPPRESSED,
+                    requestedKnowledge = knowledge,
+                    retainedKnowledge = existing
+                )
+            } else {
+                val resolution =
+                    conflictResolver.resolve(
+                        RuntimeKnowledgeConflict(
+                            first = existing,
+                            second = knowledge,
+                            type =
+                                RuntimeKnowledgeConflictType.CONFIDENCE_DIFFERENCE,
+                            createdAt =
+                                System.currentTimeMillis()
+                        )
+                    )
+
+                RuntimeKnowledgeHygieneResult(
+                    action =
+                        RuntimeKnowledgeHygieneAction.CONFLICT_SUPPRESSED,
+                    requestedKnowledge = knowledge,
+                    retainedKnowledge = existing,
+                    conflictResolution = resolution
+                )
+            }
+        }
     }
 
     override fun forget(
