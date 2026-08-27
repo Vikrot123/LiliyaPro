@@ -23,6 +23,8 @@ import pro.liliya.core.runtime.intelligence.context.cognitive.service.DefaultCog
 import pro.liliya.core.runtime.intelligence.context.cognitive.registry.CognitiveContextSourceRegistry
 import pro.liliya.core.runtime.intelligence.context.cognitive.registry.DefaultCognitiveContextSourceRegistry
 import pro.liliya.core.runtime.intelligence.context.cognitive.source.DefaultRuntimeCognitiveContextSource
+import pro.liliya.core.runtime.intelligence.context.cognitive.source.KnowledgeCognitiveContextSource
+import pro.liliya.core.runtime.intelligence.knowledge.integration.RuntimeKnowledgeMemory
 
 private fun cognitiveContextCompositionLogger() =
     pro.liliya.core.logging.LoggerFactory.create(
@@ -36,7 +38,8 @@ class DefaultCognitiveContextComposition(
         DefaultRuntimeContextProvider(
             registry = RuntimeServiceRegistry(),
             runtimeStateHolder = CoreRuntimeStateHolder()
-        )
+        ),
+    private val knowledgeMemory: RuntimeKnowledgeMemory? = null
 ) : CognitiveContextComposition {
 
     private val lifecycle: CognitiveContextLifecycle =
@@ -56,6 +59,14 @@ class DefaultCognitiveContextComposition(
 
     init {
         sourceRegistry.register(runtimeSource)
+
+        knowledgeMemory?.let { memory ->
+            sourceRegistry.register(
+                KnowledgeCognitiveContextSource(
+                    memory
+                )
+            )
+        }
     }
 
 

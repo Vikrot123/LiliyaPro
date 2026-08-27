@@ -43,7 +43,7 @@ class RuntimeCompositionCognitiveContextIntegrationContractTest {
                 .cognitiveContextComposition()
                 .sourceRegistry()
 
-        assertEquals(1, cognitiveRegistry.size())
+        assertEquals(2, cognitiveRegistry.size())
 
         runtimeRegistry.register(
             object : RuntimeService {
@@ -63,7 +63,7 @@ class RuntimeCompositionCognitiveContextIntegrationContractTest {
                     pro.liliya.core.runtime.intelligence.context.cognitive.CognitiveContextType.WORKING
                 )
 
-        assertEquals(1, result.selectedCount)
+        assertEquals(2, result.selectedCount)
         assertEquals(0, result.rejectedCount)
 
         val sourceSnapshot =

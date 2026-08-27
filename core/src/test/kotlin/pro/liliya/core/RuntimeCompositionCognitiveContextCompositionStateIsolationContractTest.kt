@@ -38,7 +38,7 @@ class RuntimeCompositionCognitiveContextCompositionStateIsolationContractTest {
         val sameCognitive = composition.cognitiveContextComposition()
 
         assertEquals(
-            2,
+            3,
             sameCognitive.sourceRegistry().size()
         )
 
@@ -94,12 +94,12 @@ class RuntimeCompositionCognitiveContextCompositionStateIsolationContractTest {
         )
 
         assertEquals(
-            2,
+            3,
             firstCognitive.sourceRegistry().size()
         )
 
         assertEquals(
-            1,
+            2,
             secondCognitive.sourceRegistry().size()
         )
 

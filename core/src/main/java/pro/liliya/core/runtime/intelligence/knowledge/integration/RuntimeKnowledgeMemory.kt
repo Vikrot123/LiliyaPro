@@ -25,6 +25,10 @@ interface RuntimeKnowledgeMemory {
         text: String
     ): List<RuntimeKnowledgeGraphRankingResult>
 
+    fun availableKnowledge(): List<RuntimeKnowledge> {
+        return emptyList()
+    }
+
     fun getLifecycleState(
         knowledge: RuntimeKnowledge
     ): RuntimeKnowledgeLifecycleState?

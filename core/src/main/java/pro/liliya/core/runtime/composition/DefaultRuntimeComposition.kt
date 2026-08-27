@@ -362,7 +362,11 @@ class DefaultRuntimeComposition :
 
     private val cognitiveContextComposition =
         DefaultCognitiveContextComposition(
-            runtimeContextProvider
+            runtimeContextProvider = runtimeContextProvider,
+            knowledgeMemory =
+                memoryCompositionHolder
+                    .composition()
+                    .knowledgeMemory()
         )
 
     private val selfModelProvider: RuntimeSelfModelProvider =

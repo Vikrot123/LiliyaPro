@@ -148,6 +148,12 @@ class DefaultRuntimeKnowledgeMemory(
         )
     }
 
+    override fun availableKnowledge(): List<RuntimeKnowledge> {
+        return lifecycleFilter.filter(
+            knowledgeStore.knowledge()
+        )
+    }
+
     override fun getLifecycleState(
         knowledge: RuntimeKnowledge
     ): RuntimeKnowledgeLifecycleState? {
