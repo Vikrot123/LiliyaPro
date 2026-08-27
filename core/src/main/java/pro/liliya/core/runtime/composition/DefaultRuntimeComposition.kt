@@ -117,6 +117,8 @@ import pro.liliya.core.runtime.intelligence.reasoning.orchestration.DefaultRunti
 import pro.liliya.core.runtime.intelligence.reasoning.orchestration.RuntimeAutonomousReasoningPipeline
 import pro.liliya.core.runtime.intelligence.intent.DefaultRuntimeIntentDeriver
 import pro.liliya.core.runtime.intelligence.intent.RuntimeIntentDeriver
+import pro.liliya.core.runtime.intelligence.cognition.DefaultRuntimeAutonomousCognitionPipeline
+import pro.liliya.core.runtime.intelligence.cognition.RuntimeAutonomousCognitionPipeline
 import pro.liliya.core.runtime.intelligence.strategy.DefaultRuntimeStrategyDeriver
 import pro.liliya.core.runtime.intelligence.strategy.RuntimeStrategyDeriver
 import pro.liliya.core.runtime.intelligence.decision.DefaultRuntimeDecisionActionRequestFactory
@@ -481,6 +483,14 @@ class DefaultRuntimeComposition :
 
     private val strategyDeriver: RuntimeStrategyDeriver =
         DefaultRuntimeStrategyDeriver()
+
+    private val autonomousCognitionPipeline:
+        RuntimeAutonomousCognitionPipeline =
+        DefaultRuntimeAutonomousCognitionPipeline(
+            reasoningPipeline = autonomousReasoningPipeline,
+            intentDeriver = intentDeriver,
+            strategyDeriver = strategyDeriver
+        )
 
     private val decisionEngine: RuntimeDecisionEngine =
         DefaultRuntimeDecisionEngine()
@@ -1190,6 +1200,11 @@ class DefaultRuntimeComposition :
 
     override fun strategyDeriver(): RuntimeStrategyDeriver {
         return strategyDeriver
+    }
+
+    override fun autonomousCognitionPipeline():
+        RuntimeAutonomousCognitionPipeline {
+        return autonomousCognitionPipeline
     }
 
     override fun decisionEngine(): RuntimeDecisionEngine {
