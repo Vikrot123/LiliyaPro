@@ -2,16 +2,17 @@ package pro.liliya.core.runtime.intelligence.decision.execution.autonomous.learn
 
 import java.util.Collections
 import java.util.IdentityHashMap
+import pro.liliya.core.runtime.intelligence.decision.execution.autonomous.pipeline.RuntimeAutonomousExecutionPipelineResult
 import pro.liliya.core.runtime.intelligence.experience.store.RuntimeExperienceStore
 
 class DefaultRuntimeAutonomousExecutionExperienceCommitter(
     private val experienceStore: RuntimeExperienceStore
 ) : RuntimeAutonomousExecutionExperienceCommitter {
 
-    private val committedRepresentations =
+    private val committedExecutions =
         Collections.newSetFromMap(
             IdentityHashMap<
-                RuntimeAutonomousExecutionExperienceRepresentation,
+                RuntimeAutonomousExecutionPipelineResult,
                 Boolean
             >()
         )
@@ -63,10 +64,18 @@ class DefaultRuntimeAutonomousExecutionExperienceCommitter(
             )
         }
 
-        synchronized(committedRepresentations) {
+        val executionResult =
+            representation
+                .materialization
+                .analysis
+                .evidence
+                .evaluation
+                .executionResult
+
+        synchronized(committedExecutions) {
             if (
-                committedRepresentations.contains(
-                    representation
+                committedExecutions.contains(
+                    executionResult
                 )
             ) {
                 return RuntimeAutonomousExecutionExperienceCommitResult(
@@ -79,7 +88,7 @@ class DefaultRuntimeAutonomousExecutionExperienceCommitter(
                     decision =
                         decision,
                     reason =
-                        "Autonomous experience representation was already committed"
+                        "Autonomous execution experience was already committed"
                 )
             }
 
@@ -87,8 +96,8 @@ class DefaultRuntimeAutonomousExecutionExperienceCommitter(
                 experience
             )
 
-            committedRepresentations.add(
-                representation
+            committedExecutions.add(
+                executionResult
             )
         }
 

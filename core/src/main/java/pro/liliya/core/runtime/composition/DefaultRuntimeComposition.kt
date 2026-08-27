@@ -113,6 +113,16 @@ import pro.liliya.core.runtime.intelligence.decision.execution.autonomous.Defaul
 import pro.liliya.core.runtime.intelligence.decision.execution.autonomous.RuntimeAutonomousDecisionExecutor
 import pro.liliya.core.runtime.intelligence.decision.execution.autonomous.pipeline.DefaultRuntimeAutonomousExecutionPipeline
 import pro.liliya.core.runtime.intelligence.decision.execution.autonomous.pipeline.RuntimeAutonomousExecutionPipeline
+import pro.liliya.core.runtime.intelligence.decision.execution.autonomous.learning.DefaultRuntimeAutonomousExecutionExperienceCommitDecisionEngine
+import pro.liliya.core.runtime.intelligence.decision.execution.autonomous.learning.DefaultRuntimeAutonomousExecutionExperienceCommitter
+import pro.liliya.core.runtime.intelligence.decision.execution.autonomous.learning.DefaultRuntimeAutonomousExecutionExperienceLearningDecisionEngine
+import pro.liliya.core.runtime.intelligence.decision.execution.autonomous.learning.DefaultRuntimeAutonomousExecutionExperienceMaterializer
+import pro.liliya.core.runtime.intelligence.decision.execution.autonomous.learning.DefaultRuntimeAutonomousExecutionExperienceNoveltyDeriver
+import pro.liliya.core.runtime.intelligence.decision.execution.autonomous.learning.DefaultRuntimeAutonomousExecutionExperienceRepresentationDeriver
+import pro.liliya.core.runtime.intelligence.decision.execution.autonomous.postexecution.DefaultRuntimeAutonomousExecutionPostExecutionLearningPipeline
+import pro.liliya.core.runtime.intelligence.decision.execution.autonomous.postexecution.RuntimeAutonomousExecutionPostExecutionLearningPipeline
+import pro.liliya.core.runtime.intelligence.decision.execution.autonomous.reflection.DefaultRuntimeAutonomousExecutionReflectionAnalyzer
+import pro.liliya.core.runtime.intelligence.decision.execution.autonomous.reflection.DefaultRuntimeAutonomousExecutionReflectionRecorder
 import pro.liliya.core.runtime.intelligence.decision.execution.autonomous.outcome.DefaultRuntimeAutonomousExecutionOutcomeDeriver
 import pro.liliya.core.runtime.intelligence.decision.execution.autonomous.assessment.DefaultRuntimeAutonomousExecutionAssessmentDeriver
 import pro.liliya.core.runtime.intelligence.decision.execution.autonomous.evaluation.DefaultRuntimeAutonomousExecutionEvaluationPipeline
@@ -711,6 +721,66 @@ class DefaultRuntimeComposition :
         RuntimeAutonomousExecutionFeedbackDeriver =
         DefaultRuntimeAutonomousExecutionFeedbackDeriver()
 
+
+    private val autonomousExecutionReflectionAnalyzer =
+        DefaultRuntimeAutonomousExecutionReflectionAnalyzer(
+            reflectionAnalyzer =
+                decisionReflectionAnalyzer
+        )
+
+    private val autonomousExecutionReflectionRecorder =
+        DefaultRuntimeAutonomousExecutionReflectionRecorder(
+            history =
+                decisionReflectionHistory
+        )
+
+    private val autonomousExecutionExperienceNoveltyDeriver =
+        DefaultRuntimeAutonomousExecutionExperienceNoveltyDeriver()
+
+    private val autonomousExecutionExperienceLearningDecisionEngine =
+        DefaultRuntimeAutonomousExecutionExperienceLearningDecisionEngine()
+
+    private val autonomousExecutionExperienceMaterializer =
+        DefaultRuntimeAutonomousExecutionExperienceMaterializer()
+
+    private val autonomousExecutionExperienceRepresentationDeriver =
+        DefaultRuntimeAutonomousExecutionExperienceRepresentationDeriver()
+
+    private val autonomousExecutionExperienceCommitDecisionEngine =
+        DefaultRuntimeAutonomousExecutionExperienceCommitDecisionEngine(
+            experienceDecisionEngine =
+                experienceComposition.experienceDecisionEngine()
+        )
+
+    private val autonomousExecutionExperienceCommitter =
+        DefaultRuntimeAutonomousExecutionExperienceCommitter(
+            experienceStore =
+                experienceComposition.experienceStore()
+        )
+
+    private val autonomousPostExecutionLearningPipeline:
+        RuntimeAutonomousExecutionPostExecutionLearningPipeline =
+        DefaultRuntimeAutonomousExecutionPostExecutionLearningPipeline(
+            feedbackDeriver =
+                autonomousExecutionFeedbackDeriver,
+            reflectionAnalyzer =
+                autonomousExecutionReflectionAnalyzer,
+            reflectionRecorder =
+                autonomousExecutionReflectionRecorder,
+            noveltyDeriver =
+                autonomousExecutionExperienceNoveltyDeriver,
+            learningDecisionEngine =
+                autonomousExecutionExperienceLearningDecisionEngine,
+            materializer =
+                autonomousExecutionExperienceMaterializer,
+            representationDeriver =
+                autonomousExecutionExperienceRepresentationDeriver,
+            commitDecisionEngine =
+                autonomousExecutionExperienceCommitDecisionEngine,
+            committer =
+                autonomousExecutionExperienceCommitter
+        )
+
     private val intelligenceOrchestrator: RuntimeIntelligenceOrchestrator =
         DefaultRuntimeIntelligenceOrchestrator(
             selfModelProvider = selfModelProvider,
@@ -1292,6 +1362,11 @@ class DefaultRuntimeComposition :
     override fun autonomousExecutionFeedbackDeriver():
         RuntimeAutonomousExecutionFeedbackDeriver {
         return autonomousExecutionFeedbackDeriver
+    }
+
+    override fun autonomousPostExecutionLearningPipeline():
+        RuntimeAutonomousExecutionPostExecutionLearningPipeline {
+        return autonomousPostExecutionLearningPipeline
     }
 
     override fun decisionEngine(): RuntimeDecisionEngine {

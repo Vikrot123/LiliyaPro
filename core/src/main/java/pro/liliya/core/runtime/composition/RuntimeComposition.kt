@@ -76,6 +76,7 @@ import pro.liliya.core.runtime.intelligence.decision.RuntimeDecisionEngine
 import pro.liliya.core.runtime.intelligence.decision.synthesis.RuntimeAutonomousDecisionSynthesizer
 import pro.liliya.core.runtime.intelligence.decision.execution.autonomous.RuntimeAutonomousDecisionExecutor
 import pro.liliya.core.runtime.intelligence.decision.execution.autonomous.pipeline.RuntimeAutonomousExecutionPipeline
+import pro.liliya.core.runtime.intelligence.decision.execution.autonomous.postexecution.RuntimeAutonomousExecutionPostExecutionLearningPipeline
 import pro.liliya.core.runtime.intelligence.decision.execution.autonomous.evaluation.RuntimeAutonomousExecutionEvaluationPipeline
 import pro.liliya.core.runtime.intelligence.decision.execution.autonomous.feedback.RuntimeAutonomousExecutionFeedbackDeriver
 import pro.liliya.core.runtime.intelligence.decision.proposal.RuntimeAutonomousDecisionProposalDeriver
@@ -138,6 +139,7 @@ interface RuntimeComposition {
     fun autonomousExecutionPipeline(): RuntimeAutonomousExecutionPipeline
     fun autonomousExecutionEvaluationPipeline(): RuntimeAutonomousExecutionEvaluationPipeline
     fun autonomousExecutionFeedbackDeriver(): RuntimeAutonomousExecutionFeedbackDeriver
+    fun autonomousPostExecutionLearningPipeline(): RuntimeAutonomousExecutionPostExecutionLearningPipeline
 
     fun decisionEngine(): RuntimeDecisionEngine
     fun decisionExplainer(): RuntimeDecisionExplainer
