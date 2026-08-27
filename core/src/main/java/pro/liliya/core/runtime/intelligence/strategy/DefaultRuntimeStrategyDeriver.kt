@@ -10,9 +10,20 @@ class DefaultRuntimeStrategyDeriver :
         intent: RuntimeIntent
     ): RuntimeStrategy {
 
+        val reasoningResult =
+            intent.reasoningResult
+
+        val upstreamInconsistent =
+            !reasoningResult.coherent ||
+                (
+                    intent.actionable &&
+                        !reasoningResult.actionable
+                )
+
         if (
             !intent.coherent ||
-            intent.state == RuntimeIntentState.WITHHOLD
+            intent.state == RuntimeIntentState.WITHHOLD ||
+            upstreamInconsistent
         ) {
             return RuntimeStrategy(
                 state =
