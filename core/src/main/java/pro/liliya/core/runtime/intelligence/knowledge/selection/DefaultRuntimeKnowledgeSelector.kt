@@ -44,15 +44,35 @@ class DefaultRuntimeKnowledgeSelector :
                 }
             )
 
+        val selectionReason =
+            when {
+                selected == null ->
+                    RuntimeKnowledgeSelectionReason.EMPTY
+
+                relevantKnowledge.isNotEmpty() ->
+                    RuntimeKnowledgeSelectionReason.RELEVANT_POOL
+
+                else ->
+                    RuntimeKnowledgeSelectionReason.FALLBACK_POOL
+            }
+
         return RuntimeKnowledgeSelectionResult(
             knowledge = selected,
-            relevantPoolUsed = relevantKnowledge.isNotEmpty(),
+            relevantPoolUsed =
+                selectionReason ==
+                    RuntimeKnowledgeSelectionReason.RELEVANT_POOL,
             reason =
-                if (relevantKnowledge.isNotEmpty()) {
-                    "Selected from relevant knowledge pool"
-                } else {
-                    "Selected from fallback knowledge pool"
-                }
+                when (selectionReason) {
+                    RuntimeKnowledgeSelectionReason.RELEVANT_POOL ->
+                        "Selected from relevant knowledge pool"
+
+                    RuntimeKnowledgeSelectionReason.FALLBACK_POOL ->
+                        "Selected from fallback knowledge pool"
+
+                    RuntimeKnowledgeSelectionReason.EMPTY ->
+                        "No knowledge available for selection"
+                },
+            selectionReason = selectionReason
         )
     }
 

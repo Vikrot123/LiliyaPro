@@ -5,6 +5,7 @@ import kotlin.test.assertEquals
 import pro.liliya.core.runtime.intelligence.knowledge.RuntimeKnowledge
 import pro.liliya.core.runtime.intelligence.knowledge.RuntimeKnowledgeSource
 import pro.liliya.core.runtime.intelligence.knowledge.selection.DefaultRuntimeKnowledgeSelector
+import pro.liliya.core.runtime.intelligence.knowledge.selection.RuntimeKnowledgeSelectionReason
 
 class DefaultRuntimeKnowledgeSelectorContractTest {
 
@@ -315,6 +316,68 @@ class DefaultRuntimeKnowledgeSelectorContractTest {
         assertEquals(
             false,
             result.relevantPoolUsed
+        )
+    }
+
+
+    @Test
+    fun selection_result_reports_typed_relevant_reason() {
+        val relevant =
+            knowledge(
+                "runtime operational state remained stable",
+                0.80,
+                1L
+            )
+
+        val result =
+            selector.selectResult(
+                listOf(relevant),
+                "Runtime maintains stable operational state"
+            )
+
+        assertEquals(
+            RuntimeKnowledgeSelectionReason.RELEVANT_POOL,
+            result.selectionReason
+        )
+    }
+
+    @Test
+    fun selection_result_reports_typed_fallback_reason() {
+        val fallback =
+            knowledge(
+                "unrelated knowledge",
+                0.80,
+                1L
+            )
+
+        val result =
+            selector.selectResult(
+                listOf(fallback),
+                "Runtime maintains stable operational state"
+            )
+
+        assertEquals(
+            RuntimeKnowledgeSelectionReason.FALLBACK_POOL,
+            result.selectionReason
+        )
+    }
+
+    @Test
+    fun selection_result_reports_empty_reason() {
+        val result =
+            selector.selectResult(
+                emptyList(),
+                "Runtime maintains stable operational state"
+            )
+
+        assertEquals(
+            null,
+            result.knowledge
+        )
+
+        assertEquals(
+            RuntimeKnowledgeSelectionReason.EMPTY,
+            result.selectionReason
         )
     }
 

@@ -5,5 +5,7 @@ import pro.liliya.core.runtime.intelligence.knowledge.RuntimeKnowledge
 data class RuntimeKnowledgeSelectionResult(
     val knowledge: RuntimeKnowledge?,
     val relevantPoolUsed: Boolean,
-    val reason: String
+    val reason: String,
+    val selectionReason: RuntimeKnowledgeSelectionReason =
+        RuntimeKnowledgeSelectionReason.FALLBACK_POOL
 )
