@@ -102,6 +102,12 @@ object CoreRuntime {
         source: String,
         authority: RuntimeActionAuthorityContext
     ): RuntimeAutonomousIntelligenceCyclePipelineResult {
+        if (state() != CoreRuntimeState.RUNNING) {
+            throw IllegalStateException(
+                "Autonomous intelligence cycle requires RUNNING runtime"
+            )
+        }
+
         return runtimeComposition
             .autonomousIntelligenceCyclePipeline()
             .process(

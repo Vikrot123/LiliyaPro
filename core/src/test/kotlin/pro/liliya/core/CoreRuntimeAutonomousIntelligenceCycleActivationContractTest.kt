@@ -22,40 +22,51 @@ class CoreRuntimeAutonomousIntelligenceCycleActivationContractTest {
                     RuntimeAuthorityLevel.SYSTEM
             )
 
-        val result =
-            CoreRuntime.processAutonomousIntelligenceCycle(
-                source =
-                    source,
-                authority =
-                    authority
+        CoreRuntime.start()
+
+        try {
+            assertEquals(
+                CoreRuntimeState.RUNNING,
+                CoreRuntime.state()
             )
 
-        assertNotNull(
-            result
-        )
+            val result =
+                CoreRuntime.processAutonomousIntelligenceCycle(
+                    source =
+                        source,
+                    authority =
+                        authority
+                )
 
-        assertSame(
-            result.intelligence,
-            result.executionCycle.execution.intelligence
-        )
-
-        val request =
-            result
-                .executionCycle
-                .execution
-                .execution
-                .request
-
-        if (request != null) {
-            assertEquals(
-                source,
-                request.source
+            assertNotNull(
+                result
             )
 
             assertSame(
-                authority,
-                request.authority
+                result.intelligence,
+                result.executionCycle.execution.intelligence
             )
+
+            val request =
+                result
+                    .executionCycle
+                    .execution
+                    .execution
+                    .request
+
+            if (request != null) {
+                assertEquals(
+                    source,
+                    request.source
+                )
+
+                assertSame(
+                    authority,
+                    request.authority
+                )
+            }
+        } finally {
+            CoreRuntime.stop()
         }
     }
 }
