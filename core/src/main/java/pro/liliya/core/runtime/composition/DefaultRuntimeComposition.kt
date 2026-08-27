@@ -141,6 +141,10 @@ import pro.liliya.core.runtime.intelligence.decision.quality.advisory.summary.De
 import pro.liliya.core.runtime.intelligence.decision.quality.advisory.summary.RuntimeDecisionQualityAdvisorySummaryQuery
 import pro.liliya.core.runtime.intelligence.decision.quality.governance.DefaultRuntimeDecisionQualityGovernanceQuery
 import pro.liliya.core.runtime.intelligence.decision.quality.governance.RuntimeDecisionQualityGovernanceQuery
+import pro.liliya.core.runtime.intelligence.decision.quality.governance.DefaultRuntimeDecisionQualityGovernanceRecorder
+import pro.liliya.core.runtime.intelligence.decision.quality.governance.RuntimeDecisionQualityGovernanceRecorder
+import pro.liliya.core.runtime.intelligence.decision.quality.governance.history.DefaultRuntimeDecisionQualityGovernanceHistory
+import pro.liliya.core.runtime.intelligence.decision.quality.governance.history.RuntimeDecisionQualityGovernanceHistory
 import pro.liliya.core.runtime.intelligence.decision.reflection.DefaultRuntimeDecisionReflectionRecorder
 import pro.liliya.core.runtime.intelligence.decision.reflection.RuntimeDecisionReflectionRecorder
 import pro.liliya.core.runtime.intelligence.decision.reflection.history.DefaultRuntimeDecisionReflectionHistory
@@ -559,6 +563,17 @@ class DefaultRuntimeComposition :
         RuntimeDecisionQualityGovernanceQuery =
         DefaultRuntimeDecisionQualityGovernanceQuery(
             summaryQuery = decisionQualityAdvisorySummaryQuery
+        )
+
+    private val decisionQualityGovernanceHistory:
+        RuntimeDecisionQualityGovernanceHistory =
+        DefaultRuntimeDecisionQualityGovernanceHistory()
+
+    private val decisionQualityGovernanceRecorder:
+        RuntimeDecisionQualityGovernanceRecorder =
+        DefaultRuntimeDecisionQualityGovernanceRecorder(
+            query = decisionQualityGovernanceQuery,
+            history = decisionQualityGovernanceHistory
         )
 
     private val decisionExplanationHistory:
@@ -1201,6 +1216,16 @@ class DefaultRuntimeComposition :
         return decisionQualityGovernanceQuery
     }
 
+    override fun decisionQualityGovernanceHistory():
+        RuntimeDecisionQualityGovernanceHistory {
+        return decisionQualityGovernanceHistory
+    }
+
+    override fun decisionQualityGovernanceRecorder():
+        RuntimeDecisionQualityGovernanceRecorder {
+        return decisionQualityGovernanceRecorder
+    }
+
     override fun decisionExplanationHistory():
         RuntimeDecisionExplanationHistory {
         return decisionExplanationHistory
@@ -1506,6 +1531,7 @@ class DefaultRuntimeComposition :
 
 
     override fun prepareRuntime() {
+        decisionQualityGovernanceHistory.clear()
         decisionQualityAdvisoryHistory.clear()
         decisionQualityHistory.clear()
         decisionReflectionHistory.clear()

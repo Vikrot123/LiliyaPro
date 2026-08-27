@@ -90,6 +90,8 @@ import pro.liliya.core.runtime.intelligence.decision.quality.advisory.trend.Runt
 import pro.liliya.core.runtime.intelligence.decision.quality.advisory.trend.RuntimeDecisionQualityAdvisoryTrendQuery
 import pro.liliya.core.runtime.intelligence.decision.quality.advisory.summary.RuntimeDecisionQualityAdvisorySummaryQuery
 import pro.liliya.core.runtime.intelligence.decision.quality.governance.RuntimeDecisionQualityGovernanceQuery
+import pro.liliya.core.runtime.intelligence.decision.quality.governance.RuntimeDecisionQualityGovernanceRecorder
+import pro.liliya.core.runtime.intelligence.decision.quality.governance.history.RuntimeDecisionQualityGovernanceHistory
 import pro.liliya.core.runtime.intelligence.decision.reflection.RuntimeDecisionReflectionRecorder
 import pro.liliya.core.runtime.intelligence.decision.reflection.history.RuntimeDecisionReflectionHistory
 import pro.liliya.core.runtime.intelligence.decision.reflection.trend.RuntimeDecisionReflectionTrendAnalyzer
@@ -127,6 +129,8 @@ interface RuntimeComposition {
     fun decisionQualityAdvisoryTrendQuery(): RuntimeDecisionQualityAdvisoryTrendQuery
     fun decisionQualityAdvisorySummaryQuery(): RuntimeDecisionQualityAdvisorySummaryQuery
     fun decisionQualityGovernanceQuery(): RuntimeDecisionQualityGovernanceQuery
+    fun decisionQualityGovernanceHistory(): RuntimeDecisionQualityGovernanceHistory
+    fun decisionQualityGovernanceRecorder(): RuntimeDecisionQualityGovernanceRecorder
     fun decisionExplanationHistory(): RuntimeDecisionExplanationHistory
     fun decisionExplanationRecorder(): RuntimeDecisionExplanationRecorder
     fun decisionActionRequestFactory(): RuntimeDecisionActionRequestFactory
