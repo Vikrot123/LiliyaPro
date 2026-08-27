@@ -11,4 +11,8 @@ interface RuntimeKnowledgeSupersessionQuery {
     fun currentKnowledge(
         knowledge: RuntimeKnowledge
     ): RuntimeKnowledge
+
+    fun traceTo(
+        knowledge: RuntimeKnowledge
+    ): RuntimeKnowledgeSupersessionTrace
 }

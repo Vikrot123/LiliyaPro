@@ -61,4 +61,63 @@ class DefaultRuntimeKnowledgeSupersessionQuery(
             knowledge
         ).currentKnowledge
     }
+
+    override fun traceTo(
+        knowledge: RuntimeKnowledge
+    ): RuntimeKnowledgeSupersessionTrace {
+
+        val chain =
+            mutableListOf(
+                knowledge
+            )
+
+        val visited =
+            mutableSetOf(
+                knowledge
+            )
+
+        var current =
+            knowledge
+
+        var cycleDetected =
+            false
+
+        val records =
+            history.records()
+
+        while (true) {
+            val previous =
+                records
+                    .lastOrNull {
+                        it.replacementKnowledge ==
+                            current
+                    }
+                    ?.previousKnowledge
+                    ?: break
+
+            if (!visited.add(previous)) {
+                cycleDetected = true
+                break
+            }
+
+            chain.add(
+                0,
+                previous
+            )
+
+            current =
+                previous
+        }
+
+        return RuntimeKnowledgeSupersessionTrace(
+            startingKnowledge =
+                chain.first(),
+            chain =
+                chain.toList(),
+            currentKnowledge =
+                knowledge,
+            cycleDetected =
+                cycleDetected
+        )
+    }
 }

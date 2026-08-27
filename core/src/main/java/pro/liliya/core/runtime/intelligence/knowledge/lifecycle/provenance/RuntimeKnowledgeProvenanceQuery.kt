@@ -7,4 +7,8 @@ interface RuntimeKnowledgeProvenanceQuery {
     fun provenance(
         knowledge: RuntimeKnowledge
     ): RuntimeKnowledgeProvenance
+
+    fun provenanceForCurrent(
+        knowledge: RuntimeKnowledge
+    ): RuntimeKnowledgeProvenance
 }

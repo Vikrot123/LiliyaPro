@@ -404,7 +404,12 @@ class DefaultRuntimeComposition :
         DefaultRuntimeDecisionEngine()
 
     private val decisionExplainer: RuntimeDecisionExplainer =
-        DefaultRuntimeDecisionExplainer()
+        DefaultRuntimeDecisionExplainer(
+            provenanceQuery =
+                knowledgeLifecycleCompositionHolder
+                    .composition()
+                    .provenanceQuery()
+        )
 
     private val decisionExplanationHistory:
         RuntimeDecisionExplanationHistory =
