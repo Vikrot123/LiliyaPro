@@ -123,6 +123,82 @@ class DefaultRuntimeKnowledgeSelectorContractTest {
         )
     }
 
+
+    @Test
+    fun relevance_matching_is_case_insensitive() {
+        val related =
+            knowledge(
+                "RUNTIME OPERATIONAL STATE REMAINED STABLE",
+                0.80,
+                1L
+            )
+
+        val unrelated =
+            knowledge(
+                "network recovery completed",
+                0.99,
+                2L
+            )
+
+        assertEquals(
+            related,
+            selector.select(
+                listOf(related, unrelated),
+                "Runtime maintains stable operational state"
+            )
+        )
+    }
+
+    @Test
+    fun punctuation_does_not_break_relevance_matching() {
+        val related =
+            knowledge(
+                "runtime, operational-state: remained stable!",
+                0.80,
+                1L
+            )
+
+        val unrelated =
+            knowledge(
+                "network recovery completed",
+                0.99,
+                2L
+            )
+
+        assertEquals(
+            related,
+            selector.select(
+                listOf(related, unrelated),
+                "Runtime maintains stable operational state"
+            )
+        )
+    }
+
+    @Test
+    fun repeated_tokens_do_not_artificially_create_relevance() {
+        val relevant =
+            knowledge(
+                "stable operational state observed",
+                0.80,
+                1L
+            )
+
+        val repeatedGeneric =
+            knowledge(
+                "runtime runtime runtime runtime backup",
+                0.99,
+                2L
+            )
+
+        assertEquals(
+            relevant,
+            selector.select(
+                listOf(relevant, repeatedGeneric),
+                "Runtime maintains stable operational state"
+            )
+        )
+    }
+
     private fun knowledge(
         statement: String,
         confidence: Double,
