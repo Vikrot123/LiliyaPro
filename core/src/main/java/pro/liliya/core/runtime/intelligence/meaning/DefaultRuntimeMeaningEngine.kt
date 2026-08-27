@@ -1,5 +1,6 @@
 package pro.liliya.core.runtime.intelligence.meaning
 
+import pro.liliya.core.runtime.intelligence.context.cognitive.source.KnowledgeCognitiveContextSource
 import pro.liliya.core.runtime.intelligence.reflection.trend.RuntimeReflectionStability
 
 class DefaultRuntimeMeaningEngine : RuntimeMeaningEngine {
@@ -47,8 +48,23 @@ class DefaultRuntimeMeaningEngine : RuntimeMeaningEngine {
             }
         }
 
+        val availableKnowledge =
+            context.cognitiveContext
+                ?.values
+                ?.get(
+                    KnowledgeCognitiveContextSource
+                        .AVAILABLE_KNOWLEDGE_KEY
+                ) as? List<*>
+
+        val enrichedInterpretation =
+            if (availableKnowledge.isNullOrEmpty()) {
+                interpretation
+            } else {
+                "$interpretation; available knowledge is present"
+            }
+
         return RuntimeMeaningResult(
-            interpretation = interpretation,
+            interpretation = enrichedInterpretation,
             confidence = confidence,
             significance = significance,
             generatedAt = System.currentTimeMillis()
