@@ -145,6 +145,10 @@ import pro.liliya.core.runtime.intelligence.decision.quality.governance.DefaultR
 import pro.liliya.core.runtime.intelligence.decision.quality.governance.RuntimeDecisionQualityGovernanceRecorder
 import pro.liliya.core.runtime.intelligence.decision.quality.governance.history.DefaultRuntimeDecisionQualityGovernanceHistory
 import pro.liliya.core.runtime.intelligence.decision.quality.governance.history.RuntimeDecisionQualityGovernanceHistory
+import pro.liliya.core.runtime.intelligence.decision.quality.governance.trend.DefaultRuntimeDecisionQualityGovernanceTrendAnalyzer
+import pro.liliya.core.runtime.intelligence.decision.quality.governance.trend.DefaultRuntimeDecisionQualityGovernanceTrendQuery
+import pro.liliya.core.runtime.intelligence.decision.quality.governance.trend.RuntimeDecisionQualityGovernanceTrendAnalyzer
+import pro.liliya.core.runtime.intelligence.decision.quality.governance.trend.RuntimeDecisionQualityGovernanceTrendQuery
 import pro.liliya.core.runtime.intelligence.decision.reflection.DefaultRuntimeDecisionReflectionRecorder
 import pro.liliya.core.runtime.intelligence.decision.reflection.RuntimeDecisionReflectionRecorder
 import pro.liliya.core.runtime.intelligence.decision.reflection.history.DefaultRuntimeDecisionReflectionHistory
@@ -574,6 +578,17 @@ class DefaultRuntimeComposition :
         DefaultRuntimeDecisionQualityGovernanceRecorder(
             query = decisionQualityGovernanceQuery,
             history = decisionQualityGovernanceHistory
+        )
+
+    private val decisionQualityGovernanceTrendAnalyzer:
+        RuntimeDecisionQualityGovernanceTrendAnalyzer =
+        DefaultRuntimeDecisionQualityGovernanceTrendAnalyzer()
+
+    private val decisionQualityGovernanceTrendQuery:
+        RuntimeDecisionQualityGovernanceTrendQuery =
+        DefaultRuntimeDecisionQualityGovernanceTrendQuery(
+            history = decisionQualityGovernanceHistory,
+            analyzer = decisionQualityGovernanceTrendAnalyzer
         )
 
     private val decisionExplanationHistory:
@@ -1224,6 +1239,16 @@ class DefaultRuntimeComposition :
     override fun decisionQualityGovernanceRecorder():
         RuntimeDecisionQualityGovernanceRecorder {
         return decisionQualityGovernanceRecorder
+    }
+
+    override fun decisionQualityGovernanceTrendAnalyzer():
+        RuntimeDecisionQualityGovernanceTrendAnalyzer {
+        return decisionQualityGovernanceTrendAnalyzer
+    }
+
+    override fun decisionQualityGovernanceTrendQuery():
+        RuntimeDecisionQualityGovernanceTrendQuery {
+        return decisionQualityGovernanceTrendQuery
     }
 
     override fun decisionExplanationHistory():

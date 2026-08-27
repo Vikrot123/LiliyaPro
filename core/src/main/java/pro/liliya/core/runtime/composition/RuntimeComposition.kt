@@ -92,6 +92,8 @@ import pro.liliya.core.runtime.intelligence.decision.quality.advisory.summary.Ru
 import pro.liliya.core.runtime.intelligence.decision.quality.governance.RuntimeDecisionQualityGovernanceQuery
 import pro.liliya.core.runtime.intelligence.decision.quality.governance.RuntimeDecisionQualityGovernanceRecorder
 import pro.liliya.core.runtime.intelligence.decision.quality.governance.history.RuntimeDecisionQualityGovernanceHistory
+import pro.liliya.core.runtime.intelligence.decision.quality.governance.trend.RuntimeDecisionQualityGovernanceTrendAnalyzer
+import pro.liliya.core.runtime.intelligence.decision.quality.governance.trend.RuntimeDecisionQualityGovernanceTrendQuery
 import pro.liliya.core.runtime.intelligence.decision.reflection.RuntimeDecisionReflectionRecorder
 import pro.liliya.core.runtime.intelligence.decision.reflection.history.RuntimeDecisionReflectionHistory
 import pro.liliya.core.runtime.intelligence.decision.reflection.trend.RuntimeDecisionReflectionTrendAnalyzer
@@ -131,6 +133,8 @@ interface RuntimeComposition {
     fun decisionQualityGovernanceQuery(): RuntimeDecisionQualityGovernanceQuery
     fun decisionQualityGovernanceHistory(): RuntimeDecisionQualityGovernanceHistory
     fun decisionQualityGovernanceRecorder(): RuntimeDecisionQualityGovernanceRecorder
+    fun decisionQualityGovernanceTrendAnalyzer(): RuntimeDecisionQualityGovernanceTrendAnalyzer
+    fun decisionQualityGovernanceTrendQuery(): RuntimeDecisionQualityGovernanceTrendQuery
     fun decisionExplanationHistory(): RuntimeDecisionExplanationHistory
     fun decisionExplanationRecorder(): RuntimeDecisionExplanationRecorder
     fun decisionActionRequestFactory(): RuntimeDecisionActionRequestFactory
