@@ -234,6 +234,8 @@ import pro.liliya.core.runtime.intelligence.meaning.DefaultRuntimeMeaningEngine
 import pro.liliya.core.runtime.intelligence.meaning.RuntimeMeaningEngine
 import pro.liliya.core.runtime.intelligence.orchestration.DefaultRuntimeIntelligenceOrchestrator
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.maintenance.DefaultRuntimeKnowledgeMaintenanceTrigger
+import pro.liliya.core.runtime.intelligence.autonomous.DefaultRuntimeAutonomousIntelligenceCyclePipeline
+import pro.liliya.core.runtime.intelligence.autonomous.RuntimeAutonomousIntelligenceCyclePipeline
 import pro.liliya.core.runtime.intelligence.orchestration.RuntimeIntelligenceOrchestrator
 import pro.liliya.core.runtime.intelligence.context.cognitive.composition.DefaultCognitiveContextComposition
 
@@ -814,6 +816,16 @@ class DefaultRuntimeComposition :
                 )
         )
 
+
+    private val autonomousIntelligenceCyclePipeline:
+        RuntimeAutonomousIntelligenceCyclePipeline =
+        DefaultRuntimeAutonomousIntelligenceCyclePipeline(
+            intelligenceOrchestrator =
+                intelligenceOrchestrator,
+            executionCyclePipeline =
+                autonomousExecutionCyclePipeline
+        )
+
     private val runtimeSupervisor =
         RuntimeSupervisor(
             registryProvider = { runtimeServiceRegistry }
@@ -1315,6 +1327,11 @@ class DefaultRuntimeComposition :
     override fun intelligenceOrchestrator():
         RuntimeIntelligenceOrchestrator {
         return intelligenceOrchestrator
+    }
+
+    override fun autonomousIntelligenceCyclePipeline():
+        RuntimeAutonomousIntelligenceCyclePipeline {
+        return autonomousIntelligenceCyclePipeline
     }
 
     override fun goalDeriver(): RuntimeGoalDeriver {
