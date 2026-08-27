@@ -137,6 +137,8 @@ import pro.liliya.core.runtime.intelligence.decision.quality.advisory.trend.Defa
 import pro.liliya.core.runtime.intelligence.decision.quality.advisory.trend.DefaultRuntimeDecisionQualityAdvisoryTrendQuery
 import pro.liliya.core.runtime.intelligence.decision.quality.advisory.trend.RuntimeDecisionQualityAdvisoryTrendAnalyzer
 import pro.liliya.core.runtime.intelligence.decision.quality.advisory.trend.RuntimeDecisionQualityAdvisoryTrendQuery
+import pro.liliya.core.runtime.intelligence.decision.quality.advisory.summary.DefaultRuntimeDecisionQualityAdvisorySummaryQuery
+import pro.liliya.core.runtime.intelligence.decision.quality.advisory.summary.RuntimeDecisionQualityAdvisorySummaryQuery
 import pro.liliya.core.runtime.intelligence.decision.reflection.DefaultRuntimeDecisionReflectionRecorder
 import pro.liliya.core.runtime.intelligence.decision.reflection.RuntimeDecisionReflectionRecorder
 import pro.liliya.core.runtime.intelligence.decision.reflection.history.DefaultRuntimeDecisionReflectionHistory
@@ -542,6 +544,13 @@ class DefaultRuntimeComposition :
         DefaultRuntimeDecisionQualityAdvisoryTrendQuery(
             history = decisionQualityAdvisoryHistory,
             analyzer = decisionQualityAdvisoryTrendAnalyzer
+        )
+
+    private val decisionQualityAdvisorySummaryQuery:
+        RuntimeDecisionQualityAdvisorySummaryQuery =
+        DefaultRuntimeDecisionQualityAdvisorySummaryQuery(
+            advisoryQuery = decisionQualityAdvisoryQuery,
+            trendQuery = decisionQualityAdvisoryTrendQuery
         )
 
     private val decisionExplanationHistory:
@@ -1172,6 +1181,11 @@ class DefaultRuntimeComposition :
     override fun decisionQualityAdvisoryTrendQuery():
         RuntimeDecisionQualityAdvisoryTrendQuery {
         return decisionQualityAdvisoryTrendQuery
+    }
+
+    override fun decisionQualityAdvisorySummaryQuery():
+        RuntimeDecisionQualityAdvisorySummaryQuery {
+        return decisionQualityAdvisorySummaryQuery
     }
 
     override fun decisionExplanationHistory():
