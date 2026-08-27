@@ -107,6 +107,8 @@ import pro.liliya.core.runtime.RuntimeRecoverySnapshot
 import pro.liliya.core.runtime.RuntimeServiceRegistry
 import pro.liliya.core.runtime.intelligence.decision.DefaultRuntimeDecisionEngine
 import pro.liliya.core.runtime.intelligence.decision.RuntimeDecisionEngine
+import pro.liliya.core.runtime.intelligence.goal.DefaultRuntimeGoalDeriver
+import pro.liliya.core.runtime.intelligence.goal.RuntimeGoalDeriver
 import pro.liliya.core.runtime.intelligence.decision.DefaultRuntimeDecisionActionRequestFactory
 import pro.liliya.core.runtime.intelligence.decision.RuntimeDecisionActionRequestFactory
 import pro.liliya.core.runtime.intelligence.decision.explanation.DefaultRuntimeDecisionExplainer
@@ -445,6 +447,9 @@ class DefaultRuntimeComposition :
 
     private val meaningEngine: RuntimeMeaningEngine =
         DefaultRuntimeMeaningEngine()
+
+    private val goalDeriver: RuntimeGoalDeriver =
+        DefaultRuntimeGoalDeriver()
 
     private val decisionEngine: RuntimeDecisionEngine =
         DefaultRuntimeDecisionEngine()
@@ -1128,6 +1133,10 @@ class DefaultRuntimeComposition :
     override fun intelligenceOrchestrator():
         RuntimeIntelligenceOrchestrator {
         return intelligenceOrchestrator
+    }
+
+    override fun goalDeriver(): RuntimeGoalDeriver {
+        return goalDeriver
     }
 
     override fun decisionEngine(): RuntimeDecisionEngine {
