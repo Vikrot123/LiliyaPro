@@ -117,6 +117,8 @@ import pro.liliya.core.runtime.intelligence.decision.execution.autonomous.outcom
 import pro.liliya.core.runtime.intelligence.decision.execution.autonomous.assessment.DefaultRuntimeAutonomousExecutionAssessmentDeriver
 import pro.liliya.core.runtime.intelligence.decision.execution.autonomous.evaluation.DefaultRuntimeAutonomousExecutionEvaluationPipeline
 import pro.liliya.core.runtime.intelligence.decision.execution.autonomous.evaluation.RuntimeAutonomousExecutionEvaluationPipeline
+import pro.liliya.core.runtime.intelligence.decision.execution.autonomous.feedback.DefaultRuntimeAutonomousExecutionFeedbackDeriver
+import pro.liliya.core.runtime.intelligence.decision.execution.autonomous.feedback.RuntimeAutonomousExecutionFeedbackDeriver
 import pro.liliya.core.runtime.intelligence.decision.proposal.DefaultRuntimeAutonomousDecisionProposalDeriver
 import pro.liliya.core.runtime.intelligence.decision.proposal.RuntimeAutonomousDecisionProposalDeriver
 import pro.liliya.core.runtime.intelligence.goal.DefaultRuntimeGoalDeriver
@@ -705,6 +707,10 @@ class DefaultRuntimeComposition :
                 DefaultRuntimeAutonomousExecutionAssessmentDeriver()
         )
 
+    private val autonomousExecutionFeedbackDeriver:
+        RuntimeAutonomousExecutionFeedbackDeriver =
+        DefaultRuntimeAutonomousExecutionFeedbackDeriver()
+
     private val intelligenceOrchestrator: RuntimeIntelligenceOrchestrator =
         DefaultRuntimeIntelligenceOrchestrator(
             selfModelProvider = selfModelProvider,
@@ -1281,6 +1287,11 @@ class DefaultRuntimeComposition :
     override fun autonomousExecutionEvaluationPipeline():
         RuntimeAutonomousExecutionEvaluationPipeline {
         return autonomousExecutionEvaluationPipeline
+    }
+
+    override fun autonomousExecutionFeedbackDeriver():
+        RuntimeAutonomousExecutionFeedbackDeriver {
+        return autonomousExecutionFeedbackDeriver
     }
 
     override fun decisionEngine(): RuntimeDecisionEngine {
