@@ -107,6 +107,8 @@ import pro.liliya.core.runtime.RuntimeRecoverySnapshot
 import pro.liliya.core.runtime.RuntimeServiceRegistry
 import pro.liliya.core.runtime.intelligence.decision.DefaultRuntimeDecisionEngine
 import pro.liliya.core.runtime.intelligence.decision.RuntimeDecisionEngine
+import pro.liliya.core.runtime.intelligence.decision.synthesis.DefaultRuntimeAutonomousDecisionSynthesizer
+import pro.liliya.core.runtime.intelligence.decision.synthesis.RuntimeAutonomousDecisionSynthesizer
 import pro.liliya.core.runtime.intelligence.decision.proposal.DefaultRuntimeAutonomousDecisionProposalDeriver
 import pro.liliya.core.runtime.intelligence.decision.proposal.RuntimeAutonomousDecisionProposalDeriver
 import pro.liliya.core.runtime.intelligence.goal.DefaultRuntimeGoalDeriver
@@ -497,6 +499,10 @@ class DefaultRuntimeComposition :
     private val autonomousDecisionProposalDeriver:
         RuntimeAutonomousDecisionProposalDeriver =
         DefaultRuntimeAutonomousDecisionProposalDeriver()
+
+    private val autonomousDecisionSynthesizer:
+        RuntimeAutonomousDecisionSynthesizer =
+        DefaultRuntimeAutonomousDecisionSynthesizer()
 
     private val decisionEngine: RuntimeDecisionEngine =
         DefaultRuntimeDecisionEngine()
@@ -1216,6 +1222,11 @@ class DefaultRuntimeComposition :
     override fun autonomousDecisionProposalDeriver():
         RuntimeAutonomousDecisionProposalDeriver {
         return autonomousDecisionProposalDeriver
+    }
+
+    override fun autonomousDecisionSynthesizer():
+        RuntimeAutonomousDecisionSynthesizer {
+        return autonomousDecisionSynthesizer
     }
 
     override fun decisionEngine(): RuntimeDecisionEngine {

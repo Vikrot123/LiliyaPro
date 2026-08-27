@@ -73,6 +73,7 @@ import pro.liliya.core.runtime.telemetry.RuntimeTelemetrySnapshot
 import pro.liliya.core.runtime.intelligence.context.cognitive.composition.CognitiveContextComposition
 import pro.liliya.core.runtime.intelligence.orchestration.RuntimeIntelligenceOrchestrator
 import pro.liliya.core.runtime.intelligence.decision.RuntimeDecisionEngine
+import pro.liliya.core.runtime.intelligence.decision.synthesis.RuntimeAutonomousDecisionSynthesizer
 import pro.liliya.core.runtime.intelligence.decision.proposal.RuntimeAutonomousDecisionProposalDeriver
 import pro.liliya.core.runtime.intelligence.goal.RuntimeGoalDeriver
 import pro.liliya.core.runtime.intelligence.planning.RuntimePlanner
@@ -127,6 +128,8 @@ interface RuntimeComposition {
     fun autonomousCognitionPipeline(): RuntimeAutonomousCognitionPipeline
 
     fun autonomousDecisionProposalDeriver(): RuntimeAutonomousDecisionProposalDeriver
+
+    fun autonomousDecisionSynthesizer(): RuntimeAutonomousDecisionSynthesizer
 
     fun decisionEngine(): RuntimeDecisionEngine
     fun decisionExplainer(): RuntimeDecisionExplainer
