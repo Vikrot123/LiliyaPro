@@ -75,6 +75,7 @@ import pro.liliya.core.runtime.intelligence.orchestration.RuntimeIntelligenceOrc
 import pro.liliya.core.runtime.intelligence.decision.RuntimeDecisionEngine
 import pro.liliya.core.runtime.intelligence.decision.synthesis.RuntimeAutonomousDecisionSynthesizer
 import pro.liliya.core.runtime.intelligence.decision.execution.autonomous.RuntimeAutonomousDecisionExecutor
+import pro.liliya.core.runtime.intelligence.decision.execution.autonomous.pipeline.RuntimeAutonomousExecutionPipeline
 import pro.liliya.core.runtime.intelligence.decision.proposal.RuntimeAutonomousDecisionProposalDeriver
 import pro.liliya.core.runtime.intelligence.goal.RuntimeGoalDeriver
 import pro.liliya.core.runtime.intelligence.planning.RuntimePlanner
@@ -132,6 +133,7 @@ interface RuntimeComposition {
 
     fun autonomousDecisionSynthesizer(): RuntimeAutonomousDecisionSynthesizer
     fun autonomousDecisionExecutor(): RuntimeAutonomousDecisionExecutor
+    fun autonomousExecutionPipeline(): RuntimeAutonomousExecutionPipeline
 
     fun decisionEngine(): RuntimeDecisionEngine
     fun decisionExplainer(): RuntimeDecisionExplainer
