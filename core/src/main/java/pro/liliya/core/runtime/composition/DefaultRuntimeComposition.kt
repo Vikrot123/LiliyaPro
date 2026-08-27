@@ -147,6 +147,7 @@ import pro.liliya.core.runtime.intelligence.reflection.trend.RuntimeReflectionTr
 import pro.liliya.core.runtime.intelligence.meaning.DefaultRuntimeMeaningEngine
 import pro.liliya.core.runtime.intelligence.meaning.RuntimeMeaningEngine
 import pro.liliya.core.runtime.intelligence.orchestration.DefaultRuntimeIntelligenceOrchestrator
+import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.maintenance.DefaultRuntimeKnowledgeMaintenanceTrigger
 import pro.liliya.core.runtime.intelligence.orchestration.RuntimeIntelligenceOrchestrator
 import pro.liliya.core.runtime.intelligence.context.cognitive.composition.DefaultCognitiveContextComposition
 
@@ -430,7 +431,13 @@ class DefaultRuntimeComposition :
             experienceKnowledgeOrchestrator =
                 experienceKnowledgeOrchestrator,
             cognitiveContext =
-                cognitiveContextComposition.context()
+                cognitiveContextComposition.context(),
+            knowledgeMaintenanceTrigger =
+                DefaultRuntimeKnowledgeMaintenanceTrigger(
+                    knowledgeLifecycleCompositionHolder
+                        .composition()
+                        .maintenanceService()
+                )
         )
 
     private val runtimeSupervisor =

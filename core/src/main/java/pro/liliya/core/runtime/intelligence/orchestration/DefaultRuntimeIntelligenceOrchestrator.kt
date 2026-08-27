@@ -5,6 +5,7 @@ import pro.liliya.core.runtime.intelligence.context.cognitive.CognitiveContext
 import pro.liliya.core.runtime.intelligence.context.cognitive.CognitiveContextType
 import pro.liliya.core.runtime.intelligence.experience.orchestration.RuntimeExperienceKnowledgeOrchestrator
 import pro.liliya.core.runtime.intelligence.meaning.RuntimeMeaningContext
+import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.maintenance.RuntimeKnowledgeMaintenanceTrigger
 import pro.liliya.core.runtime.intelligence.meaning.RuntimeMeaningEngine
 import pro.liliya.core.runtime.intelligence.reflection.RuntimeReflection
 import pro.liliya.core.runtime.intelligence.reflection.history.RuntimeReflectionHistory
@@ -19,7 +20,9 @@ class DefaultRuntimeIntelligenceOrchestrator(
     private val meaningEngine: RuntimeMeaningEngine,
     private val experienceKnowledgeOrchestrator:
         RuntimeExperienceKnowledgeOrchestrator,
-    private val cognitiveContext: CognitiveContext? = null
+    private val cognitiveContext: CognitiveContext? = null,
+    private val knowledgeMaintenanceTrigger:
+        RuntimeKnowledgeMaintenanceTrigger? = null
 ) : RuntimeIntelligenceOrchestrator {
 
     override fun process(): RuntimeIntelligenceOrchestrationResult {
@@ -57,6 +60,17 @@ class DefaultRuntimeIntelligenceOrchestrator(
                 )
             )
 
+        val knowledgeProduced =
+            experienceKnowledge
+                .pipelineResult
+                .knowledgeResult != null
+
+        val knowledgeMaintenance =
+            knowledgeMaintenanceTrigger
+                ?.afterKnowledgeProduction(
+                    produced = knowledgeProduced
+                )
+
         reflectionHistory.record(
             reflectionSnapshot
         )
@@ -66,7 +80,8 @@ class DefaultRuntimeIntelligenceOrchestrator(
             reflection = reflectionSnapshot,
             trend = trend,
             meaning = meaning,
-            experienceKnowledge = experienceKnowledge
+            experienceKnowledge = experienceKnowledge,
+            knowledgeMaintenance = knowledgeMaintenance
         )
     }
 }
