@@ -117,6 +117,10 @@ import pro.liliya.core.runtime.intelligence.decision.quality.DefaultRuntimeDecis
 import pro.liliya.core.runtime.intelligence.decision.quality.DefaultRuntimeDecisionQualityQuery
 import pro.liliya.core.runtime.intelligence.decision.quality.RuntimeDecisionQualityAssessor
 import pro.liliya.core.runtime.intelligence.decision.quality.RuntimeDecisionQualityQuery
+import pro.liliya.core.runtime.intelligence.decision.quality.DefaultRuntimeDecisionQualityRecorder
+import pro.liliya.core.runtime.intelligence.decision.quality.RuntimeDecisionQualityRecorder
+import pro.liliya.core.runtime.intelligence.decision.quality.history.DefaultRuntimeDecisionQualityHistory
+import pro.liliya.core.runtime.intelligence.decision.quality.history.RuntimeDecisionQualityHistory
 import pro.liliya.core.runtime.intelligence.decision.reflection.DefaultRuntimeDecisionReflectionRecorder
 import pro.liliya.core.runtime.intelligence.decision.reflection.RuntimeDecisionReflectionRecorder
 import pro.liliya.core.runtime.intelligence.decision.reflection.history.DefaultRuntimeDecisionReflectionHistory
@@ -465,6 +469,17 @@ class DefaultRuntimeComposition :
             reflectionHistory = decisionReflectionHistory,
             trendQuery = decisionReflectionTrendQuery,
             assessor = decisionQualityAssessor
+        )
+
+    private val decisionQualityHistory:
+        RuntimeDecisionQualityHistory =
+        DefaultRuntimeDecisionQualityHistory()
+
+    private val decisionQualityRecorder:
+        RuntimeDecisionQualityRecorder =
+        DefaultRuntimeDecisionQualityRecorder(
+            query = decisionQualityQuery,
+            history = decisionQualityHistory
         )
 
     private val decisionExplanationHistory:
@@ -1047,6 +1062,16 @@ class DefaultRuntimeComposition :
         return decisionQualityQuery
     }
 
+    override fun decisionQualityHistory():
+        RuntimeDecisionQualityHistory {
+        return decisionQualityHistory
+    }
+
+    override fun decisionQualityRecorder():
+        RuntimeDecisionQualityRecorder {
+        return decisionQualityRecorder
+    }
+
     override fun decisionExplanationHistory():
         RuntimeDecisionExplanationHistory {
         return decisionExplanationHistory
@@ -1352,6 +1377,7 @@ class DefaultRuntimeComposition :
 
 
     override fun prepareRuntime() {
+        decisionQualityHistory.clear()
         decisionReflectionHistory.clear()
         decisionExplanationHistory.clear()
         resetRuntimeServiceConfiguration()
