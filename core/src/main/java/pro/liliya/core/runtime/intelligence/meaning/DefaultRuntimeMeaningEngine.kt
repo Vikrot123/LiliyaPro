@@ -64,9 +64,9 @@ class DefaultRuntimeMeaningEngine : RuntimeMeaningEngine {
         val relevantKnowledge =
             typedKnowledge
                 ?.filter { knowledge ->
-                    knowledge.statement.contains(
-                        interpretation,
-                        ignoreCase = true
+                    isKnowledgeRelevant(
+                        statement = knowledge.statement,
+                        interpretation = interpretation
                     )
                 }
 
@@ -101,4 +101,51 @@ class DefaultRuntimeMeaningEngine : RuntimeMeaningEngine {
             generatedAt = System.currentTimeMillis()
         )
     }
+
+    private fun isKnowledgeRelevant(
+        statement: String,
+        interpretation: String
+    ): Boolean {
+        if (
+            statement.contains(
+                interpretation,
+                ignoreCase = true
+            )
+        ) {
+            return true
+        }
+
+        val interpretationTokens =
+            semanticTokens(interpretation)
+
+        val statementTokens =
+            semanticTokens(statement)
+
+        if (interpretationTokens.isEmpty()) {
+            return false
+        }
+
+        val shared =
+            interpretationTokens.intersect(
+                statementTokens
+            )
+
+        return shared.size >= 2 &&
+            shared.size * 2 >= interpretationTokens.size
+    }
+
+    private fun semanticTokens(
+        text: String
+    ): Set<String> {
+        return text
+            .lowercase()
+            .split(
+                Regex("[^a-z0-9]+")
+            )
+            .filter {
+                it.length >= 3
+            }
+            .toSet()
+    }
+
 }

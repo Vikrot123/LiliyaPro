@@ -139,6 +139,77 @@ class DefaultRuntimeMeaningEngineKnowledgeSelectionContractTest {
         )
     }
 
+
+    @Test
+    fun semantically_related_wording_must_be_relevant_without_exact_substring_match() {
+        val related =
+            knowledge(
+                statement =
+                    "runtime operational state remained stable",
+                confidence = 0.80,
+                createdAt = 10L
+            )
+
+        val unrelated =
+            knowledge(
+                statement = "network recovery completed",
+                confidence = 0.99,
+                createdAt = 20L
+            )
+
+        val result =
+            interpret(listOf(related, unrelated))
+
+        assertTrue(
+            result.interpretation.contains(related.statement)
+        )
+
+        assertFalse(
+            result.interpretation.contains(unrelated.statement)
+        )
+    }
+
+
+    @Test
+    fun one_shared_generic_token_must_not_make_knowledge_relevant() {
+        val related =
+            knowledge(
+                statement =
+                    "stable operational state observed",
+                confidence = 0.80,
+                createdAt = 10L
+            )
+
+        val falsePositive =
+            knowledge(
+                statement =
+                    "runtime backup completed",
+                confidence = 0.99,
+                createdAt = 20L
+            )
+
+        val result =
+            interpret(
+                listOf(
+                    related,
+                    falsePositive
+                )
+            )
+
+        assertTrue(
+            result.interpretation.contains(
+                related.statement
+            )
+        )
+
+        assertFalse(
+            result.interpretation.contains(
+                falsePositive.statement
+            ),
+            "one generic shared token must not create relevance"
+        )
+    }
+
     private fun interpret(
         knowledge: List<RuntimeKnowledge>
     ) =
