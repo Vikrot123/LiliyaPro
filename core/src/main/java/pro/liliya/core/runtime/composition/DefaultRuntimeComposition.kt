@@ -111,6 +111,8 @@ import pro.liliya.core.runtime.intelligence.goal.DefaultRuntimeGoalDeriver
 import pro.liliya.core.runtime.intelligence.goal.RuntimeGoalDeriver
 import pro.liliya.core.runtime.intelligence.planning.DefaultRuntimePlanner
 import pro.liliya.core.runtime.intelligence.planning.RuntimePlanner
+import pro.liliya.core.runtime.intelligence.reasoning.DefaultRuntimeReasoningAnalyzer
+import pro.liliya.core.runtime.intelligence.reasoning.RuntimeReasoningAnalyzer
 import pro.liliya.core.runtime.intelligence.decision.DefaultRuntimeDecisionActionRequestFactory
 import pro.liliya.core.runtime.intelligence.decision.RuntimeDecisionActionRequestFactory
 import pro.liliya.core.runtime.intelligence.decision.explanation.DefaultRuntimeDecisionExplainer
@@ -455,6 +457,10 @@ class DefaultRuntimeComposition :
 
     private val planner: RuntimePlanner =
         DefaultRuntimePlanner()
+
+    private val reasoningAnalyzer:
+        RuntimeReasoningAnalyzer =
+        DefaultRuntimeReasoningAnalyzer()
 
     private val decisionEngine: RuntimeDecisionEngine =
         DefaultRuntimeDecisionEngine()
@@ -1146,6 +1152,11 @@ class DefaultRuntimeComposition :
 
     override fun planner(): RuntimePlanner {
         return planner
+    }
+
+    override fun reasoningAnalyzer():
+        RuntimeReasoningAnalyzer {
+        return reasoningAnalyzer
     }
 
     override fun decisionEngine(): RuntimeDecisionEngine {
