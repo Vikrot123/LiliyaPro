@@ -74,6 +74,7 @@ import pro.liliya.core.runtime.intelligence.context.cognitive.composition.Cognit
 import pro.liliya.core.runtime.intelligence.orchestration.RuntimeIntelligenceOrchestrator
 import pro.liliya.core.runtime.intelligence.decision.RuntimeDecisionEngine
 import pro.liliya.core.runtime.intelligence.goal.RuntimeGoalDeriver
+import pro.liliya.core.runtime.intelligence.planning.RuntimePlanner
 import pro.liliya.core.runtime.intelligence.decision.RuntimeDecisionActionRequestFactory
 import pro.liliya.core.runtime.intelligence.decision.explanation.RuntimeDecisionExplainer
 import pro.liliya.core.runtime.intelligence.decision.reflection.RuntimeDecisionReflectionAnalyzer
@@ -112,6 +113,7 @@ interface RuntimeComposition {
     fun intelligenceOrchestrator(): RuntimeIntelligenceOrchestrator
 
     fun goalDeriver(): RuntimeGoalDeriver
+    fun planner(): RuntimePlanner
 
     fun decisionEngine(): RuntimeDecisionEngine
     fun decisionExplainer(): RuntimeDecisionExplainer
