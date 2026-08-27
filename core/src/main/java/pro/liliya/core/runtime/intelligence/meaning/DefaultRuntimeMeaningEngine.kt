@@ -85,7 +85,8 @@ class DefaultRuntimeMeaningEngine : RuntimeMeaningEngine {
             interpretation = enrichedInterpretation,
             confidence = confidence,
             significance = significance,
-            generatedAt = System.currentTimeMillis()
+            generatedAt = System.currentTimeMillis(),
+            knowledgeSelection = selectionResult
         )
     }
 
