@@ -2,9 +2,13 @@ package pro.liliya.core.runtime.intelligence.meaning
 
 import pro.liliya.core.runtime.intelligence.context.cognitive.source.KnowledgeCognitiveContextSource
 import pro.liliya.core.runtime.intelligence.knowledge.RuntimeKnowledge
+import pro.liliya.core.runtime.intelligence.knowledge.selection.DefaultRuntimeKnowledgeSelector
 import pro.liliya.core.runtime.intelligence.reflection.trend.RuntimeReflectionStability
 
 class DefaultRuntimeMeaningEngine : RuntimeMeaningEngine {
+
+    private val knowledgeSelector =
+        DefaultRuntimeKnowledgeSelector()
 
     override fun interpret(
         context: RuntimeMeaningContext
@@ -61,31 +65,11 @@ class DefaultRuntimeMeaningEngine : RuntimeMeaningEngine {
             availableKnowledge
                 ?.filterIsInstance<RuntimeKnowledge>()
 
-        val relevantKnowledge =
-            typedKnowledge
-                ?.filter { knowledge ->
-                    isKnowledgeRelevant(
-                        statement = knowledge.statement,
-                        interpretation = interpretation
-                    )
-                }
-
-        val selectionPool =
-            if (relevantKnowledge.isNullOrEmpty()) {
-                typedKnowledge
-            } else {
-                relevantKnowledge
-            }
-
         val selectedKnowledge =
-            selectionPool
-                ?.maxWithOrNull(
-                    compareBy<RuntimeKnowledge> {
-                        it.confidence
-                    }.thenBy {
-                        it.createdAt
-                    }
-                )
+            knowledgeSelector.select(
+                knowledge = typedKnowledge.orEmpty(),
+                interpretation = interpretation
+            )
 
         val enrichedInterpretation =
             if (selectedKnowledge == null) {
@@ -102,50 +86,5 @@ class DefaultRuntimeMeaningEngine : RuntimeMeaningEngine {
         )
     }
 
-    private fun isKnowledgeRelevant(
-        statement: String,
-        interpretation: String
-    ): Boolean {
-        if (
-            statement.contains(
-                interpretation,
-                ignoreCase = true
-            )
-        ) {
-            return true
-        }
-
-        val interpretationTokens =
-            semanticTokens(interpretation)
-
-        val statementTokens =
-            semanticTokens(statement)
-
-        if (interpretationTokens.isEmpty()) {
-            return false
-        }
-
-        val shared =
-            interpretationTokens.intersect(
-                statementTokens
-            )
-
-        return shared.size >= 2 &&
-            shared.size * 2 >= interpretationTokens.size
-    }
-
-    private fun semanticTokens(
-        text: String
-    ): Set<String> {
-        return text
-            .lowercase()
-            .split(
-                Regex("[^a-z0-9]+")
-            )
-            .filter {
-                it.length >= 3
-            }
-            .toSet()
-    }
 
 }
