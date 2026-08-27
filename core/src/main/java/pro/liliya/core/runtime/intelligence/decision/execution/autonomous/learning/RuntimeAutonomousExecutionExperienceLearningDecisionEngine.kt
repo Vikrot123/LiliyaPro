@@ -7,4 +7,9 @@ interface RuntimeAutonomousExecutionExperienceLearningDecisionEngine {
     fun decide(
         analysis: RuntimeAutonomousExecutionReflectionAnalysisResult
     ): RuntimeAutonomousExecutionExperienceLearningDecision
+
+    fun decide(
+        analysis: RuntimeAutonomousExecutionReflectionAnalysisResult,
+        novelty: RuntimeAutonomousExecutionExperienceNovelty
+    ): RuntimeAutonomousExecutionExperienceLearningDecision
 }
