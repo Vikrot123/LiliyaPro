@@ -57,18 +57,22 @@ class DefaultRuntimeMeaningEngine : RuntimeMeaningEngine {
                         .AVAILABLE_KNOWLEDGE_KEY
                 ) as? List<*>
 
-        val latestKnowledge =
+        val selectedKnowledge =
             availableKnowledge
                 ?.filterIsInstance<RuntimeKnowledge>()
-                ?.maxByOrNull { knowledge ->
-                    knowledge.createdAt
-                }
+                ?.maxWithOrNull(
+                    compareBy<RuntimeKnowledge> {
+                        it.confidence
+                    }.thenBy {
+                        it.createdAt
+                    }
+                )
 
         val enrichedInterpretation =
-            if (latestKnowledge == null) {
+            if (selectedKnowledge == null) {
                 interpretation
             } else {
-                "$interpretation; available knowledge: ${latestKnowledge.statement}"
+                "$interpretation; available knowledge: ${selectedKnowledge.statement}"
             }
 
         return RuntimeMeaningResult(
