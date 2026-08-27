@@ -109,6 +109,36 @@ class DefaultRuntimeMeaningEngineKnowledgeSelectionContractTest {
         )
     }
 
+
+    @Test
+    fun relevant_knowledge_must_win_over_more_confident_irrelevant_knowledge() {
+        val relevant =
+            knowledge(
+                statement =
+                    "Runtime maintains stable operational state",
+                confidence = 0.80,
+                createdAt = 10L
+            )
+
+        val irrelevant =
+            knowledge(
+                statement = "unrelated recovery knowledge",
+                confidence = 0.99,
+                createdAt = 20L
+            )
+
+        val result =
+            interpret(listOf(relevant, irrelevant))
+
+        assertTrue(
+            result.interpretation.contains(relevant.statement)
+        )
+
+        assertFalse(
+            result.interpretation.contains(irrelevant.statement)
+        )
+    }
+
     private fun interpret(
         knowledge: List<RuntimeKnowledge>
     ) =

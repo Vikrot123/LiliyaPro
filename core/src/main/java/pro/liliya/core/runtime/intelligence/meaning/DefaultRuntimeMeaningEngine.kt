@@ -57,9 +57,28 @@ class DefaultRuntimeMeaningEngine : RuntimeMeaningEngine {
                         .AVAILABLE_KNOWLEDGE_KEY
                 ) as? List<*>
 
-        val selectedKnowledge =
+        val typedKnowledge =
             availableKnowledge
                 ?.filterIsInstance<RuntimeKnowledge>()
+
+        val relevantKnowledge =
+            typedKnowledge
+                ?.filter { knowledge ->
+                    knowledge.statement.contains(
+                        interpretation,
+                        ignoreCase = true
+                    )
+                }
+
+        val selectionPool =
+            if (relevantKnowledge.isNullOrEmpty()) {
+                typedKnowledge
+            } else {
+                relevantKnowledge
+            }
+
+        val selectedKnowledge =
+            selectionPool
                 ?.maxWithOrNull(
                     compareBy<RuntimeKnowledge> {
                         it.confidence
