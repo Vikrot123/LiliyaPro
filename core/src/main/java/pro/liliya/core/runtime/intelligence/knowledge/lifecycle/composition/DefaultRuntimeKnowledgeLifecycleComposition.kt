@@ -17,6 +17,8 @@ import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.integration.Defa
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.integration.RuntimeKnowledgeLifecycleMemory
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.maintenance.DefaultRuntimeKnowledgeMaintenanceService
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.maintenance.RuntimeKnowledgeMaintenanceService
+import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.supersession.DefaultRuntimeKnowledgeSupersessionHistory
+import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.supersession.RuntimeKnowledgeSupersessionHistory
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.observer.registry.DefaultRuntimeKnowledgeLifecycleObserverRegistryHolder
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.observer.RuntimeKnowledgeLifecycleObserver
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.observer.registry.RuntimeKnowledgeLifecycleObserverRegistryHolder
@@ -42,6 +44,10 @@ class DefaultRuntimeKnowledgeLifecycleComposition(
 
     private val historyStore =
         DefaultRuntimeKnowledgeLifecycleHistoryStore()
+
+    private val supersessionHistory:
+        RuntimeKnowledgeSupersessionHistory =
+        DefaultRuntimeKnowledgeSupersessionHistory()
 
     private val stateQuery =
         DefaultRuntimeKnowledgeLifecycleStateQuery(
@@ -92,7 +98,8 @@ class DefaultRuntimeKnowledgeLifecycleComposition(
             stateStore = stateStore,
             historyStore = historyStore,
             transitionManager = transitionManager,
-            knowledgeMemory = knowledgeMemory
+            knowledgeMemory = knowledgeMemory,
+            supersessionHistory = supersessionHistory
         )
 
     private val maintenanceService:
@@ -134,6 +141,11 @@ class DefaultRuntimeKnowledgeLifecycleComposition(
         return maintenanceService
     }
 
+    override fun supersessionHistory():
+        RuntimeKnowledgeSupersessionHistory {
+        return supersessionHistory
+    }
+
     override fun lifecycleHistoryQuery():
         RuntimeKnowledgeLifecycleHistoryQuery {
         return historyQuery
@@ -161,6 +173,7 @@ class DefaultRuntimeKnowledgeLifecycleComposition(
     }
 
     override fun reset() {
+        supersessionHistory.clear()
         observerRegistryHolder
             .reset()
 

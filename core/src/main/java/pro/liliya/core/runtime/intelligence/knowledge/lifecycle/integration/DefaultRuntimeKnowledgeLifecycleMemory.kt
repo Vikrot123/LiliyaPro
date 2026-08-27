@@ -13,6 +13,7 @@ import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.state.DefaultRun
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.state.RuntimeKnowledgeLifecycleStateStore
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.transition.DefaultRuntimeKnowledgeLifecycleTransitionManager
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.transition.RuntimeKnowledgeLifecycleTransitionManager
+import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.supersession.RuntimeKnowledgeSupersessionHistory
 
 class DefaultRuntimeKnowledgeLifecycleMemory(
     private val stateStore: RuntimeKnowledgeLifecycleStateStore =
@@ -30,7 +31,9 @@ class DefaultRuntimeKnowledgeLifecycleMemory(
     private val knowledgeMemory: RuntimeKnowledgeMemory =
         DefaultRuntimeKnowledgeMemory(
             lifecycleStateStore = stateStore
-        )
+        ),
+    private val supersessionHistory:
+        RuntimeKnowledgeSupersessionHistory? = null
 ) : RuntimeKnowledgeLifecycleMemory {
 
     private val memory = knowledgeMemory
@@ -231,6 +234,13 @@ class DefaultRuntimeKnowledgeLifecycleMemory(
                     candidate,
                     RuntimeKnowledgeLifecycleState.ACTIVE
                 )
+
+            if (activated) {
+                supersessionHistory?.record(
+                    previousKnowledge = existing,
+                    replacementKnowledge = candidate
+                )
+            }
 
             if (!activated) {
                 rollbackSupersession(
