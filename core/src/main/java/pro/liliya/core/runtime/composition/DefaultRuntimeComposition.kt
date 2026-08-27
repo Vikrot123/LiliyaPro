@@ -111,6 +111,8 @@ import pro.liliya.core.runtime.intelligence.decision.DefaultRuntimeDecisionActio
 import pro.liliya.core.runtime.intelligence.decision.RuntimeDecisionActionRequestFactory
 import pro.liliya.core.runtime.intelligence.decision.explanation.DefaultRuntimeDecisionExplainer
 import pro.liliya.core.runtime.intelligence.decision.explanation.RuntimeDecisionExplainer
+import pro.liliya.core.runtime.intelligence.decision.reflection.DefaultRuntimeDecisionReflectionAnalyzer
+import pro.liliya.core.runtime.intelligence.decision.reflection.RuntimeDecisionReflectionAnalyzer
 import pro.liliya.core.runtime.intelligence.decision.explanation.DefaultRuntimeDecisionExplanationRecorder
 import pro.liliya.core.runtime.intelligence.decision.explanation.RuntimeDecisionExplanationRecorder
 import pro.liliya.core.runtime.intelligence.decision.explanation.history.DefaultRuntimeDecisionExplanationHistory
@@ -414,6 +416,10 @@ class DefaultRuntimeComposition :
                     .composition()
                     .provenanceIntegrityQuery()
         )
+
+    private val decisionReflectionAnalyzer:
+        RuntimeDecisionReflectionAnalyzer =
+        DefaultRuntimeDecisionReflectionAnalyzer()
 
     private val decisionExplanationHistory:
         RuntimeDecisionExplanationHistory =
@@ -958,6 +964,11 @@ class DefaultRuntimeComposition :
 
     override fun decisionExplainer(): RuntimeDecisionExplainer {
         return decisionExplainer
+    }
+
+    override fun decisionReflectionAnalyzer():
+        RuntimeDecisionReflectionAnalyzer {
+        return decisionReflectionAnalyzer
     }
 
     override fun decisionExplanationHistory():
