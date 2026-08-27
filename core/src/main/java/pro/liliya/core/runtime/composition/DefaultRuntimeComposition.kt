@@ -107,6 +107,8 @@ import pro.liliya.core.runtime.RuntimeRecoverySnapshot
 import pro.liliya.core.runtime.RuntimeServiceRegistry
 import pro.liliya.core.runtime.intelligence.decision.DefaultRuntimeDecisionEngine
 import pro.liliya.core.runtime.intelligence.decision.RuntimeDecisionEngine
+import pro.liliya.core.runtime.intelligence.decision.proposal.DefaultRuntimeAutonomousDecisionProposalDeriver
+import pro.liliya.core.runtime.intelligence.decision.proposal.RuntimeAutonomousDecisionProposalDeriver
 import pro.liliya.core.runtime.intelligence.goal.DefaultRuntimeGoalDeriver
 import pro.liliya.core.runtime.intelligence.goal.RuntimeGoalDeriver
 import pro.liliya.core.runtime.intelligence.planning.DefaultRuntimePlanner
@@ -491,6 +493,10 @@ class DefaultRuntimeComposition :
             intentDeriver = intentDeriver,
             strategyDeriver = strategyDeriver
         )
+
+    private val autonomousDecisionProposalDeriver:
+        RuntimeAutonomousDecisionProposalDeriver =
+        DefaultRuntimeAutonomousDecisionProposalDeriver()
 
     private val decisionEngine: RuntimeDecisionEngine =
         DefaultRuntimeDecisionEngine()
@@ -1205,6 +1211,11 @@ class DefaultRuntimeComposition :
     override fun autonomousCognitionPipeline():
         RuntimeAutonomousCognitionPipeline {
         return autonomousCognitionPipeline
+    }
+
+    override fun autonomousDecisionProposalDeriver():
+        RuntimeAutonomousDecisionProposalDeriver {
+        return autonomousDecisionProposalDeriver
     }
 
     override fun decisionEngine(): RuntimeDecisionEngine {
