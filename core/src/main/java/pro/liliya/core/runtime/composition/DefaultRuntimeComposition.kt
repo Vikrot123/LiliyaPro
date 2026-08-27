@@ -113,6 +113,10 @@ import pro.liliya.core.runtime.intelligence.decision.explanation.DefaultRuntimeD
 import pro.liliya.core.runtime.intelligence.decision.explanation.RuntimeDecisionExplainer
 import pro.liliya.core.runtime.intelligence.decision.reflection.DefaultRuntimeDecisionReflectionAnalyzer
 import pro.liliya.core.runtime.intelligence.decision.reflection.RuntimeDecisionReflectionAnalyzer
+import pro.liliya.core.runtime.intelligence.decision.quality.DefaultRuntimeDecisionQualityAssessor
+import pro.liliya.core.runtime.intelligence.decision.quality.DefaultRuntimeDecisionQualityQuery
+import pro.liliya.core.runtime.intelligence.decision.quality.RuntimeDecisionQualityAssessor
+import pro.liliya.core.runtime.intelligence.decision.quality.RuntimeDecisionQualityQuery
 import pro.liliya.core.runtime.intelligence.decision.reflection.DefaultRuntimeDecisionReflectionRecorder
 import pro.liliya.core.runtime.intelligence.decision.reflection.RuntimeDecisionReflectionRecorder
 import pro.liliya.core.runtime.intelligence.decision.reflection.history.DefaultRuntimeDecisionReflectionHistory
@@ -449,6 +453,18 @@ class DefaultRuntimeComposition :
         DefaultRuntimeDecisionReflectionTrendQuery(
             history = decisionReflectionHistory,
             analyzer = decisionReflectionTrendAnalyzer
+        )
+
+    private val decisionQualityAssessor:
+        RuntimeDecisionQualityAssessor =
+        DefaultRuntimeDecisionQualityAssessor()
+
+    private val decisionQualityQuery:
+        RuntimeDecisionQualityQuery =
+        DefaultRuntimeDecisionQualityQuery(
+            reflectionHistory = decisionReflectionHistory,
+            trendQuery = decisionReflectionTrendQuery,
+            assessor = decisionQualityAssessor
         )
 
     private val decisionExplanationHistory:
@@ -1019,6 +1035,16 @@ class DefaultRuntimeComposition :
     override fun decisionReflectionTrendQuery():
         RuntimeDecisionReflectionTrendQuery {
         return decisionReflectionTrendQuery
+    }
+
+    override fun decisionQualityAssessor():
+        RuntimeDecisionQualityAssessor {
+        return decisionQualityAssessor
+    }
+
+    override fun decisionQualityQuery():
+        RuntimeDecisionQualityQuery {
+        return decisionQualityQuery
     }
 
     override fun decisionExplanationHistory():
