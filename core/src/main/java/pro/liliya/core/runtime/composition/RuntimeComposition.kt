@@ -80,6 +80,8 @@ import pro.liliya.core.runtime.intelligence.decision.quality.RuntimeDecisionQual
 import pro.liliya.core.runtime.intelligence.decision.quality.RuntimeDecisionQualityQuery
 import pro.liliya.core.runtime.intelligence.decision.quality.RuntimeDecisionQualityRecorder
 import pro.liliya.core.runtime.intelligence.decision.quality.history.RuntimeDecisionQualityHistory
+import pro.liliya.core.runtime.intelligence.decision.quality.trend.RuntimeDecisionQualityTrendAnalyzer
+import pro.liliya.core.runtime.intelligence.decision.quality.trend.RuntimeDecisionQualityTrendQuery
 import pro.liliya.core.runtime.intelligence.decision.reflection.RuntimeDecisionReflectionRecorder
 import pro.liliya.core.runtime.intelligence.decision.reflection.history.RuntimeDecisionReflectionHistory
 import pro.liliya.core.runtime.intelligence.decision.reflection.trend.RuntimeDecisionReflectionTrendAnalyzer
@@ -107,6 +109,8 @@ interface RuntimeComposition {
     fun decisionQualityQuery(): RuntimeDecisionQualityQuery
     fun decisionQualityHistory(): RuntimeDecisionQualityHistory
     fun decisionQualityRecorder(): RuntimeDecisionQualityRecorder
+    fun decisionQualityTrendAnalyzer(): RuntimeDecisionQualityTrendAnalyzer
+    fun decisionQualityTrendQuery(): RuntimeDecisionQualityTrendQuery
     fun decisionExplanationHistory(): RuntimeDecisionExplanationHistory
     fun decisionExplanationRecorder(): RuntimeDecisionExplanationRecorder
     fun decisionActionRequestFactory(): RuntimeDecisionActionRequestFactory

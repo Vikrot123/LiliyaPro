@@ -121,6 +121,10 @@ import pro.liliya.core.runtime.intelligence.decision.quality.DefaultRuntimeDecis
 import pro.liliya.core.runtime.intelligence.decision.quality.RuntimeDecisionQualityRecorder
 import pro.liliya.core.runtime.intelligence.decision.quality.history.DefaultRuntimeDecisionQualityHistory
 import pro.liliya.core.runtime.intelligence.decision.quality.history.RuntimeDecisionQualityHistory
+import pro.liliya.core.runtime.intelligence.decision.quality.trend.DefaultRuntimeDecisionQualityTrendAnalyzer
+import pro.liliya.core.runtime.intelligence.decision.quality.trend.DefaultRuntimeDecisionQualityTrendQuery
+import pro.liliya.core.runtime.intelligence.decision.quality.trend.RuntimeDecisionQualityTrendAnalyzer
+import pro.liliya.core.runtime.intelligence.decision.quality.trend.RuntimeDecisionQualityTrendQuery
 import pro.liliya.core.runtime.intelligence.decision.reflection.DefaultRuntimeDecisionReflectionRecorder
 import pro.liliya.core.runtime.intelligence.decision.reflection.RuntimeDecisionReflectionRecorder
 import pro.liliya.core.runtime.intelligence.decision.reflection.history.DefaultRuntimeDecisionReflectionHistory
@@ -480,6 +484,17 @@ class DefaultRuntimeComposition :
         DefaultRuntimeDecisionQualityRecorder(
             query = decisionQualityQuery,
             history = decisionQualityHistory
+        )
+
+    private val decisionQualityTrendAnalyzer:
+        RuntimeDecisionQualityTrendAnalyzer =
+        DefaultRuntimeDecisionQualityTrendAnalyzer()
+
+    private val decisionQualityTrendQuery:
+        RuntimeDecisionQualityTrendQuery =
+        DefaultRuntimeDecisionQualityTrendQuery(
+            history = decisionQualityHistory,
+            analyzer = decisionQualityTrendAnalyzer
         )
 
     private val decisionExplanationHistory:
@@ -1070,6 +1085,16 @@ class DefaultRuntimeComposition :
     override fun decisionQualityRecorder():
         RuntimeDecisionQualityRecorder {
         return decisionQualityRecorder
+    }
+
+    override fun decisionQualityTrendAnalyzer():
+        RuntimeDecisionQualityTrendAnalyzer {
+        return decisionQualityTrendAnalyzer
+    }
+
+    override fun decisionQualityTrendQuery():
+        RuntimeDecisionQualityTrendQuery {
+        return decisionQualityTrendQuery
     }
 
     override fun decisionExplanationHistory():
