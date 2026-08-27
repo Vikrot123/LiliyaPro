@@ -17,6 +17,8 @@ import pro.liliya.core.runtime.action.RuntimeActionRequest
 import pro.liliya.core.runtime.control.RuntimeCommand
 import pro.liliya.core.runtime.health.RuntimeFailureHealthSnapshot
 import pro.liliya.core.runtime.telemetry.RuntimeTelemetrySnapshot
+import pro.liliya.core.runtime.authority.RuntimeActionAuthorityContext
+import pro.liliya.core.runtime.intelligence.autonomous.RuntimeAutonomousIntelligenceCyclePipelineResult
 
 object CoreRuntime {
 
@@ -94,6 +96,18 @@ object CoreRuntime {
 
     fun getRuntimeState(): CoreRuntimeState {
         return runtimeComposition.runtimeState()
+    }
+
+    fun processAutonomousIntelligenceCycle(
+        source: String,
+        authority: RuntimeActionAuthorityContext
+    ): RuntimeAutonomousIntelligenceCyclePipelineResult {
+        return runtimeComposition
+            .autonomousIntelligenceCyclePipeline()
+            .process(
+                source = source,
+                authority = authority
+            )
     }
 
     fun dispatchRuntimeAction(
