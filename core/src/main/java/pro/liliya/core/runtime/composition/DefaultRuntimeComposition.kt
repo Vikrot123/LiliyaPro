@@ -111,6 +111,10 @@ import pro.liliya.core.runtime.intelligence.decision.DefaultRuntimeDecisionActio
 import pro.liliya.core.runtime.intelligence.decision.RuntimeDecisionActionRequestFactory
 import pro.liliya.core.runtime.intelligence.decision.explanation.DefaultRuntimeDecisionExplainer
 import pro.liliya.core.runtime.intelligence.decision.explanation.RuntimeDecisionExplainer
+import pro.liliya.core.runtime.intelligence.decision.explanation.DefaultRuntimeDecisionExplanationRecorder
+import pro.liliya.core.runtime.intelligence.decision.explanation.RuntimeDecisionExplanationRecorder
+import pro.liliya.core.runtime.intelligence.decision.explanation.history.DefaultRuntimeDecisionExplanationHistory
+import pro.liliya.core.runtime.intelligence.decision.explanation.history.RuntimeDecisionExplanationHistory
 import pro.liliya.core.runtime.intelligence.experience.composition.DefaultRuntimeExperienceComposition
 import pro.liliya.core.runtime.intelligence.experience.composition.RuntimeExperienceComposition
 import pro.liliya.core.runtime.intelligence.experience.knowledge.DefaultRuntimeExperienceKnowledgePipeline
@@ -400,6 +404,17 @@ class DefaultRuntimeComposition :
 
     private val decisionExplainer: RuntimeDecisionExplainer =
         DefaultRuntimeDecisionExplainer()
+
+    private val decisionExplanationHistory:
+        RuntimeDecisionExplanationHistory =
+        DefaultRuntimeDecisionExplanationHistory()
+
+    private val decisionExplanationRecorder:
+        RuntimeDecisionExplanationRecorder =
+        DefaultRuntimeDecisionExplanationRecorder(
+            explainer = decisionExplainer,
+            history = decisionExplanationHistory
+        )
 
     private val decisionActionRequestFactory:
         RuntimeDecisionActionRequestFactory =
@@ -927,6 +942,16 @@ class DefaultRuntimeComposition :
 
     override fun decisionExplainer(): RuntimeDecisionExplainer {
         return decisionExplainer
+    }
+
+    override fun decisionExplanationHistory():
+        RuntimeDecisionExplanationHistory {
+        return decisionExplanationHistory
+    }
+
+    override fun decisionExplanationRecorder():
+        RuntimeDecisionExplanationRecorder {
+        return decisionExplanationRecorder
     }
 
     override fun decisionActionRequestFactory():
