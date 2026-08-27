@@ -381,6 +381,113 @@ class DefaultRuntimeKnowledgeSelectorContractTest {
         )
     }
 
+
+    @Test
+    fun exact_relevance_reports_full_score() {
+        val exact =
+            knowledge(
+                "Runtime maintains stable operational state",
+                0.80,
+                1L
+            )
+
+        val result =
+            selector.selectResult(
+                listOf(exact),
+                "Runtime maintains stable operational state"
+            )
+
+        assertEquals(
+            1.0,
+            result.relevanceScore
+        )
+    }
+
+    @Test
+    fun threshold_relevance_reports_half_score() {
+        val boundary =
+            knowledge(
+                "runtime maintains unrelated knowledge",
+                0.80,
+                1L
+            )
+
+        val result =
+            selector.selectResult(
+                listOf(boundary),
+                "runtime maintains stable operational"
+            )
+
+        assertEquals(
+            0.5,
+            result.relevanceScore
+        )
+    }
+
+    @Test
+    fun fallback_selection_reports_zero_relevance_score() {
+        val fallback =
+            knowledge(
+                "network recovery completed",
+                0.99,
+                1L
+            )
+
+        val result =
+            selector.selectResult(
+                listOf(fallback),
+                "Runtime maintains stable operational state"
+            )
+
+        assertEquals(
+            RuntimeKnowledgeSelectionReason.FALLBACK_POOL,
+            result.selectionReason
+        )
+
+        assertEquals(
+            0.0,
+            result.relevanceScore
+        )
+    }
+
+
+    @Test
+    fun relevance_score_must_not_override_confidence_inside_relevant_pool() {
+        val higherRelevance =
+            knowledge(
+                "runtime maintains stable operational state",
+                0.80,
+                1L
+            )
+
+        val higherConfidence =
+            knowledge(
+                "runtime stable operational knowledge",
+                0.95,
+                2L
+            )
+
+        val result =
+            selector.selectResult(
+                listOf(
+                    higherRelevance,
+                    higherConfidence
+                ),
+                "runtime maintains stable operational state"
+            )
+
+        assertEquals(
+            higherConfidence,
+            result.knowledge,
+            "relevance score must remain diagnostic and must not override confidence"
+        )
+
+        assertEquals(
+            RuntimeKnowledgeSelectionReason.RELEVANT_POOL,
+            result.selectionReason
+        )
+    }
+
     private fun knowledge(
         statement: String,
         confidence: Double,

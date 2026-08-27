@@ -72,8 +72,51 @@ class DefaultRuntimeKnowledgeSelector :
                     RuntimeKnowledgeSelectionReason.EMPTY ->
                         "No knowledge available for selection"
                 },
-            selectionReason = selectionReason
+            selectionReason = selectionReason,
+            relevanceScore =
+                if (
+                    selectionReason ==
+                        RuntimeKnowledgeSelectionReason.RELEVANT_POOL &&
+                    selected != null
+                ) {
+                    relevanceScore(
+                        statement = selected.statement,
+                        interpretation = interpretation
+                    )
+                } else {
+                    0.0
+                }
         )
+    }
+
+    private fun relevanceScore(
+        statement: String,
+        interpretation: String
+    ): Double {
+
+        if (
+            statement.contains(
+                interpretation,
+                ignoreCase = true
+            )
+        ) {
+            return 1.0
+        }
+
+        val interpretationTokens =
+            tokens(interpretation)
+
+        if (interpretationTokens.isEmpty()) {
+            return 0.0
+        }
+
+        val shared =
+            interpretationTokens.intersect(
+                tokens(statement)
+            )
+
+        return shared.size.toDouble() /
+            interpretationTokens.size.toDouble()
     }
 
     private fun isRelevant(

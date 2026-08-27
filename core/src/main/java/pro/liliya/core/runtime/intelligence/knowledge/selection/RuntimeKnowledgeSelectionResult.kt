@@ -7,5 +7,6 @@ data class RuntimeKnowledgeSelectionResult(
     val relevantPoolUsed: Boolean,
     val reason: String,
     val selectionReason: RuntimeKnowledgeSelectionReason =
-        RuntimeKnowledgeSelectionReason.FALLBACK_POOL
+        RuntimeKnowledgeSelectionReason.FALLBACK_POOL,
+    val relevanceScore: Double = 0.0
 )
