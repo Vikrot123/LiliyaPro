@@ -33,16 +33,24 @@ class DefaultRuntimeAutonomousCognitionPipeline(
                 intent
             )
 
+        val chainConsistent =
+            intent.reasoningResult ===
+                reasoningResult &&
+                strategy.intent ===
+                intent
+
         return RuntimeAutonomousCognitionResult(
             reasoningResult = reasoningResult,
             intent = intent,
             strategy = strategy,
             coherent =
-                reasoningResult.coherent &&
+                chainConsistent &&
+                    reasoningResult.coherent &&
                     intent.coherent &&
                     strategy.coherent,
             actionable =
-                reasoningResult.actionable &&
+                chainConsistent &&
+                    reasoningResult.actionable &&
                     intent.actionable &&
                     strategy.actionable,
             confidence =
