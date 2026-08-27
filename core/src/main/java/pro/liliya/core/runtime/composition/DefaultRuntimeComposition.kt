@@ -109,6 +109,8 @@ import pro.liliya.core.runtime.intelligence.decision.DefaultRuntimeDecisionEngin
 import pro.liliya.core.runtime.intelligence.decision.RuntimeDecisionEngine
 import pro.liliya.core.runtime.intelligence.decision.DefaultRuntimeDecisionActionRequestFactory
 import pro.liliya.core.runtime.intelligence.decision.RuntimeDecisionActionRequestFactory
+import pro.liliya.core.runtime.intelligence.decision.explanation.DefaultRuntimeDecisionExplainer
+import pro.liliya.core.runtime.intelligence.decision.explanation.RuntimeDecisionExplainer
 import pro.liliya.core.runtime.intelligence.experience.composition.DefaultRuntimeExperienceComposition
 import pro.liliya.core.runtime.intelligence.experience.composition.RuntimeExperienceComposition
 import pro.liliya.core.runtime.intelligence.experience.knowledge.DefaultRuntimeExperienceKnowledgePipeline
@@ -395,6 +397,9 @@ class DefaultRuntimeComposition :
 
     private val decisionEngine: RuntimeDecisionEngine =
         DefaultRuntimeDecisionEngine()
+
+    private val decisionExplainer: RuntimeDecisionExplainer =
+        DefaultRuntimeDecisionExplainer()
 
     private val decisionActionRequestFactory:
         RuntimeDecisionActionRequestFactory =
@@ -918,6 +923,10 @@ class DefaultRuntimeComposition :
 
     override fun decisionEngine(): RuntimeDecisionEngine {
         return decisionEngine
+    }
+
+    override fun decisionExplainer(): RuntimeDecisionExplainer {
+        return decisionExplainer
     }
 
     override fun decisionActionRequestFactory():
