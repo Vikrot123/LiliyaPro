@@ -113,6 +113,10 @@ import pro.liliya.core.runtime.intelligence.decision.explanation.DefaultRuntimeD
 import pro.liliya.core.runtime.intelligence.decision.explanation.RuntimeDecisionExplainer
 import pro.liliya.core.runtime.intelligence.decision.reflection.DefaultRuntimeDecisionReflectionAnalyzer
 import pro.liliya.core.runtime.intelligence.decision.reflection.RuntimeDecisionReflectionAnalyzer
+import pro.liliya.core.runtime.intelligence.decision.reflection.DefaultRuntimeDecisionReflectionRecorder
+import pro.liliya.core.runtime.intelligence.decision.reflection.RuntimeDecisionReflectionRecorder
+import pro.liliya.core.runtime.intelligence.decision.reflection.history.DefaultRuntimeDecisionReflectionHistory
+import pro.liliya.core.runtime.intelligence.decision.reflection.history.RuntimeDecisionReflectionHistory
 import pro.liliya.core.runtime.intelligence.decision.explanation.DefaultRuntimeDecisionExplanationRecorder
 import pro.liliya.core.runtime.intelligence.decision.explanation.RuntimeDecisionExplanationRecorder
 import pro.liliya.core.runtime.intelligence.decision.explanation.history.DefaultRuntimeDecisionExplanationHistory
@@ -420,6 +424,17 @@ class DefaultRuntimeComposition :
     private val decisionReflectionAnalyzer:
         RuntimeDecisionReflectionAnalyzer =
         DefaultRuntimeDecisionReflectionAnalyzer()
+
+    private val decisionReflectionHistory:
+        RuntimeDecisionReflectionHistory =
+        DefaultRuntimeDecisionReflectionHistory()
+
+    private val decisionReflectionRecorder:
+        RuntimeDecisionReflectionRecorder =
+        DefaultRuntimeDecisionReflectionRecorder(
+            analyzer = decisionReflectionAnalyzer,
+            history = decisionReflectionHistory
+        )
 
     private val decisionExplanationHistory:
         RuntimeDecisionExplanationHistory =
@@ -971,6 +986,16 @@ class DefaultRuntimeComposition :
         return decisionReflectionAnalyzer
     }
 
+    override fun decisionReflectionHistory():
+        RuntimeDecisionReflectionHistory {
+        return decisionReflectionHistory
+    }
+
+    override fun decisionReflectionRecorder():
+        RuntimeDecisionReflectionRecorder {
+        return decisionReflectionRecorder
+    }
+
     override fun decisionExplanationHistory():
         RuntimeDecisionExplanationHistory {
         return decisionExplanationHistory
@@ -1276,6 +1301,7 @@ class DefaultRuntimeComposition :
 
 
     override fun prepareRuntime() {
+        decisionReflectionHistory.clear()
         decisionExplanationHistory.clear()
         resetRuntimeServiceConfiguration()
         resetRuntimeServiceProvider()
