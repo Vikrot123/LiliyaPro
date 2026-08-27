@@ -15,6 +15,8 @@ import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.summary.DefaultR
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.transition.DefaultRuntimeKnowledgeLifecycleTransitionManager
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.integration.DefaultRuntimeKnowledgeLifecycleMemory
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.integration.RuntimeKnowledgeLifecycleMemory
+import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.maintenance.DefaultRuntimeKnowledgeMaintenanceService
+import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.maintenance.RuntimeKnowledgeMaintenanceService
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.observer.registry.DefaultRuntimeKnowledgeLifecycleObserverRegistryHolder
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.observer.RuntimeKnowledgeLifecycleObserver
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.observer.registry.RuntimeKnowledgeLifecycleObserverRegistryHolder
@@ -93,6 +95,14 @@ class DefaultRuntimeKnowledgeLifecycleComposition(
             knowledgeMemory = knowledgeMemory
         )
 
+    private val maintenanceService:
+        RuntimeKnowledgeMaintenanceService =
+        DefaultRuntimeKnowledgeMaintenanceService(
+            lifecycleMemory = lifecycleMemory,
+            decisionQuery = decisionQuery,
+            executor = executor
+        )
+
     private val observerRegistryHolder:
         RuntimeKnowledgeLifecycleObserverRegistryHolder =
         DefaultRuntimeKnowledgeLifecycleObserverRegistryHolder()
@@ -117,6 +127,11 @@ class DefaultRuntimeKnowledgeLifecycleComposition(
     override fun lifecycleMemory():
         RuntimeKnowledgeLifecycleMemory {
         return lifecycleMemory
+    }
+
+    override fun maintenanceService():
+        RuntimeKnowledgeMaintenanceService {
+        return maintenanceService
     }
 
     override fun lifecycleHistoryQuery():
