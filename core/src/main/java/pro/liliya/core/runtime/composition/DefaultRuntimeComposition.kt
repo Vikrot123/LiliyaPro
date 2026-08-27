@@ -449,18 +449,6 @@ class DefaultRuntimeComposition :
     private val decisionEngine: RuntimeDecisionEngine =
         DefaultRuntimeDecisionEngine()
 
-    private val decisionExplainer: RuntimeDecisionExplainer =
-        DefaultRuntimeDecisionExplainer(
-            provenanceQuery =
-                knowledgeLifecycleCompositionHolder
-                    .composition()
-                    .provenanceQuery(),
-            provenanceIntegrityQuery =
-                knowledgeLifecycleCompositionHolder
-                    .composition()
-                    .provenanceIntegrityQuery()
-        )
-
     private val decisionReflectionAnalyzer:
         RuntimeDecisionReflectionAnalyzer =
         DefaultRuntimeDecisionReflectionAnalyzer()
@@ -567,6 +555,20 @@ class DefaultRuntimeComposition :
         RuntimeDecisionQualityGovernanceQuery =
         DefaultRuntimeDecisionQualityGovernanceQuery(
             summaryQuery = decisionQualityAdvisorySummaryQuery
+        )
+
+    private val decisionExplainer: RuntimeDecisionExplainer =
+        DefaultRuntimeDecisionExplainer(
+            provenanceQuery =
+                knowledgeLifecycleCompositionHolder
+                    .composition()
+                    .provenanceQuery(),
+            provenanceIntegrityQuery =
+                knowledgeLifecycleCompositionHolder
+                    .composition()
+                    .provenanceIntegrityQuery(),
+            governanceQuery =
+                decisionQualityGovernanceQuery
         )
 
     private val decisionQualityGovernanceHistory:

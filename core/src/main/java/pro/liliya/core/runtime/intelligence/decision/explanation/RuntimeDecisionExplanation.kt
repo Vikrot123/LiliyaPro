@@ -4,6 +4,7 @@ import pro.liliya.core.runtime.control.RuntimeCommand
 import pro.liliya.core.runtime.intelligence.knowledge.selection.RuntimeKnowledgeSelectionReason
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.provenance.RuntimeKnowledgeProvenance
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.provenance.integrity.RuntimeKnowledgeProvenanceIntegrity
+import pro.liliya.core.runtime.intelligence.decision.quality.governance.RuntimeDecisionQualityGovernanceAssessment
 
 data class RuntimeDecisionExplanation(
     val command: RuntimeCommand?,
@@ -14,5 +15,7 @@ data class RuntimeDecisionExplanation(
     val knowledgeRelevanceScore: Double,
     val knowledgeProvenance: RuntimeKnowledgeProvenance? = null,
     val knowledgeProvenanceIntegrity:
-        RuntimeKnowledgeProvenanceIntegrity? = null
+        RuntimeKnowledgeProvenanceIntegrity? = null,
+    val decisionQualityGovernanceAssessment:
+        RuntimeDecisionQualityGovernanceAssessment? = null
 )
