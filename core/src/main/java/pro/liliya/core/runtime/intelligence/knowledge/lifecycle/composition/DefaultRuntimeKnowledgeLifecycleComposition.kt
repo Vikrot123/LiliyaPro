@@ -19,6 +19,8 @@ import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.maintenance.Defa
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.maintenance.RuntimeKnowledgeMaintenanceService
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.supersession.DefaultRuntimeKnowledgeSupersessionHistory
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.supersession.RuntimeKnowledgeSupersessionHistory
+import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.supersession.query.DefaultRuntimeKnowledgeSupersessionQuery
+import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.supersession.query.RuntimeKnowledgeSupersessionQuery
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.observer.registry.DefaultRuntimeKnowledgeLifecycleObserverRegistryHolder
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.observer.RuntimeKnowledgeLifecycleObserver
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.observer.registry.RuntimeKnowledgeLifecycleObserverRegistryHolder
@@ -48,6 +50,12 @@ class DefaultRuntimeKnowledgeLifecycleComposition(
     private val supersessionHistory:
         RuntimeKnowledgeSupersessionHistory =
         DefaultRuntimeKnowledgeSupersessionHistory()
+
+    private val supersessionQuery:
+        RuntimeKnowledgeSupersessionQuery =
+        DefaultRuntimeKnowledgeSupersessionQuery(
+            supersessionHistory
+        )
 
     private val stateQuery =
         DefaultRuntimeKnowledgeLifecycleStateQuery(
@@ -144,6 +152,11 @@ class DefaultRuntimeKnowledgeLifecycleComposition(
     override fun supersessionHistory():
         RuntimeKnowledgeSupersessionHistory {
         return supersessionHistory
+    }
+
+    override fun supersessionQuery():
+        RuntimeKnowledgeSupersessionQuery {
+        return supersessionQuery
     }
 
     override fun lifecycleHistoryQuery():
