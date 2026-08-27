@@ -15,6 +15,10 @@ import pro.liliya.core.runtime.intelligence.experience.knowledge.RuntimeExperien
 import pro.liliya.core.runtime.intelligence.experience.orchestration.RuntimeExperienceKnowledgeOrchestrationResult
 import pro.liliya.core.runtime.intelligence.experience.pipeline.RuntimeExperiencePipelineResult
 import pro.liliya.core.runtime.intelligence.meaning.RuntimeMeaningResult
+import pro.liliya.core.runtime.intelligence.knowledge.RuntimeKnowledge
+import pro.liliya.core.runtime.intelligence.knowledge.RuntimeKnowledgeSource
+import pro.liliya.core.runtime.intelligence.knowledge.selection.RuntimeKnowledgeSelectionReason
+import pro.liliya.core.runtime.intelligence.knowledge.selection.RuntimeKnowledgeSelectionResult
 import pro.liliya.core.runtime.intelligence.meaning.RuntimeMeaningSignificance
 import pro.liliya.core.runtime.intelligence.orchestration.RuntimeIntelligenceOrchestrationResult
 import pro.liliya.core.runtime.intelligence.reflection.RuntimeReflectionSnapshot
@@ -26,14 +30,16 @@ class DefaultRuntimeDecisionEngineContractTest {
 
     private fun intelligence(
         significance: RuntimeMeaningSignificance,
-        confidence: Double = 0.9
+        confidence: Double = 0.9,
+        knowledgeSelection: RuntimeKnowledgeSelectionResult? = null
     ): RuntimeIntelligenceOrchestrationResult {
 
         val meaning = RuntimeMeaningResult(
             interpretation = "test",
             confidence = confidence,
             significance = significance,
-            generatedAt = 1L
+            generatedAt = 1L,
+            knowledgeSelection = knowledgeSelection
         )
 
         val experience = RuntimeExperience(
@@ -143,4 +149,57 @@ class DefaultRuntimeDecisionEngineContractTest {
 
         assertEquals(0.73, result.confidence)
     }
+    @Test
+    fun decision_preserves_knowledge_selection_without_using_it_as_policy_signal() {
+        val knowledge =
+            RuntimeKnowledge(
+                statement = "runtime knowledge",
+                confidence = 1.0,
+                source = RuntimeKnowledgeSource.EXPERIENCE,
+                createdAt = 1L
+            )
+
+        val selection =
+            RuntimeKnowledgeSelectionResult(
+                knowledge = knowledge,
+                relevantPoolUsed = true,
+                reason = "test selection",
+                selectionReason =
+                    RuntimeKnowledgeSelectionReason.RELEVANT_POOL,
+                relevanceScore = 1.0
+            )
+
+        val result =
+            DefaultRuntimeDecisionEngine()
+                .decide(
+                    intelligence(
+                        significance =
+                            RuntimeMeaningSignificance.STABLE,
+                        confidence = 0.73,
+                        knowledgeSelection = selection
+                    )
+                )
+
+        assertNull(
+            result.command,
+            "knowledge diagnostics must not change STABLE policy"
+        )
+
+        assertEquals(
+            "Runtime is stable; no action required",
+            result.reason
+        )
+
+        assertEquals(
+            0.73,
+            result.confidence
+        )
+
+        assertEquals(
+            selection,
+            result.knowledgeSelection
+        )
+    }
+
+
 }

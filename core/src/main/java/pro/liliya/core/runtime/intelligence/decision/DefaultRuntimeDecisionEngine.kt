@@ -14,28 +14,36 @@ class DefaultRuntimeDecisionEngine : RuntimeDecisionEngine {
                 RuntimeDecision(
                     command = null,
                     reason = "Runtime is stable; no action required",
-                    confidence = intelligence.meaning.confidence
+                    confidence = intelligence.meaning.confidence,
+                    knowledgeSelection =
+                        intelligence.meaning.knowledgeSelection
                 )
 
             RuntimeMeaningSignificance.WARNING ->
                 RuntimeDecision(
                     command = RuntimeCommand.HEALTH_CHECK,
                     reason = "Runtime shows signs of degradation; health check required",
-                    confidence = intelligence.meaning.confidence
+                    confidence = intelligence.meaning.confidence,
+                    knowledgeSelection =
+                        intelligence.meaning.knowledgeSelection
                 )
 
             RuntimeMeaningSignificance.CRITICAL ->
                 RuntimeDecision(
                     command = RuntimeCommand.RECOVER,
                     reason = "Runtime instability requires recovery",
-                    confidence = intelligence.meaning.confidence
+                    confidence = intelligence.meaning.confidence,
+                    knowledgeSelection =
+                        intelligence.meaning.knowledgeSelection
                 )
 
             RuntimeMeaningSignificance.UNKNOWN ->
                 RuntimeDecision(
                     command = RuntimeCommand.HEALTH_CHECK,
                     reason = "Runtime state is uncertain; health check required",
-                    confidence = intelligence.meaning.confidence
+                    confidence = intelligence.meaning.confidence,
+                    knowledgeSelection =
+                        intelligence.meaning.knowledgeSelection
                 )
         }
     }
