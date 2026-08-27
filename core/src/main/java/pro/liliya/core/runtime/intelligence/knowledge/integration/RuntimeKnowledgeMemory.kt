@@ -1,6 +1,7 @@
 package pro.liliya.core.runtime.intelligence.knowledge.integration
 
 import pro.liliya.core.runtime.intelligence.knowledge.RuntimeKnowledge
+import pro.liliya.core.runtime.intelligence.knowledge.retrieval.RuntimeKnowledgeRetrievalResult
 import pro.liliya.core.runtime.intelligence.knowledge.association.RuntimeKnowledgeAssociationType
 import pro.liliya.core.runtime.intelligence.knowledge.graph.ranking.RuntimeKnowledgeGraphRankingResult
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.RuntimeKnowledgeLifecycleState
@@ -26,6 +27,12 @@ interface RuntimeKnowledgeMemory {
     ): List<RuntimeKnowledgeGraphRankingResult>
 
     fun availableKnowledge(): List<RuntimeKnowledge> {
+        return emptyList()
+    }
+
+    fun retrieveRelevant(
+        text: String
+    ): List<RuntimeKnowledgeRetrievalResult> {
         return emptyList()
     }
 

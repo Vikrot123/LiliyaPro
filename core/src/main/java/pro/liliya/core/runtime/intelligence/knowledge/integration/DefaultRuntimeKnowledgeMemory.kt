@@ -21,6 +21,9 @@ import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.query.DefaultRun
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.state.RuntimeKnowledgeLifecycleStateStore
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.state.DefaultRuntimeKnowledgeLifecycleStateStore
 import pro.liliya.core.runtime.intelligence.knowledge.retrieval.lifecycle.DefaultRuntimeKnowledgeLifecycleFilter
+import pro.liliya.core.runtime.intelligence.knowledge.retrieval.DefaultRuntimeKnowledgeRetriever
+import pro.liliya.core.runtime.intelligence.knowledge.retrieval.RuntimeKnowledgeQuery
+import pro.liliya.core.runtime.intelligence.knowledge.retrieval.RuntimeKnowledgeRetrievalResult
 import pro.liliya.core.runtime.intelligence.knowledge.retrieval.lifecycle.RuntimeKnowledgeLifecycleFilter
 
 class DefaultRuntimeKnowledgeMemory(
@@ -48,6 +51,9 @@ class DefaultRuntimeKnowledgeMemory(
 
     private val knowledgeStore =
         DefaultRuntimeKnowledgeStore()
+
+    private val semanticRetriever =
+        DefaultRuntimeKnowledgeRetriever()
 
     private val associator =
         DefaultRuntimeKnowledgeAssociator()
@@ -151,6 +157,15 @@ class DefaultRuntimeKnowledgeMemory(
     override fun availableKnowledge(): List<RuntimeKnowledge> {
         return lifecycleFilter.filter(
             knowledgeStore.knowledge()
+        )
+    }
+
+    override fun retrieveRelevant(
+        text: String
+    ): List<RuntimeKnowledgeRetrievalResult> {
+        return semanticRetriever.retrieve(
+            query = RuntimeKnowledgeQuery(text),
+            knowledge = availableKnowledge()
         )
     }
 
