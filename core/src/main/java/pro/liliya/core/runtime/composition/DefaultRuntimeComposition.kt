@@ -127,6 +127,8 @@ import pro.liliya.core.runtime.intelligence.decision.execution.autonomous.outcom
 import pro.liliya.core.runtime.intelligence.decision.execution.autonomous.assessment.DefaultRuntimeAutonomousExecutionAssessmentDeriver
 import pro.liliya.core.runtime.intelligence.decision.execution.autonomous.evaluation.DefaultRuntimeAutonomousExecutionEvaluationPipeline
 import pro.liliya.core.runtime.intelligence.decision.execution.autonomous.evaluation.RuntimeAutonomousExecutionEvaluationPipeline
+import pro.liliya.core.runtime.intelligence.decision.execution.autonomous.cycle.DefaultRuntimeAutonomousExecutionCyclePipeline
+import pro.liliya.core.runtime.intelligence.decision.execution.autonomous.cycle.RuntimeAutonomousExecutionCyclePipeline
 import pro.liliya.core.runtime.intelligence.decision.execution.autonomous.feedback.DefaultRuntimeAutonomousExecutionFeedbackDeriver
 import pro.liliya.core.runtime.intelligence.decision.execution.autonomous.feedback.RuntimeAutonomousExecutionFeedbackDeriver
 import pro.liliya.core.runtime.intelligence.decision.proposal.DefaultRuntimeAutonomousDecisionProposalDeriver
@@ -781,6 +783,18 @@ class DefaultRuntimeComposition :
                 autonomousExecutionExperienceCommitter
         )
 
+    private val autonomousExecutionCyclePipeline:
+        RuntimeAutonomousExecutionCyclePipeline =
+        DefaultRuntimeAutonomousExecutionCyclePipeline(
+            executionPipeline =
+                autonomousExecutionPipeline,
+            evaluationPipeline =
+                autonomousExecutionEvaluationPipeline,
+            postExecutionLearningPipeline =
+                autonomousPostExecutionLearningPipeline
+        )
+
+
     private val intelligenceOrchestrator: RuntimeIntelligenceOrchestrator =
         DefaultRuntimeIntelligenceOrchestrator(
             selfModelProvider = selfModelProvider,
@@ -1367,6 +1381,11 @@ class DefaultRuntimeComposition :
     override fun autonomousPostExecutionLearningPipeline():
         RuntimeAutonomousExecutionPostExecutionLearningPipeline {
         return autonomousPostExecutionLearningPipeline
+    }
+
+    override fun autonomousExecutionCyclePipeline():
+        RuntimeAutonomousExecutionCyclePipeline {
+        return autonomousExecutionCyclePipeline
     }
 
     override fun decisionEngine(): RuntimeDecisionEngine {
