@@ -1249,6 +1249,7 @@ class DefaultRuntimeComposition :
 
 
     override fun prepareRuntime() {
+        decisionExplanationHistory.clear()
         resetRuntimeServiceConfiguration()
         resetRuntimeServiceProvider()
         clearModuleManager()
