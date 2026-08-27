@@ -9,6 +9,16 @@ class DefaultRuntimeKnowledgeSelector :
         knowledge: List<RuntimeKnowledge>,
         interpretation: String
     ): RuntimeKnowledge? {
+        return selectResult(
+            knowledge,
+            interpretation
+        ).knowledge
+    }
+
+    override fun selectResult(
+        knowledge: List<RuntimeKnowledge>,
+        interpretation: String
+    ): RuntimeKnowledgeSelectionResult {
 
         val relevantKnowledge =
             knowledge.filter { item ->
@@ -25,12 +35,24 @@ class DefaultRuntimeKnowledgeSelector :
                 relevantKnowledge
             }
 
-        return selectionPool.maxWithOrNull(
-            compareBy<RuntimeKnowledge> {
-                it.confidence
-            }.thenBy {
-                it.createdAt
-            }
+        val selected =
+            selectionPool.maxWithOrNull(
+                compareBy<RuntimeKnowledge> {
+                    it.confidence
+                }.thenBy {
+                    it.createdAt
+                }
+            )
+
+        return RuntimeKnowledgeSelectionResult(
+            knowledge = selected,
+            relevantPoolUsed = relevantKnowledge.isNotEmpty(),
+            reason =
+                if (relevantKnowledge.isNotEmpty()) {
+                    "Selected from relevant knowledge pool"
+                } else {
+                    "Selected from fallback knowledge pool"
+                }
         )
     }
 

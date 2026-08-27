@@ -65,11 +65,14 @@ class DefaultRuntimeMeaningEngine : RuntimeMeaningEngine {
             availableKnowledge
                 ?.filterIsInstance<RuntimeKnowledge>()
 
-        val selectedKnowledge =
-            knowledgeSelector.select(
+        val selectionResult =
+            knowledgeSelector.selectResult(
                 knowledge = typedKnowledge.orEmpty(),
                 interpretation = interpretation
             )
+
+        val selectedKnowledge =
+            selectionResult.knowledge
 
         val enrichedInterpretation =
             if (selectedKnowledge == null) {

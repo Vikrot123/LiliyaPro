@@ -250,6 +250,74 @@ class DefaultRuntimeKnowledgeSelectorContractTest {
         )
     }
 
+
+    @Test
+    fun selection_result_reports_relevant_pool_usage() {
+        val relevant =
+            knowledge(
+                "runtime operational state remained stable",
+                0.80,
+                1L
+            )
+
+        val irrelevant =
+            knowledge(
+                "network recovery completed",
+                0.99,
+                2L
+            )
+
+        val result =
+            selector.selectResult(
+                listOf(relevant, irrelevant),
+                "Runtime maintains stable operational state"
+            )
+
+        assertEquals(
+            relevant,
+            result.knowledge
+        )
+
+        assertEquals(
+            true,
+            result.relevantPoolUsed
+        )
+    }
+
+
+    @Test
+    fun selection_result_reports_fallback_pool_usage() {
+        val weaker =
+            knowledge(
+                "first unrelated knowledge",
+                0.80,
+                1L
+            )
+
+        val stronger =
+            knowledge(
+                "second unrelated knowledge",
+                0.99,
+                2L
+            )
+
+        val result =
+            selector.selectResult(
+                listOf(weaker, stronger),
+                "Runtime maintains stable operational state"
+            )
+
+        assertEquals(
+            stronger,
+            result.knowledge
+        )
+
+        assertEquals(
+            false,
+            result.relevantPoolUsed
+        )
+    }
+
     private fun knowledge(
         statement: String,
         confidence: Double,

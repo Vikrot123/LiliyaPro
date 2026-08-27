@@ -8,4 +8,18 @@ interface RuntimeKnowledgeSelector {
         knowledge: List<RuntimeKnowledge>,
         interpretation: String
     ): RuntimeKnowledge?
+
+    fun selectResult(
+        knowledge: List<RuntimeKnowledge>,
+        interpretation: String
+    ): RuntimeKnowledgeSelectionResult {
+        return RuntimeKnowledgeSelectionResult(
+            knowledge = select(
+                knowledge,
+                interpretation
+            ),
+            relevantPoolUsed = false,
+            reason = "Compatibility selection result"
+        )
+    }
 }
