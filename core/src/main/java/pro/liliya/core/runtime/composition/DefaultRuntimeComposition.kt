@@ -408,7 +408,11 @@ class DefaultRuntimeComposition :
             provenanceQuery =
                 knowledgeLifecycleCompositionHolder
                     .composition()
-                    .provenanceQuery()
+                    .provenanceQuery(),
+            provenanceIntegrityQuery =
+                knowledgeLifecycleCompositionHolder
+                    .composition()
+                    .provenanceIntegrityQuery()
         )
 
     private val decisionExplanationHistory:

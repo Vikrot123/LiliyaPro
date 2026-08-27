@@ -7,6 +7,7 @@ import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.supersession.Run
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.supersession.query.RuntimeKnowledgeSupersessionQuery
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.supersession.integrity.RuntimeKnowledgeSupersessionIntegrityChecker
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.provenance.RuntimeKnowledgeProvenanceQuery
+import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.provenance.integrity.RuntimeKnowledgeProvenanceIntegrityQuery
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.history.query.RuntimeKnowledgeLifecycleHistoryQuery
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.observer.RuntimeKnowledgeLifecycleObserver
 
@@ -32,6 +33,9 @@ interface RuntimeKnowledgeLifecycleComposition {
 
     fun provenanceQuery():
         RuntimeKnowledgeProvenanceQuery
+
+    fun provenanceIntegrityQuery():
+        RuntimeKnowledgeProvenanceIntegrityQuery
 
     fun lifecycleHistoryQuery():
         RuntimeKnowledgeLifecycleHistoryQuery

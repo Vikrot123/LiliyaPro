@@ -2,10 +2,13 @@ package pro.liliya.core.runtime.intelligence.decision.explanation
 
 import pro.liliya.core.runtime.intelligence.decision.RuntimeDecision
 import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.provenance.RuntimeKnowledgeProvenanceQuery
+import pro.liliya.core.runtime.intelligence.knowledge.lifecycle.provenance.integrity.RuntimeKnowledgeProvenanceIntegrityQuery
 
 class DefaultRuntimeDecisionExplainer(
     private val provenanceQuery:
-        RuntimeKnowledgeProvenanceQuery? = null
+        RuntimeKnowledgeProvenanceQuery? = null,
+    private val provenanceIntegrityQuery:
+        RuntimeKnowledgeProvenanceIntegrityQuery? = null
 ) : RuntimeDecisionExplainer {
 
     override fun explain(
@@ -30,6 +33,18 @@ class DefaultRuntimeDecisionExplainer(
                 null
             }
 
+        val provenanceIntegrity =
+            if (
+                selectedKnowledge != null &&
+                provenanceIntegrityQuery != null
+            ) {
+                provenanceIntegrityQuery.check(
+                    selectedKnowledge
+                )
+            } else {
+                null
+            }
+
         return RuntimeDecisionExplanation(
             command = decision.command,
             decisionReason = decision.reason,
@@ -41,7 +56,9 @@ class DefaultRuntimeDecisionExplainer(
             knowledgeRelevanceScore =
                 selection?.relevanceScore ?: 0.0,
             knowledgeProvenance =
-                provenance
+                provenance,
+            knowledgeProvenanceIntegrity =
+                provenanceIntegrity
         )
     }
 }
