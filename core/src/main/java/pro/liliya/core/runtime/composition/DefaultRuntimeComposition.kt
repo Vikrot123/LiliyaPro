@@ -127,6 +127,8 @@ import pro.liliya.core.runtime.intelligence.decision.quality.trend.RuntimeDecisi
 import pro.liliya.core.runtime.intelligence.decision.quality.trend.RuntimeDecisionQualityTrendQuery
 import pro.liliya.core.runtime.intelligence.decision.quality.summary.DefaultRuntimeDecisionQualitySummaryQuery
 import pro.liliya.core.runtime.intelligence.decision.quality.summary.RuntimeDecisionQualitySummaryQuery
+import pro.liliya.core.runtime.intelligence.decision.quality.advisory.DefaultRuntimeDecisionQualityAdvisoryQuery
+import pro.liliya.core.runtime.intelligence.decision.quality.advisory.RuntimeDecisionQualityAdvisoryQuery
 import pro.liliya.core.runtime.intelligence.decision.reflection.DefaultRuntimeDecisionReflectionRecorder
 import pro.liliya.core.runtime.intelligence.decision.reflection.RuntimeDecisionReflectionRecorder
 import pro.liliya.core.runtime.intelligence.decision.reflection.history.DefaultRuntimeDecisionReflectionHistory
@@ -504,6 +506,12 @@ class DefaultRuntimeComposition :
         DefaultRuntimeDecisionQualitySummaryQuery(
             qualityQuery = decisionQualityQuery,
             trendQuery = decisionQualityTrendQuery
+        )
+
+    private val decisionQualityAdvisoryQuery:
+        RuntimeDecisionQualityAdvisoryQuery =
+        DefaultRuntimeDecisionQualityAdvisoryQuery(
+            summaryQuery = decisionQualitySummaryQuery
         )
 
     private val decisionExplanationHistory:
@@ -1109,6 +1117,11 @@ class DefaultRuntimeComposition :
     override fun decisionQualitySummaryQuery():
         RuntimeDecisionQualitySummaryQuery {
         return decisionQualitySummaryQuery
+    }
+
+    override fun decisionQualityAdvisoryQuery():
+        RuntimeDecisionQualityAdvisoryQuery {
+        return decisionQualityAdvisoryQuery
     }
 
     override fun decisionExplanationHistory():
