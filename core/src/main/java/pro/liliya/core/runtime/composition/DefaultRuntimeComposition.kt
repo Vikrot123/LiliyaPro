@@ -117,6 +117,10 @@ import pro.liliya.core.runtime.intelligence.decision.reflection.DefaultRuntimeDe
 import pro.liliya.core.runtime.intelligence.decision.reflection.RuntimeDecisionReflectionRecorder
 import pro.liliya.core.runtime.intelligence.decision.reflection.history.DefaultRuntimeDecisionReflectionHistory
 import pro.liliya.core.runtime.intelligence.decision.reflection.history.RuntimeDecisionReflectionHistory
+import pro.liliya.core.runtime.intelligence.decision.reflection.trend.DefaultRuntimeDecisionReflectionTrendAnalyzer
+import pro.liliya.core.runtime.intelligence.decision.reflection.trend.DefaultRuntimeDecisionReflectionTrendQuery
+import pro.liliya.core.runtime.intelligence.decision.reflection.trend.RuntimeDecisionReflectionTrendAnalyzer
+import pro.liliya.core.runtime.intelligence.decision.reflection.trend.RuntimeDecisionReflectionTrendQuery
 import pro.liliya.core.runtime.intelligence.decision.explanation.DefaultRuntimeDecisionExplanationRecorder
 import pro.liliya.core.runtime.intelligence.decision.explanation.RuntimeDecisionExplanationRecorder
 import pro.liliya.core.runtime.intelligence.decision.explanation.history.DefaultRuntimeDecisionExplanationHistory
@@ -434,6 +438,17 @@ class DefaultRuntimeComposition :
         DefaultRuntimeDecisionReflectionRecorder(
             analyzer = decisionReflectionAnalyzer,
             history = decisionReflectionHistory
+        )
+
+    private val decisionReflectionTrendAnalyzer:
+        RuntimeDecisionReflectionTrendAnalyzer =
+        DefaultRuntimeDecisionReflectionTrendAnalyzer()
+
+    private val decisionReflectionTrendQuery:
+        RuntimeDecisionReflectionTrendQuery =
+        DefaultRuntimeDecisionReflectionTrendQuery(
+            history = decisionReflectionHistory,
+            analyzer = decisionReflectionTrendAnalyzer
         )
 
     private val decisionExplanationHistory:
@@ -994,6 +1009,16 @@ class DefaultRuntimeComposition :
     override fun decisionReflectionRecorder():
         RuntimeDecisionReflectionRecorder {
         return decisionReflectionRecorder
+    }
+
+    override fun decisionReflectionTrendAnalyzer():
+        RuntimeDecisionReflectionTrendAnalyzer {
+        return decisionReflectionTrendAnalyzer
+    }
+
+    override fun decisionReflectionTrendQuery():
+        RuntimeDecisionReflectionTrendQuery {
+        return decisionReflectionTrendQuery
     }
 
     override fun decisionExplanationHistory():
