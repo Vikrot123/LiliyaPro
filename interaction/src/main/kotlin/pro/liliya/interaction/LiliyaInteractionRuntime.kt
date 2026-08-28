@@ -20,6 +20,15 @@ class LiliyaInteractionRuntime(
     fun process(
         request: LiliyaInteractionRequest
     ): LiliyaInteractionResult {
+        val currentState =
+            lifecycle.state()
+
+        if (currentState != LiliyaInteractionRuntimeState.RUNNING) {
+            throw LiliyaInteractionRuntimeException(
+                "Interaction processing requires RUNNING runtime; current state: $currentState"
+            )
+        }
+
         return gateway.process(request)
     }
 }
