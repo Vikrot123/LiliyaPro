@@ -36,14 +36,14 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      - name: Make Gradle wrapper executable
-        run: chmod +x ./gradlew
+      - name: Make scripts executable
+        run: chmod +x ./gradlew ./tools/core-complete-guard.sh
 
       - name: Interaction tests
         run: ./gradlew :interaction:test --console=plain
 
       - name: Core complete guard
-        run: ./tools/core-complete-guard.sh
+        run: bash ./tools/core-complete-guard.sh
 
       - name: Build debug APK
         run: ./gradlew :app:assembleDebug --console=plain
