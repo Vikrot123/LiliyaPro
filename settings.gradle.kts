@@ -18,3 +18,4 @@ dependencyResolutionManagement {
 rootProject.name = "LiliyaPro"
 
 include(":core")
+include(":interaction")
