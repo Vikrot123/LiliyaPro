@@ -1,13 +1,15 @@
 package pro.liliya.interaction
 
 import pro.liliya.core.CoreRuntime
+import pro.liliya.core.CoreRuntimeState
 import pro.liliya.core.runtime.authority.RuntimeActionAuthorityContext
 import pro.liliya.core.runtime.authority.RuntimeAuthorityLevel
 import pro.liliya.core.runtime.intelligence.decision.execution.autonomous.learning.RuntimeAutonomousExecutionExperienceCommitState
 
 class CoreRuntimeInteractionPort(
     private val runtime: CoreRuntime
-) : LiliyaInteractionPort {
+) : LiliyaInteractionPort,
+    LiliyaInteractionLifecyclePort {
 
     override fun process(
         source: String,
@@ -40,6 +42,20 @@ class CoreRuntimeInteractionPort(
         )
     }
 
+    override fun start() {
+        runtime.start()
+    }
+
+    override fun stop() {
+        runtime.stop()
+    }
+
+    override fun state(): LiliyaInteractionRuntimeState {
+        return runtime
+            .state()
+            .toInteractionState()
+    }
+
     private fun LiliyaInteractionAuthority.toRuntimeAuthority():
         RuntimeAuthorityLevel {
         return when (this) {
@@ -54,6 +70,23 @@ class CoreRuntimeInteractionPort(
 
             LiliyaInteractionAuthority.UNKNOWN ->
                 RuntimeAuthorityLevel.UNKNOWN
+        }
+    }
+
+    private fun CoreRuntimeState.toInteractionState():
+        LiliyaInteractionRuntimeState {
+        return when (this) {
+            CoreRuntimeState.STOPPED ->
+                LiliyaInteractionRuntimeState.STOPPED
+
+            CoreRuntimeState.STARTING ->
+                LiliyaInteractionRuntimeState.STARTING
+
+            CoreRuntimeState.RUNNING ->
+                LiliyaInteractionRuntimeState.RUNNING
+
+            CoreRuntimeState.FAILED ->
+                LiliyaInteractionRuntimeState.FAILED
         }
     }
 }
