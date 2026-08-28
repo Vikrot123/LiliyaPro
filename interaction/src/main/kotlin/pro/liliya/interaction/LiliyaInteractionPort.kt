@@ -1,6 +1,6 @@
 package pro.liliya.interaction
 
-interface LiliyaInteractionPort {
+internal interface LiliyaInteractionPort {
 
     fun process(
         source: String,

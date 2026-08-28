@@ -1,6 +1,6 @@
 package pro.liliya.interaction
 
-class LiliyaInteractionGateway(
+internal class LiliyaInteractionGateway(
     private val port: LiliyaInteractionPort
 ) {
 

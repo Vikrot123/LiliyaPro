@@ -2,7 +2,7 @@ package pro.liliya.interaction
 
 import pro.liliya.core.CoreRuntime
 
-object LiliyaInteractionRuntimeFactory {
+internal object LiliyaInteractionRuntimeFactory {
 
     fun create(): LiliyaInteractionRuntime {
         val corePort =

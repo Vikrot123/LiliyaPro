@@ -1,6 +1,6 @@
 package pro.liliya.interaction
 
-interface LiliyaInteractionLifecyclePort {
+internal interface LiliyaInteractionLifecyclePort {
 
     fun start()
 

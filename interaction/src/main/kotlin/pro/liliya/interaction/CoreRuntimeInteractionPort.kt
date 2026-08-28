@@ -6,7 +6,7 @@ import pro.liliya.core.runtime.authority.RuntimeActionAuthorityContext
 import pro.liliya.core.runtime.authority.RuntimeAuthorityLevel
 import pro.liliya.core.runtime.intelligence.decision.execution.autonomous.learning.RuntimeAutonomousExecutionExperienceCommitState
 
-class CoreRuntimeInteractionPort(
+internal class CoreRuntimeInteractionPort(
     private val runtime: CoreRuntime
 ) : LiliyaInteractionPort,
     LiliyaInteractionLifecyclePort {

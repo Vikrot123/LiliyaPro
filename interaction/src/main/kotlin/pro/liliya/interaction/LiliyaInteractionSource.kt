@@ -1,6 +1,6 @@
 package pro.liliya.interaction
 
-object LiliyaInteractionSource {
+internal object LiliyaInteractionSource {
 
     fun normalize(
         source: String

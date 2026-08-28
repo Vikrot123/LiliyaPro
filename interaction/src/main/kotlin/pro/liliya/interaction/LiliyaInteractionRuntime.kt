@@ -1,6 +1,6 @@
 package pro.liliya.interaction
 
-class LiliyaInteractionRuntime(
+internal class LiliyaInteractionRuntime(
     private val gateway: LiliyaInteractionGateway,
     private val lifecycle: LiliyaInteractionLifecyclePort
 ) {
