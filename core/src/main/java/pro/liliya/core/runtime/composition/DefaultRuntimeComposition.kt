@@ -1,5 +1,7 @@
 package pro.liliya.core.runtime.composition
 
+import pro.liliya.core.runtime.intelligence.experience.knowledge.RuntimeCommittedExperienceKnowledgePipeline
+import pro.liliya.core.runtime.intelligence.experience.knowledge.DefaultRuntimeCommittedExperienceKnowledgePipeline
 import pro.liliya.core.runtime.recovery.RuntimeRecoveryEventBus
 
 import pro.liliya.core.logging.Logger
@@ -396,6 +398,19 @@ class DefaultRuntimeComposition :
                 knowledgeComposition.knowledgePipeline(),
             experienceStore =
                 experienceComposition.experienceStore(),
+            knowledgeLifecycleMemory =
+                knowledgeLifecycleCompositionHolder
+                    .composition()
+                    .lifecycleMemory()
+        )
+
+    private val committedExperienceKnowledgePipeline:
+        RuntimeCommittedExperienceKnowledgePipeline =
+        DefaultRuntimeCommittedExperienceKnowledgePipeline(
+            experienceConsolidator =
+                experienceComposition.experienceConsolidator(),
+            knowledgePipeline =
+                knowledgeComposition.knowledgePipeline(),
             knowledgeLifecycleMemory =
                 knowledgeLifecycleCompositionHolder
                     .composition()
@@ -1317,6 +1332,11 @@ class DefaultRuntimeComposition :
     override fun experienceKnowledgePipeline():
         RuntimeExperienceKnowledgePipeline {
         return experienceKnowledgePipeline
+    }
+
+    override fun committedExperienceKnowledgePipeline():
+        RuntimeCommittedExperienceKnowledgePipeline {
+        return committedExperienceKnowledgePipeline
     }
 
     override fun experienceKnowledgeOrchestrator():

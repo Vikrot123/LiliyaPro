@@ -1,5 +1,6 @@
 package pro.liliya.core.runtime.composition
 
+import pro.liliya.core.runtime.intelligence.experience.knowledge.RuntimeCommittedExperienceKnowledgePipeline
 import pro.liliya.core.runtime.recovery.RuntimeRecoveryEventBus
 
 import pro.liliya.core.logging.Logger
@@ -297,6 +298,9 @@ interface RuntimeComposition {
 
     fun experienceKnowledgePipeline():
         RuntimeExperienceKnowledgePipeline
+
+    fun committedExperienceKnowledgePipeline():
+        RuntimeCommittedExperienceKnowledgePipeline
 
     fun experienceKnowledgeOrchestrator():
         RuntimeExperienceKnowledgeOrchestrator
