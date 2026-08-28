@@ -1,5 +1,7 @@
 package pro.liliya.core.runtime.intelligence.decision.execution.autonomous.postexecution
 
+import pro.liliya.core.runtime.intelligence.experience.knowledge.RuntimeCommittedExperienceKnowledgePipeline
+import pro.liliya.core.runtime.intelligence.decision.execution.autonomous.learning.RuntimeAutonomousExecutionExperienceCommitState
 import pro.liliya.core.runtime.intelligence.decision.execution.autonomous.evaluation.RuntimeAutonomousExecutionEvaluationResult
 import pro.liliya.core.runtime.intelligence.decision.execution.autonomous.feedback.RuntimeAutonomousExecutionFeedbackDeriver
 import pro.liliya.core.runtime.intelligence.decision.execution.autonomous.learning.RuntimeAutonomousExecutionExperienceCommitDecisionEngine
@@ -29,7 +31,9 @@ class DefaultRuntimeAutonomousExecutionPostExecutionLearningPipeline(
     private val commitDecisionEngine:
         RuntimeAutonomousExecutionExperienceCommitDecisionEngine,
     private val committer:
-        RuntimeAutonomousExecutionExperienceCommitter
+        RuntimeAutonomousExecutionExperienceCommitter,
+    private val committedExperienceKnowledgePipeline:
+        RuntimeCommittedExperienceKnowledgePipeline? = null
 ) : RuntimeAutonomousExecutionPostExecutionLearningPipeline {
 
     override fun process(
@@ -84,6 +88,8 @@ class DefaultRuntimeAutonomousExecutionPostExecutionLearningPipeline(
                 commitDecision =
                     null,
                 commitResult =
+                    null,
+                committedExperienceKnowledge =
                     null
             )
         }
@@ -113,6 +119,8 @@ class DefaultRuntimeAutonomousExecutionPostExecutionLearningPipeline(
                     commitDecision =
                         null,
                     commitResult =
+                        null,
+                    committedExperienceKnowledge =
                         null
                 )
 
@@ -134,6 +142,18 @@ class DefaultRuntimeAutonomousExecutionPostExecutionLearningPipeline(
                 commitDecision
             )
 
+        val committedExperienceKnowledge =
+            if (
+                commitResult.state ==
+                    RuntimeAutonomousExecutionExperienceCommitState.COMMITTED
+            ) {
+                committedExperienceKnowledgePipeline?.process(
+                    commitResult.experience
+                )
+            } else {
+                null
+            }
+
         return RuntimeAutonomousExecutionPostExecutionLearningPipelineResult(
             evaluation =
                 evaluation,
@@ -154,7 +174,9 @@ class DefaultRuntimeAutonomousExecutionPostExecutionLearningPipeline(
             commitDecision =
                 commitDecision,
             commitResult =
-                commitResult
+                commitResult,
+            committedExperienceKnowledge =
+                committedExperienceKnowledge
         )
     }
 }

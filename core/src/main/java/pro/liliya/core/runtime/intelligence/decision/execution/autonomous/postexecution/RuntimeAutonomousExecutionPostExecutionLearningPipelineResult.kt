@@ -1,5 +1,6 @@
 package pro.liliya.core.runtime.intelligence.decision.execution.autonomous.postexecution
 
+import pro.liliya.core.runtime.intelligence.experience.knowledge.RuntimeCommittedExperienceKnowledgePipelineResult
 import pro.liliya.core.runtime.intelligence.decision.execution.autonomous.evaluation.RuntimeAutonomousExecutionEvaluationResult
 import pro.liliya.core.runtime.intelligence.decision.execution.autonomous.feedback.RuntimeAutonomousExecutionFeedback
 import pro.liliya.core.runtime.intelligence.decision.execution.autonomous.learning.RuntimeAutonomousExecutionExperienceCommitDecision
@@ -31,5 +32,7 @@ data class RuntimeAutonomousExecutionPostExecutionLearningPipelineResult(
     val commitDecision:
         RuntimeAutonomousExecutionExperienceCommitDecision?,
     val commitResult:
-        RuntimeAutonomousExecutionExperienceCommitResult?
+        RuntimeAutonomousExecutionExperienceCommitResult?,
+    val committedExperienceKnowledge:
+        RuntimeCommittedExperienceKnowledgePipelineResult?
 )

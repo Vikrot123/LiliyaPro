@@ -797,7 +797,9 @@ class DefaultRuntimeComposition :
             commitDecisionEngine =
                 autonomousExecutionExperienceCommitDecisionEngine,
             committer =
-                autonomousExecutionExperienceCommitter
+                autonomousExecutionExperienceCommitter,
+            committedExperienceKnowledgePipeline =
+                committedExperienceKnowledgePipeline
         )
 
     private val autonomousExecutionCyclePipeline:
