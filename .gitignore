@@ -8,3 +8,4 @@ core_backup_*/
 *.log
 .idea/
 *.iml
+local.properties

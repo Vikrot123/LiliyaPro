@@ -19,3 +19,4 @@ rootProject.name = "LiliyaPro"
 
 include(":core")
 include(":interaction")
+include(":app")
