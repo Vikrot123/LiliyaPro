@@ -2,44 +2,61 @@ package pro.liliya.interaction
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
-import pro.liliya.core.CoreRuntime
-import pro.liliya.core.runtime.authority.RuntimeActionAuthorityContext
-import pro.liliya.core.runtime.authority.RuntimeAuthorityLevel
+import kotlin.test.assertSame
 
 class LiliyaInteractionGatewayProvenanceContractTest {
 
     @Test
-    fun normalized_interaction_source_is_used_as_runtime_authority_source() {
-        CoreRuntime.stop()
-        CoreRuntime.start()
+    fun gateway_passes_normalized_source_and_interaction_authority() {
+        var receivedSource: String? = null
+        var receivedAuthority:
+            LiliyaInteractionAuthority? = null
 
-        try {
-            val gateway =
-                LiliyaInteractionGateway(
-                    CoreRuntimeInteractionPort(
-                        CoreRuntime
-                    )
-                )
+        val expected =
+            LiliyaInteractionResult(
+                source = "interaction provenance",
+                interpretation = "result",
+                confidence = 1.0,
+                experienceCommitted = false,
+                knowledgeProduced = false
+            )
 
-            val result =
-                gateway.process(
+        val port =
+            object : LiliyaInteractionPort {
+                override fun process(
+                    source: String,
+                    authority: LiliyaInteractionAuthority
+                ): LiliyaInteractionResult {
+                    receivedSource = source
+                    receivedAuthority = authority
+                    return expected
+                }
+            }
+
+        val result =
+            LiliyaInteractionGateway(port)
+                .process(
                     LiliyaInteractionRequest(
                         source =
-                            "   interaction-provenance-contract   ",
+                            "   interaction provenance   ",
                         authority =
-                            RuntimeActionAuthorityContext(
-                                source =
-                                    "mismatched-caller-source",
-                                level =
-                                    RuntimeAuthorityLevel.SYSTEM
-                            )
+                            LiliyaInteractionAuthority.USER
                     )
                 )
 
-            assertNotNull(result)
-        } finally {
-            CoreRuntime.stop()
-        }
+        assertEquals(
+            "interaction provenance",
+            receivedSource
+        )
+
+        assertEquals(
+            LiliyaInteractionAuthority.USER,
+            receivedAuthority
+        )
+
+        assertSame(
+            expected,
+            result
+        )
     }
 }

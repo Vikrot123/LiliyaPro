@@ -2,19 +2,14 @@ package pro.liliya.interaction
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
-import kotlin.test.assertSame
+import kotlin.test.assertTrue
 import pro.liliya.core.CoreRuntime
 import pro.liliya.core.CoreRuntimeState
-import pro.liliya.core.runtime.authority.RuntimeActionAuthorityContext
-import pro.liliya.core.runtime.authority.RuntimeAuthorityLevel
-import pro.liliya.core.runtime.intelligence.autonomous.RuntimeAutonomousIntelligenceCyclePipelineResult
-import pro.liliya.core.runtime.intelligence.decision.execution.autonomous.learning.RuntimeAutonomousExecutionExperienceCommitState
 
 class CoreRuntimeInteractionIntegrationContractTest {
 
     @Test
-    fun interaction_gateway_runs_real_public_core_intelligence_cycle() {
+    fun interaction_gateway_runs_real_core_without_exposing_core_result() {
         CoreRuntime.stop()
         CoreRuntime.start()
 
@@ -32,41 +27,25 @@ class CoreRuntimeInteractionIntegrationContractTest {
                 )
 
             val result =
-                committedCycleThroughGateway(
+                committedResult(
                     gateway = gateway,
-                    prefix = "interaction-real-core"
+                    prefix = "interaction-public-contract"
                 )
 
-            val postExecution =
-                result.executionCycle.postExecution
-
-            val commit =
-                assertNotNull(
-                    postExecution.commitResult,
-                    "interaction request must reach autonomous experience commit boundary"
-                )
-
-            assertEquals(
-                RuntimeAutonomousExecutionExperienceCommitState.COMMITTED,
-                commit.state
+            assertTrue(
+                result.interpretation.isNotBlank()
             )
 
-            val knowledgeBridge =
-                assertNotNull(
-                    postExecution.committedExperienceKnowledge,
-                    "committed interaction experience must enter knowledge pipeline"
-                )
-
-            assertSame(
-                commit.experience,
-                knowledgeBridge.experience,
-                "interaction boundary must preserve committed experience identity"
+            assertTrue(
+                result.confidence >= 0.0
             )
 
-            assertSame(
-                result.intelligence,
-                result.executionCycle.execution.intelligence,
-                "interaction boundary must preserve intelligence identity into execution"
+            assertTrue(
+                result.experienceCommitted
+            )
+
+            assertTrue(
+                result.knowledgeProduced
             )
 
             assertEquals(
@@ -83,36 +62,27 @@ class CoreRuntimeInteractionIntegrationContractTest {
         )
     }
 
-    private fun committedCycleThroughGateway(
+    private fun committedResult(
         gateway: LiliyaInteractionGateway,
         prefix: String
-    ): RuntimeAutonomousIntelligenceCyclePipelineResult {
-
+    ): LiliyaInteractionResult {
         return (1..16)
             .asSequence()
             .map { index ->
-                val source =
-                    "   $prefix-$index   "
-
                 gateway.process(
                     LiliyaInteractionRequest(
-                        source = source,
+                        source =
+                            "   $prefix-$index   ",
                         authority =
-                            RuntimeActionAuthorityContext(
-                                source = source.trim(),
-                                level = RuntimeAuthorityLevel.SYSTEM
-                            )
+                            LiliyaInteractionAuthority.SYSTEM
                     )
                 )
             }
             .firstOrNull { result ->
-                result
-                    .executionCycle
-                    .postExecution
-                    .committedExperienceKnowledge != null
+                result.knowledgeProduced
             }
             ?: error(
-                "interaction gateway must eventually produce committed experience-derived knowledge"
+                "interaction must eventually produce knowledge"
             )
     }
 }
