@@ -14,9 +14,14 @@ class LiliyaInteractionGateway(
                 request.source
             )
 
+        val authority =
+            request.authority.copy(
+                source = source
+            )
+
         return port.process(
             source = source,
-            authority = request.authority
+            authority = authority
         )
     }
 }
